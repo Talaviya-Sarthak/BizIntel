@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import AuthContainer from '../features/auth/components/AuthContainer';
+import { ContactPage } from '../features/contact/pages/ContactPage';
 import { DashboardPage } from '../features/dashboard/pages/DashboardPage';
 import { LandingPage } from '../features/landing/pages/LandingPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
@@ -9,6 +10,10 @@ export const router = createBrowserRouter([
   {
     path: '/',
     element: <LandingPage />,
+  },
+  {
+    path: '/contact',
+    element: <ContactPage />,
   },
   {
     path: '/signin',
