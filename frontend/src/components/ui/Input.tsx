@@ -1,52 +1,50 @@
+import React from 'react';
 import { clsx } from 'clsx';
-import { forwardRef, type InputHTMLAttributes, type ReactNode } from 'react';
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
-  endAdornment?: ReactNode;
+  icon?: React.ReactNode;
+  endAdornment?: React.ReactNode;
 }
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  { label, error, endAdornment, className, id, ...rest },
-  ref,
-) {
-  const inputId = id ?? (label ? label.toLowerCase().replace(/\s+/g, '-') : undefined);
-
-  return (
-    <div className="w-full">
-      {label ? (
-        <label
-          htmlFor={inputId}
-          className="mb-1.5 block text-sm font-medium text-slate-300"
-        >
-          {label}
-        </label>
-      ) : null}
-      <div className="relative">
-        <input
-          ref={ref}
-          id={inputId}
-          aria-invalid={error ? true : undefined}
-          aria-describedby={error ? `${inputId}-error` : undefined}
-          className={clsx(
-            'input-field pr-10',
-            error && 'border-red-500/60 focus:border-red-400/60 focus:ring-red-400/20',
-            className,
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type, label, error, icon, endAdornment, id, ...props }, ref) => {
+    return (
+      <div className="w-full grid gap-1.5">
+        {label && (
+          <label htmlFor={id} className="text-xs font-medium text-zinc-300">
+            {label}
+          </label>
+        )}
+        <div className="relative flex items-center">
+          {icon && (
+            <div className="absolute left-3 flex items-center justify-center text-zinc-500 pointer-events-none z-10">
+              {icon}
+            </div>
           )}
-          {...rest}
-        />
-        {endAdornment ? (
-          <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-            {endAdornment}
-          </div>
-        ) : null}
+          <input
+            id={id}
+            type={type}
+            className={clsx(
+              'flex h-10 w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2 text-xs text-zinc-50 placeholder:text-zinc-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-700 disabled:cursor-not-allowed disabled:opacity-50 transition-colors',
+              icon && 'pl-9',
+              endAdornment && 'pr-9',
+              error && 'border-red-500/50 focus-visible:ring-red-500',
+              className
+            )}
+            ref={ref}
+            {...props}
+          />
+          {endAdornment && (
+            <div className="absolute right-2.5 flex items-center justify-center z-10">
+              {endAdornment}
+            </div>
+          )}
+        </div>
+        {error && <p className="text-[11px] text-red-400">{error}</p>}
       </div>
-      {error ? (
-        <p id={`${inputId}-error`} className="mt-1.5 text-sm text-red-400" role="alert">
-          {error}
-        </p>
-      ) : null}
-    </div>
-  );
-});
+    );
+  }
+);
+Input.displayName = 'Input';

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Card,
   CardHeader,
@@ -18,7 +18,6 @@ import {
   EyeOff,
   Lock,
   Mail,
-  User,
   AlertCircle,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -55,44 +54,43 @@ function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-interface SignUpPageProps {
-  onNavigateSignIn?: () => void;
+interface LoginPageProps {
+  onNavigateSignUp?: () => void;
+  onNavigateForgotPassword?: () => void;
 }
 
-export default function SignUpPage({ onNavigateSignIn }: SignUpPageProps) {
-  const { signUp } = useAuth();
+export default function LoginPage({
+  onNavigateSignUp,
+  onNavigateForgotPassword,
+}: LoginPageProps) {
+  const { signIn } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [agreeTerms, setAgreeTerms] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const from = (location.state as { from?: string } | null)?.from ?? "/dashboard";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
 
-    if (password !== confirmPassword) {
-      setErrorMessage("Passwords do not match!");
-      return;
-    }
-    if (!agreeTerms) {
-      setErrorMessage("Please agree to the Terms of Service.");
+    if (!email.trim() || !password) {
+      setErrorMessage("Please enter both email and password.");
       return;
     }
 
     setSubmitting(true);
     try {
-      await signUp({ name: name.trim(), email: email.trim(), password });
-      navigate("/dashboard", { replace: true });
+      await signIn({ email: email.trim(), password });
+      navigate(from, { replace: true });
     } catch (err) {
       const apiErr = toApiError(err);
-      setErrorMessage(apiErr.message || "Failed to create account. Please check your information.");
+      setErrorMessage(apiErr.message || "Failed to sign in. Please check your credentials.");
     } finally {
       setSubmitting(false);
     }
@@ -100,15 +98,15 @@ export default function SignUpPage({ onNavigateSignIn }: SignUpPageProps) {
 
   return (
     <Card className="card-animate w-full max-w-sm border-zinc-800 bg-zinc-900/70 backdrop-blur supports-[backdrop-filter]:bg-zinc-900/60 shadow-2xl p-6">
-      <CardHeader className="p-0 mb-4 space-y-1">
-        <CardTitle className="text-xl font-semibold tracking-tight text-white">Create account</CardTitle>
+      <CardHeader className="p-0 mb-5 space-y-1">
+        <CardTitle className="text-2xl font-semibold tracking-tight text-white">Welcome back</CardTitle>
         <CardDescription className="text-xs text-zinc-400">
-          Get started with your free account
+          Sign in to your account
         </CardDescription>
       </CardHeader>
 
       <form onSubmit={handleSubmit}>
-        <CardContent className="p-0 flex flex-col gap-3.5">
+        <CardContent className="p-0 flex flex-col gap-4">
           {errorMessage && (
             <div className="flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-2.5 text-xs text-red-400">
               <AlertCircle className="h-4 w-4 shrink-0" />
@@ -117,18 +115,7 @@ export default function SignUpPage({ onNavigateSignIn }: SignUpPageProps) {
           )}
 
           <Input
-            id="fullname"
-            type="text"
-            label="Full Name"
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Name"
-            icon={<User className="h-4 w-4 text-zinc-500" />}
-          />
-
-          <Input
-            id="signup-email"
+            id="email"
             type="email"
             label="Email"
             required
@@ -138,81 +125,55 @@ export default function SignUpPage({ onNavigateSignIn }: SignUpPageProps) {
             icon={<Mail className="h-4 w-4 text-zinc-500" />}
           />
 
-          {/* Side-by-side password inputs */}
-          <div className="grid grid-cols-2 gap-2.5">
-            <Input
-              id="signup-password"
-              type={showPassword ? "text" : "password"}
-              label="Password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              icon={<Lock className="h-4 w-4 text-zinc-500" />}
-              endAdornment={
-                <button
-                  type="button"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="p-1 rounded text-zinc-400 hover:text-zinc-200"
-                  onClick={() => setShowPassword((v) => !v)}
-                >
-                  {showPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-                </button>
-              }
-            />
+          <Input
+            id="password"
+            type={showPassword ? "text" : "password"}
+            label="Password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            icon={<Lock className="h-4 w-4 text-zinc-500" />}
+            endAdornment={
+              <button
+                type="button"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                className="p-1 rounded text-zinc-400 hover:text-zinc-200 transition-colors"
+                onClick={() => setShowPassword((v) => !v)}
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            }
+          />
 
-            <Input
-              id="confirm-password"
-              type={showConfirmPassword ? "text" : "password"}
-              label="Confirm"
-              required
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Password"
-              icon={<Lock className="h-4 w-4 text-zinc-500" />}
-              endAdornment={
-                <button
-                  type="button"
-                  aria-label={showConfirmPassword ? "Hide password" : "Show password"}
-                  className="p-1 rounded text-zinc-400 hover:text-zinc-200"
-                  onClick={() => setShowConfirmPassword((v) => !v)}
-                >
-                  {showConfirmPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-                </button>
-              }
-            />
+          <div className="flex items-center justify-between pt-0.5">
+            <div className="flex items-center gap-2">
+              <Checkbox id="remember" />
+              <Label htmlFor="remember" className="text-zinc-400 text-xs cursor-pointer">
+                Remember me
+              </Label>
+            </div>
+            <button
+              type="button"
+              onClick={onNavigateForgotPassword}
+              className="text-xs text-zinc-300 hover:text-zinc-100 transition-colors underline-offset-4 hover:underline"
+            >
+              Forgot password?
+            </button>
           </div>
 
-          <div className="flex items-center gap-2 py-0.5">
-            <Checkbox
-              id="terms"
-              checked={agreeTerms}
-              onCheckedChange={(checked) => setAgreeTerms(!!checked)}
-            />
-            <Label htmlFor="terms" className="text-zinc-400 text-xs leading-none cursor-pointer">
-              I agree to the{" "}
-              <a href="#" className="text-zinc-200 hover:underline font-medium">
-                Terms
-              </a>{" "}
-              and{" "}
-              <a href="#" className="text-zinc-200 hover:underline font-medium">
-                Privacy
-              </a>
-            </Label>
-          </div>
-
-          <Button type="submit" loading={submitting} className="w-full h-9.5 mt-0.5 rounded-lg bg-zinc-50 text-zinc-900 hover:bg-zinc-200 text-xs font-medium transition-colors">
-            Create account
+          <Button type="submit" loading={submitting} className="w-full h-9.5 mt-1 rounded-lg bg-zinc-50 text-zinc-900 hover:bg-zinc-200 text-xs font-medium transition-colors">
+            Continue
           </Button>
 
-          <div className="relative my-0.5">
+          <div className="relative my-1">
             <Separator className="bg-zinc-800" />
             <span className="absolute left-1/2 -translate-x-1/2 -top-2.5 bg-zinc-900 px-2 text-[10px] uppercase tracking-widest text-zinc-500">
               or
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-2 gap-3">
             <Button
               type="button"
               variant="outline"
@@ -233,16 +194,18 @@ export default function SignUpPage({ onNavigateSignIn }: SignUpPageProps) {
         </CardContent>
       </form>
 
-      <CardFooter className="p-0 mt-4 pt-0 flex items-center justify-center text-xs text-zinc-400">
-        Already have an account?
+      <CardFooter className="p-0 mt-5 pt-0 flex items-center justify-center text-xs text-zinc-400">
+        Don’t have an account?
         <button
           type="button"
-          onClick={onNavigateSignIn}
-          className="ml-1 text-zinc-200 hover:underline font-medium"
+          onClick={onNavigateSignUp}
+          className="ml-1.5 text-zinc-200 hover:underline font-medium"
         >
-          Sign in
+          Create one
         </button>
       </CardFooter>
     </Card>
   );
 }
+
+export { LoginPage as SignInPage };

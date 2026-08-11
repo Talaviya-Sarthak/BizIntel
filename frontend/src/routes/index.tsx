@@ -1,6 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { SignInPage } from '../features/auth/pages/SignInPage';
-import { SignUpPage } from '../features/auth/pages/SignUpPage';
+import AuthContainer from '../features/auth/components/AuthContainer';
 import { DashboardPage } from '../features/dashboard/pages/DashboardPage';
 import { LandingPage } from '../features/landing/pages/LandingPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
@@ -15,7 +14,7 @@ export const router = createBrowserRouter([
     path: '/signin',
     element: (
       <GuestRoute>
-        <SignInPage />
+        <AuthContainer initialMode="login" />
       </GuestRoute>
     ),
   },
@@ -23,7 +22,15 @@ export const router = createBrowserRouter([
     path: '/signup',
     element: (
       <GuestRoute>
-        <SignUpPage />
+        <AuthContainer initialMode="signup" />
+      </GuestRoute>
+    ),
+  },
+  {
+    path: '/forgot-password',
+    element: (
+      <GuestRoute>
+        <AuthContainer initialMode="forgot-password" />
       </GuestRoute>
     ),
   },
