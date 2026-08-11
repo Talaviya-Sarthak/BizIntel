@@ -1,0 +1,54 @@
+import dotenv from 'dotenv';
+import path from 'node:path';
+import { z } from 'zod';
+
+/**
+ * Loads environment variables from (in order of precedence):
+ *   1. `backend/.env`        (process.cwd() when run from the backend dir)
+ *   2. `<repo root>/.env`
+ *
+ * First-defined keys win; values in a root `.env` do not override values
+ * already set in the process environment.
+ */
+dotenv.config({
+  path: [
+    path.resolve(process.cwd(), '.env'),
+    path.resolve(process.cwd(), '..', '.env'),
+  ],
+  override: false,
+});
+
+const envSchema = z.object({
+  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+
+  PORT: z.coerce.number().int().positive().default(5000),
+
+  DATABASE_URL: z
+    .string()
+    .min(1, 'DATABASE_URL is required (Neon PostgreSQL connection string)'),
+
+  JWT_SECRET: z
+    .string()
+    .min(32, 'JWT_SECRET must be at least 32 characters long'),
+
+  JWT_EXPIRES_IN: z.string().default('1h'),
+
+  AUTH_COOKIE_NAME: z.string().min(1).default('ps05_token'),
+
+  CORS_ORIGIN: z.string().default('http://localhost:5173'),
+});
+
+const parsed = envSchema.safeParse(process.env);
+
+if (!parsed.success) {
+  // eslint-disable-next-line no-console
+  console.error('❌ Invalid environment configuration:', parsed.error.flatten().fieldErrors);
+  process.exit(1);
+}
+
+export const env = parsed.data;
+
+/** Parsed list of allowed CORS origins. */
+export const corsOrigins = env.CORS_ORIGIN.split(',')
+  .map((origin) => origin.trim())
+  .filter((origin) => origin.length > 0);
