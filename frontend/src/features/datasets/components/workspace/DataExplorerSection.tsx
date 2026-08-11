@@ -24,7 +24,7 @@ export function DataExplorerSection({ datasetId, columns }: DataExplorerSectionP
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [sortColumn, setSortColumn] = useState('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -34,7 +34,7 @@ export function DataExplorerSection({ datasetId, columns }: DataExplorerSectionP
   }, [searchInput]);
 
   useEffect(() => {
-    setPage(0);
+    setPage(1);
   }, [filters, debouncedSearch, sortColumn, sortDirection]);
 
   const request: ExplorerRequest = useMemo(
@@ -55,8 +55,8 @@ export function DataExplorerSection({ datasetId, columns }: DataExplorerSectionP
     [columns],
   );
 
-  const hasMore = rowsQuery.data ? (rowsQuery.data.page + 1) * PAGE_SIZE < rowsQuery.data.total : false;
-  const hasPrev = page > 0;
+  const hasMore = rowsQuery.data ? rowsQuery.data.page * PAGE_SIZE < rowsQuery.data.total : false;
+  const hasPrev = page > 1;
 
   return (
     <div className="flex flex-col gap-4">
@@ -100,7 +100,7 @@ export function DataExplorerSection({ datasetId, columns }: DataExplorerSectionP
 
       <div className="text-xs text-slate-500">
         {rowsQuery.data
-          ? `${formatNumber(rowsQuery.data.total)} matching rows · page ${rowsQuery.data.page + 1} of ${Math.max(1, Math.ceil(rowsQuery.data.total / PAGE_SIZE))}`
+          ? `${formatNumber(rowsQuery.data.total)} matching rows · page ${rowsQuery.data.page} of ${Math.max(1, Math.ceil(rowsQuery.data.total / PAGE_SIZE))}`
           : `${formatNumber(columns.length)} columns available`}
       </div>
 
