@@ -9,6 +9,7 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:status": "tsx scripts/db-status.ts",
     "db:seed": "tsx scripts/seed.ts",
@@ -41,7 +42,8 @@
     "@types/node": "^22.10.7",
     "@types/pg": "^8.11.10",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.9"
   },
   "allowScripts": {
     "bcrypt@5.1.1": true,

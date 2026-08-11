@@ -1,5 +1,8 @@
 import { createBrowserRouter } from 'react-router-dom';
 import AuthContainer from '../features/auth/components/AuthContainer';
+import { BacktestingPage } from '../features/backtesting/pages/BacktestingPage';
+import { BacktestResultPage } from '../features/backtesting/pages/BacktestResultPage';
+import { NewBacktestPage } from '../features/backtesting/pages/NewBacktestPage';
 import { ContactPage } from '../features/contact/pages/ContactPage';
 import { DashboardPage } from '../features/dashboard/pages/DashboardPage';
 import { DatasetsPage } from '../features/datasets/pages/DatasetsPage';
@@ -9,7 +12,6 @@ import { LandingPage } from '../features/landing/pages/LandingPage';
 import { AppShell } from '../features/workspace/components/AppShell';
 import {
   AiAssistantPage,
-  BacktestingPage,
   DataMartPage,
   SettingsPage,
 } from '../features/workspace/pages/PlaceholderPages';
@@ -62,6 +64,8 @@ export const router = createBrowserRouter([
       { path: '/datasets/:id', element: <DatasetWorkspacePage /> },
       { path: '/datamart', element: <DataMartPage /> },
       { path: '/backtesting', element: <BacktestingPage /> },
+      { path: '/backtesting/new', element: <NewBacktestPage /> },
+      { path: '/backtesting/:id', element: <BacktestResultPage /> },
       { path: '/ai-assistant', element: <AiAssistantPage /> },
       { path: '/settings', element: <SettingsPage /> },
     ],

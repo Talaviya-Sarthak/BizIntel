@@ -23,16 +23,25 @@ export const api = axios.create({
 export function toApiError(error: unknown): {
   code: string;
   message: string;
+  suggestion?: string;
   details?: { field: string; message: string }[];
 } {
   if (axios.isAxiosError(error)) {
     const body = (error as AxiosError).response?.data as
-      | { error?: { code?: string; message?: string; details?: { field: string; message: string }[] } }
+      | {
+          error?: {
+            code?: string;
+            message?: string;
+            suggestion?: string;
+            details?: { field: string; message: string }[];
+          };
+        }
       | undefined;
     if (body?.error) {
       return {
         code: body.error.code ?? 'UNKNOWN_ERROR',
         message: body.error.message ?? 'An unexpected error occurred',
+        suggestion: body.error.suggestion,
         details: body.error.details,
       };
     }
