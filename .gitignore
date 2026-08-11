@@ -30,6 +30,9 @@ frontend/dist/
 # --- Backend build artifacts ---
 backend/dist/
 
+# --- Dataset storage ---
+backend/storage/
+
 # --- Misc ---
 coverage/
 .nyc_output/
