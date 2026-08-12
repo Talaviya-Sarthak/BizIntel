@@ -69,7 +69,7 @@ export function generateFallbackAnswer(context: ResponseContext): string {
   }
 
   if (executionPlan.intent === 'knowledge') {
-    return data.message || 'Knowledge retrieval (RAG) will be implemented in Phase 5.';
+    return data.answer || data.message || 'The available knowledge base does not contain enough information to answer this question confidently.';
   }
 
   if (executionPlan.intent === 'retail') {

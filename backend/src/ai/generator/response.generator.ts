@@ -40,14 +40,17 @@ export class ResponseGenerator {
   }
 
   /**
-   * Converts a user question, execution plan, and ToolResult into a professional natural language response.
+   * Converts a user question, execution plan, toolResult, and memoryContext into a professional natural language response.
    *
-   * @param context ResponseContext containing question, plan, and toolResult
+   * @param context ResponseContext containing question, plan, toolResult, and memoryContext
    * @returns Typed AIResponse object
    */
   public async generate(context: ResponseContext): Promise<AIResponse> {
     const startTimeMs = Date.now();
-    const { executionPlan } = context;
+    const { executionPlan, toolResult } = context;
+
+    // Extract citations from ToolResult if available
+    const citations = toolResult?.metadata?.citations || toolResult?.data?.citations || [];
 
     if (!this.model) {
       this.initModel();
@@ -58,7 +61,7 @@ export class ResponseGenerator {
       return {
         success: true,
         answer: generateFallbackAnswer(context),
-        metadata: buildResponseMetadata(executionPlan, startTimeMs, 'fallback-generator'),
+        metadata: buildResponseMetadata(executionPlan, startTimeMs, 'fallback-generator', citations),
       };
     }
 
@@ -77,14 +80,14 @@ export class ResponseGenerator {
       return {
         success: true,
         answer: answer.trim(),
-        metadata: buildResponseMetadata(executionPlan, startTimeMs, RESPONSE_GENERATOR_MODEL),
+        metadata: buildResponseMetadata(executionPlan, startTimeMs, RESPONSE_GENERATOR_MODEL, citations),
       };
     } catch (error: any) {
       logger.error({ err: error }, 'Error in ResponseGenerator generation. Using fallback answer.');
       return {
         success: true,
         answer: generateFallbackAnswer(context),
-        metadata: buildResponseMetadata(executionPlan, startTimeMs, 'fallback-generator'),
+        metadata: buildResponseMetadata(executionPlan, startTimeMs, 'fallback-generator', citations),
       };
     }
   }
