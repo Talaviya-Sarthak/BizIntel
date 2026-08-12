@@ -130,7 +130,10 @@ describe('DataMartQueryCompiler end-to-end (DuckDB)', () => {
       datasets: ['sales'],
       dimensions: [{ column: 'order_date', granularity: 'month' }],
       metrics: [{ aggregation: 'count', alias: 'n' }],
-      sort: [{ column: 'n', direction: 'desc' }],
+      sort: [
+        { column: 'n', direction: 'desc' },
+        { column: 'order_date', direction: 'asc' },
+      ],
       limit: 10,
       offset: 0,
     };

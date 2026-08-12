@@ -18,10 +18,12 @@ import { DatasetWorkspacePage } from '../features/datasets/pages/DatasetWorkspac
 import { DatasetUploadPage } from '../features/datasets/pages/DatasetUploadPage';
 import { LandingPage } from '../features/landing/pages/LandingPage';
 import { AppShell } from '../features/workspace/components/AppShell';
-import {
-  AiAssistantPage,
-  SettingsPage,
-} from '../features/workspace/pages/PlaceholderPages';
+
+import { AiAssistantPage } from '../pages/AiAssistantPage';
+import { KnowledgeBasePage } from '../pages/KnowledgeBasePage';
+import { UploadCenterPage } from '../pages/UploadCenterPage';
+import { ReportsPage } from '../pages/ReportsPage';
+import { SettingsPage } from '../pages/SettingsPage';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import { GuestRoute, ProtectedRoute } from './guards';
 
@@ -81,6 +83,9 @@ export const router = createBrowserRouter([
       { path: '/backtesting/new', element: <NewBacktestPage /> },
       { path: '/backtesting/:id', element: <BacktestResultPage /> },
       { path: '/ai-assistant', element: <AiAssistantPage /> },
+      { path: '/knowledge-base', element: <KnowledgeBasePage /> },
+      { path: '/upload-center', element: <UploadCenterPage /> },
+      { path: '/reports', element: <ReportsPage /> },
       { path: '/settings', element: <SettingsPage /> },
     ],
   },

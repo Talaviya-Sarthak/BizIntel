@@ -4,16 +4,12 @@ import { MenuIcon } from '../../../components/ui/icons';
 import { Sidebar } from './Sidebar';
 import { UserMenu } from './UserMenu';
 
-/**
- * Authenticated application shell: collapsible sidebar (mobile drawer) +
- * top bar with user profile menu. All protected pages render inside it.
- */
 export function AppShell() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
   return (
-    <div className="flex min-h-screen bg-surface-deep">
+    <div className="flex min-h-screen bg-surface-deep text-slate-100">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="flex min-w-0 flex-1 flex-col lg:pl-64">
@@ -56,7 +52,10 @@ const PAGE_TITLES: Record<string, string> = {
   '/datamart/compare': 'Compare datasets',
   '/backtesting': 'Backtesting',
   '/ai-assistant': 'AI Assistant',
-  '/settings': 'Settings',
+  '/knowledge-base': 'Knowledge Base',
+  '/upload-center': 'Upload Center',
+  '/reports': 'Reports & Artifacts',
+  '/settings': 'Settings & Health',
 };
 
 function pageTitleFromPath(pathname: string): string {

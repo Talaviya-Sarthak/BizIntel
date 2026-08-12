@@ -12,7 +12,6 @@ export interface NavItem {
   label: string;
   path: string;
   icon: ComponentType<{ className?: string }>;
-  /** Modules landing in later phases still route, but render a placeholder. */
   soon?: boolean;
 }
 
@@ -24,22 +23,28 @@ export interface NavSubItem {
 export interface NavGroup {
   label?: string;
   items: NavItem[];
-  /** Optional secondary links shown under the group's primary items. */
   subItems?: NavSubItem[];
 }
 
-/**
- * Canonical workspace navigation. All authenticated modules live here so the
- * platform reads as one unified product rather than disconnected apps.
- */
 export const NAV_GROUPS: NavGroup[] = [
   {
     items: [{ label: 'Dashboard', path: '/dashboard', icon: DashboardIcon }],
   },
   {
-    label: 'Analytics',
+    label: 'AI & Intelligence',
+    items: [
+      { label: 'AI Assistant', path: '/ai-assistant', icon: SparklesIcon },
+      { label: 'Knowledge Base', path: '/knowledge-base', icon: FolderIcon },
+      { label: 'Upload Center', path: '/upload-center', icon: FolderIcon },
+      { label: 'Reports & Artifacts', path: '/reports', icon: DatabaseZapIcon },
+    ],
+  },
+  {
+    label: 'Analytics & Trading',
     items: [
       { label: 'DataMart', path: '/datamart', icon: DatabaseZapIcon },
+      { label: 'Backtesting', path: '/backtesting', icon: TrendingUpIcon },
+      { label: 'Datasets', path: '/datasets', icon: FolderIcon },
     ],
     subItems: [
       { label: 'Overview', path: '/datamart' },
@@ -51,24 +56,8 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    items: [
-      { label: 'Backtesting', path: '/backtesting', icon: TrendingUpIcon },
-      { label: 'AI Assistant', path: '/ai-assistant', icon: SparklesIcon, soon: true },
-      { label: 'Datasets', path: '/datasets', icon: FolderIcon },
-      { label: 'Settings', path: '/settings', icon: SettingsIcon, soon: true },
-    ],
+    items: [{ label: 'Settings & Health', path: '/settings', icon: SettingsIcon }],
   },
 ];
 
-/** Workspace pages that are placeholder-only until their module ships. */
-export const SOON_PAGES: Record<string, { title: string; description: string }> = {
-  '/ai-assistant': {
-    title: 'AI Assistant',
-    description:
-      'Natural-language questions answered from your enterprise datasets. Coming in the AI Assistant phase.',
-  },
-  '/settings': {
-    title: 'Settings',
-    description: 'Manage your profile and workspace preferences.',
-  },
-};
+export const SOON_PAGES: Record<string, { title: string; description: string }> = {};
