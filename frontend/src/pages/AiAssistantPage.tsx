@@ -11,6 +11,7 @@ import type { ChatMessage, VisualizationResult } from '../types/ai.types';
 
 export const AiAssistantPage: React.FC = () => {
   const [input, setInput] = useState('');
+  const [copiedId, setCopiedId] = useState<string | null>(null);
   const { sessionId, messages, isStreaming, currentStage, stageMessage, setSessionId, addMessage, setStreaming } = useChatStore();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -31,11 +32,10 @@ export const AiAssistantPage: React.FC = () => {
     }
   }, [input]);
 
-  const handleSend = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!input.trim() || isStreaming) return;
+  const handleSend = async (queryText?: string) => {
+    const query = (queryText || input).trim();
+    if (!query || isStreaming) return;
 
-    const query = input.trim();
     setInput('');
     if (textareaRef.current) textareaRef.current.style.height = 'auto';
 
@@ -49,7 +49,7 @@ export const AiAssistantPage: React.FC = () => {
     addMessage(userMsg);
 
     // Start Streaming Indicator
-    setStreaming(true, 'Thinking...', 'Classifying query intent...');
+    setStreaming(true, 'Thinking...', 'Executing query and analytics...');
 
     // Subscribe to SSE Stream updates
     const unsubscribe = subscribeToAIStream(
@@ -100,6 +100,19 @@ export const AiAssistantPage: React.FC = () => {
     }
   };
 
+  const copyToClipboard = (id: string, text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleRegenerate = () => {
+    const lastUserMessage = [...messages].reverse().find((m) => m.role === 'user');
+    if (lastUserMessage) {
+      handleSend(lastUserMessage.content);
+    }
+  };
+
   return (
     <div className="w-full h-full flex flex-col bg-[#090909] text-zinc-100 font-sans overflow-hidden">
       {/* Messages Scroll Area */}
@@ -114,22 +127,21 @@ export const AiAssistantPage: React.FC = () => {
               </div>
               <h2 className="text-xl font-semibold text-zinc-100">Enterprise AI Assistant</h2>
               <p className="text-xs text-zinc-400 max-w-md mt-1.5 leading-relaxed">
-                Ask questions about sales analytics, quantitative trading backtests, retail catalog data, or uploaded enterprise documents.
+                Analyze datasets, query schemas, run quantitative backtests, and search knowledge base documents.
               </p>
 
               {/* Prompt Suggestion Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-8 max-w-xl w-full">
                 {[
-                  { title: 'Sales Analytics', prompt: 'Show monthly sales for 2025' },
-                  { title: 'Trading Backtest', prompt: 'Compare SMA Crossover vs RSI Strategy' },
-                  { title: 'Document RAG', prompt: 'What is the company refund policy?' },
-                  { title: 'Revenue Ranking', prompt: 'Who are top customers by revenue?' },
+                  { title: 'Analyze Dataset', prompt: 'Analyze this sales dataset' },
+                  { title: 'Top Products', prompt: 'Top products by revenue' },
+                  { title: 'Inspect Schema', prompt: 'What columns exist?' },
+                  { title: 'Knowledge RAG', prompt: 'What is the refund policy?' },
                 ].map((item, idx) => (
                   <button
                     key={idx}
                     onClick={() => {
-                      setInput(item.prompt);
-                      if (textareaRef.current) textareaRef.current.focus();
+                      handleSend(item.prompt);
                     }}
                     className="group p-3 text-left rounded-xl bg-zinc-900/60 hover:bg-zinc-800/80 border border-zinc-800/80 transition-all text-xs"
                   >
@@ -154,14 +166,14 @@ export const AiAssistantPage: React.FC = () => {
                   </div>
                 ) : (
                   // Assistant Message (Left Aligned Modern Enterprise Prose)
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-3 group">
                     <div className="w-6 h-6 rounded-md bg-zinc-800 border border-zinc-700/60 flex items-center justify-center text-zinc-200 shrink-0 mt-1">
                       <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                       </svg>
                     </div>
                     <div className="flex-1 space-y-2 min-w-0 text-sm text-zinc-200">
-                      {/* Collapsible Execution Details */}
+                      {/* Developer Metadata Component */}
                       {msg.metadata && <ToolIndicator metadata={msg.metadata} />}
 
                       {/* React Markdown Answer Prose */}
@@ -183,10 +195,33 @@ export const AiAssistantPage: React.FC = () => {
                         <CitationList citations={msg.citations} />
                       )}
 
-                      {/* Export Artifacts (Only when data exists) */}
+                      {/* Export Artifacts (Only rendered when non-empty) */}
                       {msg.artifacts && msg.artifacts.length > 0 && (
                         <ArtifactList artifacts={msg.artifacts} />
                       )}
+
+                      {/* Action Bar: Copy / Regenerate */}
+                      <div className="flex items-center gap-2 pt-1 opacity-0 group-hover:opacity-100 transition-opacity text-[11px] text-zinc-500">
+                        <button
+                          onClick={() => copyToClipboard(msg.id, msg.content)}
+                          className="hover:text-zinc-200 transition-colors flex items-center gap-1"
+                        >
+                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                          </svg>
+                          <span>{copiedId === msg.id ? 'Copied' : 'Copy'}</span>
+                        </button>
+                        <span>•</span>
+                        <button
+                          onClick={handleRegenerate}
+                          className="hover:text-zinc-200 transition-colors flex items-center gap-1"
+                        >
+                          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                          </svg>
+                          <span>Regenerate</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -204,7 +239,10 @@ export const AiAssistantPage: React.FC = () => {
       <div className="w-full bg-[#090909] border-t border-zinc-800/80 py-3 shrink-0">
         <div className="max-w-3xl mx-auto px-4">
           <form
-            onSubmit={handleSend}
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSend();
+            }}
             className="relative flex items-end rounded-2xl bg-zinc-900 border border-zinc-800 focus-within:border-zinc-600 transition-all p-2 shadow-lg"
           >
             <textarea
@@ -213,7 +251,7 @@ export const AiAssistantPage: React.FC = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Send a message..."
+              placeholder="Send a message or ask an analytics question..."
               disabled={isStreaming}
               className="flex-1 bg-transparent px-3 py-2 text-sm text-zinc-100 placeholder-zinc-500 focus:outline-none resize-none max-h-44 min-h-[40px] leading-relaxed"
             />

@@ -3,7 +3,7 @@ import type { ChartType, VisualizationResult } from './visualization.types';
 
 export class VisualizationService {
   /**
-   * Generates a array of VisualizationResult objects from ToolResult data.
+   * Generates an array of VisualizationResult objects from ToolResult data.
    */
   public generateVisualizations(toolResult: ToolResult): VisualizationResult[] {
     if (!toolResult || !toolResult.data) return [];
@@ -11,8 +11,67 @@ export class VisualizationService {
     const results: VisualizationResult[] = [];
     const data = toolResult.data;
 
-    // 1. Generate Datasets Bar/Line chart if dataset array is present
-    if (Array.isArray(data.datasets) && data.datasets.length > 0) {
+    // 1. Generate Category / Dimension Breakdown Chart if topBreakdown exists
+    if (data.topBreakdown && Array.isArray(data.topBreakdown.labels) && Array.isArray(data.topBreakdown.values)) {
+      results.push({
+        id: `chart_breakdown_${Date.now()}`,
+        chartType: 'bar',
+        title: data.topBreakdown.title || 'Top Performance Breakdown',
+        description: `Dimension analysis by ${data.topBreakdown.dimension || 'category'}`,
+        chartData: {
+          labels: data.topBreakdown.labels,
+          datasets: [
+            {
+              label: 'Revenue ($)',
+              data: data.topBreakdown.values,
+              backgroundColor: '#fafafa',
+            },
+          ],
+        },
+      });
+    }
+
+    // 2. Generate Time-Series Line Chart if timeSeries exists
+    if (data.timeSeries && Array.isArray(data.timeSeries.labels) && Array.isArray(data.timeSeries.values)) {
+      results.push({
+        id: `chart_time_${Date.now()}`,
+        chartType: 'line',
+        title: data.timeSeries.title || 'Performance Trend Over Time',
+        description: 'Chronological trend metrics',
+        chartData: {
+          labels: data.timeSeries.labels,
+          datasets: [
+            {
+              label: 'Sales Revenue ($)',
+              data: data.timeSeries.values,
+              backgroundColor: '#fafafa',
+            },
+          ],
+        },
+      });
+    }
+
+    // 3. Generate KPI summary card if kpiSummary exists
+    if (data.kpiSummary && typeof data.kpiSummary.totalRevenue === 'number') {
+      results.push({
+        id: `chart_kpi_${Date.now()}`,
+        chartType: 'kpi',
+        title: 'Total Revenue YTD',
+        description: `Total across ${data.kpiSummary.totalRecords.toLocaleString()} orders`,
+        chartData: {
+          labels: ['Total Revenue'],
+          datasets: [
+            {
+              label: 'Revenue',
+              data: [data.kpiSummary.totalRevenue],
+            },
+          ],
+        },
+      });
+    }
+
+    // 4. Generate Datasets Bar chart if datasets array is present (and no other breakdown chart added yet)
+    if (results.length === 0 && Array.isArray(data.datasets) && data.datasets.length > 0) {
       const labels = data.datasets.map((d: any) => d.name || 'Dataset');
       const rowCounts = data.datasets.map((d: any) => d.rowCount || 0);
 
@@ -27,27 +86,7 @@ export class VisualizationService {
             {
               label: 'Row Count',
               data: rowCounts,
-              backgroundColor: '#6366f1',
-            },
-          ],
-        },
-      });
-    }
-
-    // 2. Generate Backtests KPI / Strategy Distribution
-    if (Array.isArray(data.availableStrategies) && data.availableStrategies.length > 0) {
-      results.push({
-        id: `chart_strat_${Date.now()}`,
-        chartType: 'pie',
-        title: 'Trading Strategies Catalog',
-        description: 'Distribution of quantitative strategies',
-        chartData: {
-          labels: data.availableStrategies,
-          datasets: [
-            {
-              label: 'Strategy Type',
-              data: data.availableStrategies.map(() => 1),
-              backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'],
+              backgroundColor: '#fafafa',
             },
           ],
         },
@@ -78,7 +117,7 @@ export class VisualizationService {
           {
             label: title,
             data: dataValues,
-            backgroundColor: '#6366f1',
+            backgroundColor: '#fafafa',
           },
         ],
       },

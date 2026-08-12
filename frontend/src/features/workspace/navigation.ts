@@ -34,8 +34,8 @@ export const NAV_GROUPS: NavGroup[] = [
     label: 'AI & Intelligence',
     items: [
       { label: 'AI Assistant', path: '/ai-assistant', icon: SparklesIcon },
+      { label: 'Datasets', path: '/datasets', icon: FolderIcon },
       { label: 'Knowledge Base', path: '/knowledge-base', icon: FolderIcon },
-      { label: 'Upload Center', path: '/upload-center', icon: FolderIcon },
       { label: 'Reports & Artifacts', path: '/reports', icon: DatabaseZapIcon },
     ],
   },
@@ -44,7 +44,6 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { label: 'DataMart', path: '/datamart', icon: DatabaseZapIcon },
       { label: 'Backtesting', path: '/backtesting', icon: TrendingUpIcon },
-      { label: 'Datasets', path: '/datasets', icon: FolderIcon },
     ],
     subItems: [
       { label: 'Overview', path: '/datamart' },
@@ -56,7 +55,7 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    items: [{ label: 'Settings & Health', path: '/settings', icon: SettingsIcon }],
+    items: [{ label: 'Settings', path: '/settings', icon: SettingsIcon }],
   },
 ];
 
