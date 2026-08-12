@@ -141,7 +141,7 @@ export default function EnterpriseAIPipeline({ className }: EnterpriseAIPipeline
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           />
           <span className="text-[10px] text-zinc-400 tracking-[0.1em] font-mono font-semibold">
-            PS-05 INTELLIGENCE PIPELINE · LIVE
+            BizIntel
           </span>
         </div>
         <span className="text-[10px] text-zinc-500 font-mono">

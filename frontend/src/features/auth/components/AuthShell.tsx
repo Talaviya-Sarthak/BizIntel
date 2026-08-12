@@ -64,7 +64,7 @@ export function AuthShell({ title, subtitle, children, footer }: AuthShellProps)
           </div>
 
           <p className="text-xs text-slate-600">
-            © {new Date().getFullYear()} PS-05 Enterprise Intelligence Platform
+            © {new Date().getFullYear()} BizIntel-Enterprise Intelligence Platform
           </p>
         </div>
       </div>

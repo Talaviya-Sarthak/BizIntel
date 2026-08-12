@@ -1,10 +1,10 @@
 import React, { useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
+import Button from "@/components/ui/Button";
 
 interface AuthBackgroundProps {
   children: React.ReactNode;
-  activeTab?: string;
-  onTabChange?: (tab: "login" | "signup" | "forgot-password") => void;
 }
 
 export default function AuthBackground({ children }: AuthBackgroundProps) {
@@ -126,8 +126,19 @@ export default function AuthBackground({ children }: AuthBackgroundProps) {
 
       {/* Header */}
       <header className="absolute left-0 right-0 top-0 flex items-center justify-between px-6 py-4 border-b border-zinc-800/80 z-10">
-        <Link to="/" className="text-xs tracking-[0.14em] uppercase text-zinc-400 font-bold hover:text-zinc-100 transition-colors">
-          PS-05
+        <Link to="/" className="flex items-center gap-6">
+          <span className="text-xs tracking-[0.14em] uppercase text-zinc-400 font-bold hover:text-zinc-100 transition-colors">
+            BizIntel
+          </span>
+        </Link>
+        <Link to="/contact">
+          <Button
+            variant="outline"
+            className="h-8.5 rounded-lg border-zinc-800 bg-zinc-900 text-zinc-50 hover:bg-zinc-800 text-xs"
+          >
+            <span className="mr-1.5">Contact</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Button>
         </Link>
       </header>
 

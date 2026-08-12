@@ -18,7 +18,7 @@ export function Hero() {
             >
               <span className="inline-flex items-center gap-2 rounded-full border border-zinc-800/80 bg-zinc-900/60 px-3 py-1 text-[11px] font-medium tracking-wide text-zinc-300">
                 <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
-                PS-05 Enterprise Intelligence Platform
+                BizIntel-Enterprise Intelligence Platform
               </span>
             </motion.div>
 
