@@ -97,16 +97,16 @@ export default function LoginPage({
   };
 
   return (
-    <Card className="card-animate w-full max-w-sm border-zinc-800 bg-zinc-900/70 backdrop-blur supports-[backdrop-filter]:bg-zinc-900/60 shadow-2xl p-6">
-      <CardHeader className="p-0 mb-5 space-y-1">
-        <CardTitle className="text-2xl font-semibold tracking-tight text-white">Welcome back</CardTitle>
+    <Card className="card-animate w-full max-w-sm border-zinc-800 bg-zinc-900/70 backdrop-blur supports-[backdrop-filter]:bg-zinc-900/60 shadow-2xl">
+      <CardHeader className="px-6 pt-6 pb-2 space-y-1">
+        <CardTitle className="text-2xl font-semibold text-white">Welcome back</CardTitle>
         <CardDescription className="text-xs text-zinc-400">
           Sign in to your account
         </CardDescription>
       </CardHeader>
 
       <form onSubmit={handleSubmit}>
-        <CardContent className="p-0 flex flex-col gap-4">
+        <CardContent className="px-6 py-2 flex flex-col gap-4">
           {errorMessage && (
             <div className="flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-2.5 text-xs text-red-400">
               <AlertCircle className="h-4 w-4 shrink-0" />
@@ -114,41 +114,60 @@ export default function LoginPage({
             </div>
           )}
 
-          <Input
-            id="email"
-            type="email"
-            label="Email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            icon={<Mail className="h-4 w-4 text-zinc-500" />}
-          />
+          <div className="grid gap-1.5">
+            <Label htmlFor="email" className="text-xs font-medium text-zinc-300">
+              Email
+            </Label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500 pointer-events-none" />
+              <Input
+                id="email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="h-9.5 pl-9 text-xs bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600 focus-visible:ring-zinc-700"
+              />
+            </div>
+          </div>
 
-          <Input
-            id="password"
-            type={showPassword ? "text" : "password"}
-            label="Password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            icon={<Lock className="h-4 w-4 text-zinc-500" />}
-            endAdornment={
+          <div className="grid gap-1.5">
+            <Label htmlFor="password" className="text-xs font-medium text-zinc-300">
+              Password
+            </Label>
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500 pointer-events-none" />
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="h-9.5 pl-9 pr-10 text-xs bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600 focus-visible:ring-zinc-700"
+              />
               <button
                 type="button"
                 aria-label={showPassword ? "Hide password" : "Show password"}
-                className="p-1 rounded text-zinc-400 hover:text-zinc-200 transition-colors"
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-md text-zinc-400 hover:text-zinc-200 transition-colors"
                 onClick={() => setShowPassword((v) => !v)}
               >
-                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
               </button>
-            }
-          />
+            </div>
+          </div>
 
-          <div className="flex items-center justify-between pt-0.5">
+          <div className="flex items-center justify-between py-1">
             <div className="flex items-center gap-2">
-              <Checkbox id="remember" />
+              <Checkbox
+                id="remember"
+                className="h-4 w-4 border-zinc-700 data-[state=checked]:bg-zinc-50 data-[state=checked]:text-zinc-900"
+              />
               <Label htmlFor="remember" className="text-zinc-400 text-xs cursor-pointer">
                 Remember me
               </Label>
@@ -162,13 +181,13 @@ export default function LoginPage({
             </button>
           </div>
 
-          <Button type="submit" loading={submitting} className="w-full h-9.5 mt-1 rounded-lg bg-zinc-50 text-zinc-900 hover:bg-zinc-200 text-xs font-medium transition-colors">
+          <Button type="submit" loading={submitting} className="w-full h-9.5 rounded-lg bg-zinc-50 text-zinc-900 hover:bg-zinc-200 text-xs font-semibold transition-colors mt-0.5">
             Continue
           </Button>
 
-          <div className="relative my-1">
+          <div className="relative my-2">
             <Separator className="bg-zinc-800" />
-            <span className="absolute left-1/2 -translate-x-1/2 -top-2.5 bg-zinc-900 px-2 text-[10px] uppercase tracking-widest text-zinc-500">
+            <span className="absolute left-1/2 -translate-x-1/2 -top-2.5 bg-zinc-900/90 px-2 text-[11px] uppercase tracking-widest text-zinc-500 font-medium">
               or
             </span>
           </div>
@@ -177,7 +196,7 @@ export default function LoginPage({
             <Button
               type="button"
               variant="outline"
-              className="h-9.5 rounded-lg border-zinc-800 bg-zinc-950 text-zinc-50 text-xs hover:bg-zinc-900 transition-colors"
+              className="h-9.5 rounded-lg border-zinc-800 bg-zinc-950 text-zinc-50 text-xs hover:bg-zinc-900/80 transition-colors"
             >
               <GithubIcon className="h-4 w-4 mr-2" />
               GitHub
@@ -185,7 +204,7 @@ export default function LoginPage({
             <Button
               type="button"
               variant="outline"
-              className="h-9.5 rounded-lg border-zinc-800 bg-zinc-950 text-zinc-50 text-xs hover:bg-zinc-900 transition-colors"
+              className="h-9.5 rounded-lg border-zinc-800 bg-zinc-950 text-zinc-50 text-xs hover:bg-zinc-900/80 transition-colors"
             >
               <GoogleIcon className="h-4 w-4 mr-2" />
               Google
@@ -194,7 +213,7 @@ export default function LoginPage({
         </CardContent>
       </form>
 
-      <CardFooter className="p-0 mt-5 pt-0 flex items-center justify-center text-xs text-zinc-400">
+      <CardFooter className="px-6 pt-4 pb-6 flex items-center justify-center text-xs text-zinc-400">
         Don’t have an account?
         <button
           type="button"

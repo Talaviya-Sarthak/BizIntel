@@ -38,9 +38,10 @@ export function toApiError(error: unknown): {
         }
       | undefined;
     if (body?.error) {
+      const firstDetailMessage = body.error.details?.[0]?.message;
       return {
         code: body.error.code ?? 'UNKNOWN_ERROR',
-        message: body.error.message ?? 'An unexpected error occurred',
+        message: firstDetailMessage || body.error.message || 'An unexpected error occurred',
         suggestion: body.error.suggestion,
         details: body.error.details,
       };
