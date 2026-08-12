@@ -85,15 +85,39 @@ export class AIService {
       memoryContext,
     });
 
-    // 6. Generate Visualizations & Artifact Exports
+    // 6. Generate Visualizations & Smart Artifact Exports
     const visualizations = this.vizService.generateVisualizations(toolResult);
-    const artifact = this.artGenerator.generateReportArtifact(
-      `Analysis_${executionPlan.intent}`,
-      response.answer,
-      toolResult,
-      response.metadata.citations || [],
-      'markdown',
-    );
+
+    const artifacts: GeneratedArtifact[] = [];
+    const msgLower = message.toLowerCase();
+
+    // Check if user explicitly asked to export or download a report
+    const isExplicitExportRequest =
+      msgLower.includes('export') ||
+      msgLower.includes('download') ||
+      msgLower.includes('generate report') ||
+      msgLower.includes('create report') ||
+      msgLower.includes('save csv') ||
+      msgLower.includes('download pdf');
+
+    // Check if intent is a data-producing analytical workflow with actual data arrays
+    const isDataIntent =
+      (executionPlan.intent === 'analytics' || executionPlan.intent === 'backtesting') &&
+      ((Array.isArray(toolResult.data?.datasets) && toolResult.data.datasets.length > 0) ||
+        (Array.isArray(toolResult.data?.recentBacktests) && toolResult.data.recentBacktests.length > 0));
+
+    // Never generate artifacts for general greetings, general chat, or simple questions
+    if (executionPlan.intent !== 'general' && (isExplicitExportRequest || isDataIntent)) {
+      const artifactFormat = msgLower.includes('csv') ? 'csv' : msgLower.includes('json') ? 'json' : 'markdown';
+      const artifact = this.artGenerator.generateReportArtifact(
+        `Report_${executionPlan.intent}`,
+        response.answer,
+        toolResult,
+        response.metadata.citations || [],
+        artifactFormat,
+      );
+      artifacts.push(artifact);
+    }
 
     // 7. Save Assistant Message & Maintain Memory
     memoryManager.saveAssistantMessage(session.sessionId, response.answer);
@@ -104,7 +128,7 @@ export class AIService {
       sessionId: session.sessionId,
       response,
       visualizations,
-      artifacts: [artifact],
+      artifacts,
     };
   }
 }
