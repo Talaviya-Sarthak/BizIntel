@@ -23,7 +23,8 @@ well-defined responsibility.
                            ▼
 ┌─────────────────────────────────────────────────────────────┐
 │  Neon Serverless PostgreSQL                                 │
-│  schema_migrations · users (schema.sql + migrations/)       │
+│  schema_migrations · users · datasets · backtests           │
+│  backtest_trades · backtest_metrics · backtest_equity       │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -58,6 +59,7 @@ well-defined responsibility.
 | `models/*`              | Entities + safe public shapes (no password_hash) |
 | `utils/*`               | Cross-cutting helpers (JWT, cookies, errors)     |
 | `scripts/*`             | Migration/seed/schema tooling                    |
+| `features/backtesting/*` | Strategy simulation engine, metrics, validation  |
 
 ## Frontend module map
 
@@ -66,6 +68,7 @@ well-defined responsibility.
 | `features/landing/`            | Public marketing site (navbar, hero, sections)    |
 | `features/auth/`               | Auth UI + `AuthProvider` (single source of truth) |
 | `features/dashboard/`          | Authenticated placeholder workspace              |
+| `features/backtesting/`        | Strategy configuration, execution, result display |
 | `services/api/auth.service.ts` | All auth API calls (isolated)                    |
 | `lib/api.ts`                   | Centralized axios client + error normalization   |
 | `routes/`                      | Route table + `ProtectedRoute` / `GuestRoute`    |

@@ -18,11 +18,12 @@ interface NavItem {
   active?: boolean;
   icon?: ComponentType<{ className?: string }>;
   soon?: boolean;
+  path?: string;
 }
 
 const NAV_ITEMS: NavItem[] = [
   { label: 'Overview', active: true },
-  { label: 'Backtesting', icon: TrendingUpIcon, soon: true },
+  { label: 'Backtesting', icon: TrendingUpIcon, path: '/backtesting' },
   { label: 'DataMart', icon: DatabaseZapIcon, soon: true },
   { label: 'AI Assistant', icon: SparklesIcon, soon: true },
 ];
@@ -32,16 +33,19 @@ const MODULES = [
     icon: TrendingUpIcon,
     name: 'Backtesting',
     description: 'Historical strategy execution and performance analysis.',
+    path: '/backtesting',
   },
   {
     icon: DatabaseZapIcon,
     name: 'DataMart Analytics',
     description: 'Dataset ingestion, validation, and SQL analytics.',
+    path: '',
   },
   {
     icon: SparklesIcon,
     name: 'AI Assistant',
     description: 'Natural-language questions answered from enterprise data.',
+    path: '',
   },
 ] as const;
 
@@ -93,26 +97,44 @@ export function DashboardPage() {
           </button>
         </div>
         <nav className="flex flex-col gap-1 p-4" aria-label="Workspace">
-          {NAV_ITEMS.map((item) => (
-            <div
-              key={item.label}
-              className={`flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium ${
-                item.active
-                  ? 'bg-cyan-400/10 text-cyan-300 ring-1 ring-cyan-400/20'
-                  : 'text-slate-400'
-              }`}
-            >
-              <span className="flex items-center gap-3">
-                {item.icon ? <item.icon className="h-4 w-4" /> : null}
-                {item.label}
-              </span>
-              {item.soon ? (
-                <span className="rounded-full border border-white/10 px-2 py-0.5 text-[10px] uppercase tracking-wider text-slate-500">
-                  Soon
+          {NAV_ITEMS.map((item) =>
+            item.path ? (
+              <button
+                key={item.label}
+                type="button"
+                onClick={() => navigate(item.path!)}
+                className={`flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-left transition-colors hover:bg-white/5 ${
+                  item.active
+                    ? 'bg-cyan-400/10 text-cyan-300 ring-1 ring-cyan-400/20'
+                    : 'text-slate-400'
+                }`}
+              >
+                <span className="flex items-center gap-3">
+                  {item.icon ? <item.icon className="h-4 w-4" /> : null}
+                  {item.label}
                 </span>
-              ) : null}
-            </div>
-          ))}
+              </button>
+            ) : (
+              <div
+                key={item.label}
+                className={`flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium ${
+                  item.active
+                    ? 'bg-cyan-400/10 text-cyan-300 ring-1 ring-cyan-400/20'
+                    : 'text-slate-400'
+                }`}
+              >
+                <span className="flex items-center gap-3">
+                  {item.icon ? <item.icon className="h-4 w-4" /> : null}
+                  {item.label}
+                </span>
+                {item.soon ? (
+                  <span className="rounded-full border border-white/10 px-2 py-0.5 text-[10px] uppercase tracking-wider text-slate-500">
+                    Soon
+                  </span>
+                ) : null}
+              </div>
+            )
+          )}
         </nav>
         <div className="absolute inset-x-0 bottom-0 border-t border-white/10 p-4">
           <p className="text-xs text-slate-500">Enterprise Intelligence · v0.1</p>
@@ -177,9 +199,14 @@ export function DashboardPage() {
 
             <div className="mt-10 grid gap-5 md:grid-cols-3">
               {MODULES.map((module) => (
-                <div
+                <button
                   key={module.name}
-                  className="rounded-2xl border border-white/10 bg-white/[0.03] p-6"
+                  type="button"
+                  disabled={!module.path}
+                  onClick={() => module.path && navigate(module.path)}
+                  className={`rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-left transition-colors ${
+                    module.path ? 'hover:border-white/20 hover:bg-white/[0.05] cursor-pointer' : 'cursor-default'
+                  }`}
                 >
                   <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-400/10 text-cyan-400 ring-1 ring-cyan-400/20">
                     <module.icon className="h-5 w-5" />
@@ -188,11 +215,18 @@ export function DashboardPage() {
                   <p className="mt-2 text-xs leading-relaxed text-slate-400">
                     {module.description}
                   </p>
-                  <span className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-white/10 px-2.5 py-1 text-[10px] uppercase tracking-wider text-slate-500">
-                    <BarChartIcon className="h-3 w-3" />
-                    Coming soon
-                  </span>
-                </div>
+                  {module.path ? (
+                    <span className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-cyan-400/20 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-cyan-400">
+                      <BarChartIcon className="h-3 w-3" />
+                      Open
+                    </span>
+                  ) : (
+                    <span className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-white/10 px-2.5 py-1 text-[10px] uppercase tracking-wider text-slate-500">
+                      <BarChartIcon className="h-3 w-3" />
+                      Coming soon
+                    </span>
+                  )}
+                </button>
               ))}
             </div>
 

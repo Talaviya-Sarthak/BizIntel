@@ -126,10 +126,46 @@ contain production credentials.
   - `role` (`user` | `owner` | `admin`), `is_active`, `email_verified`
   - `created_at` / `updated_at` (maintained by an `updated_at` trigger)
   - Check constraints on name/email/password length and role
+- `datasets`
+  - `id` UUID PK (`gen_random_uuid()`)
+  - `user_id` UUID FK → users
+  - `name`, `description`, `status` (pending/processing/ready/failed)
+  - `row_count`, `column_info` (JSONB), `file_name`, `file_size`
+  - `created_at` / `updated_at`
+- `backtests`
+  - `id` UUID PK (`gen_random_uuid()`)
+  - `user_id` UUID FK → users
+  - `dataset_id` UUID FK → datasets
+  - `strategy_id` TEXT, `name` TEXT, `parameters` JSONB
+  - `initial_capital` DECIMAL, `commission` DECIMAL, `slippage` DECIMAL
+  - `start_date` DATE, `end_date` DATE
+  - `status` ENUM (pending/running/completed/failed)
+  - `error_message` TEXT, `started_at` TIMESTAMPTZ, `completed_at` TIMESTAMPTZ
+  - `created_at` / `updated_at`
+- `backtest_trades`
+  - `id` UUID PK (`gen_random_uuid()`)
+  - `backtest_id` UUID FK → backtests (CASCADE DELETE)
+  - `timestamp` TIMESTAMPTZ, `side` TEXT (BUY/SELL)
+  - `quantity` INTEGER, `price` DECIMAL, `execution_price` DECIMAL
+  - `commission` DECIMAL, `slippage_amount` DECIMAL, `pnl` DECIMAL
+  - `created_at` TIMESTAMPTZ
+- `backtest_metrics`
+  - `id` UUID PK (`gen_random_uuid()`)
+  - `backtest_id` UUID FK → backtests (CASCADE DELETE)
+  - `total_return`, `annualized_return`, `volatility`, `sharpe_ratio`
+  - `sortino_ratio`, `max_drawdown`, `calmar_ratio`
+  - `win_rate`, `profit_factor`, `total_trades`, `winning_trades`, `losing_trades`
+  - `avg_winning_trade`, `avg_losing_trade`, `largest_winning_trade`, `largest_losing_trade`
+  - `avg_trade` DECIMAL, `created_at` TIMESTAMPTZ
+- `backtest_equity`
+  - `id` UUID PK (`gen_random_uuid()`)
+  - `backtest_id` UUID FK → backtests (CASCADE DELETE)
+  - `timestamp` TIMESTAMPTZ, `equity` DECIMAL, `cash` DECIMAL
+  - `position_value` DECIMAL, `daily_return` DECIMAL, `drawdown` DECIMAL
+  - `created_at` TIMESTAMPTZ
 
-Future entities (organizations, datasets, strategies, backtests, AI
-conversations, …) will be added as new migrations — never by editing the
-existing ones.
+Future entities (organizations, strategies, AI conversations, …) will be added
+as new migrations — never by editing the existing ones.
 
 ## Rules
 

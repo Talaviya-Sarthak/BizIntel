@@ -164,9 +164,54 @@ plaintext passwords, always express schema changes as migrations.
 
 ---
 
+## Backtesting Module
+
+The backtesting module enables strategy simulation against historical market data with realistic execution modeling, transaction costs, and comprehensive performance metrics.
+
+### Quick Start
+
+```typescript
+// 1. Upload a CSV dataset with OHLC data
+// 2. Configure a backtest via the API
+POST /api/v1/backtests
+{
+  "datasetId": "your-dataset-uuid",
+  "strategyId": "sma-crossover",
+  "parameters": { "shortWindow": 20, "longWindow": 50 },
+  "initialCapital": 10000,
+  "commission": 0,
+  "slippage": 0.001
+}
+
+// 3. Retrieve results with metrics and equity curve
+GET /api/v1/backtests/:id
+```
+
+### Available Strategies
+
+| Strategy | ID | Best For |
+|----------|-----|----------|
+| SMA Crossover | `sma-crossover` | Trending markets |
+| RSI | `rsi` | Range-bound markets |
+| Bollinger Bands | `bollinger-bands` | Volatile markets |
+
+### Key Features
+
+- **Realistic execution:** Next-bar execution at open price
+- **Transaction costs:** Configurable commission and slippage
+- **Look-ahead bias prevention:** Strict data isolation
+- **Performance metrics:** Sharpe, Sortino, Calmar ratios, max drawdown, win rate
+- **Benchmark comparison:** Buy & Hold baseline
+- **Market data validation:** Automatic column detection and OHLC validation
+
+See [docs/backtesting.md](docs/backtesting.md) for complete documentation.
+
+---
+
 ## Documentation
 
 - [docs/architecture.md](docs/architecture.md) — system architecture & layers
 - [docs/authentication.md](docs/authentication.md) — auth flows & security
 - [docs/database.md](docs/database.md) — database workflow
+- [docs/backtesting.md](docs/backtesting.md) — backtesting module reference
 - [database/README.md](database/README.md) — schema/migration/seed reference
