@@ -6,12 +6,12 @@ interface CorrelationMatrixProps {
 }
 
 function corrColor(r: number | null): string {
-  if (r === null) return 'rgba(148,163,184,0.08)';
+  if (r === null) return 'rgba(115,115,115,0.1)';
   const magnitude = Math.abs(r);
-  if (magnitude < 0.05) return 'rgba(148,163,184,0.12)';
+  if (magnitude < 0.05) return 'rgba(115,115,115,0.15)';
   const intensity = Math.min(0.9, magnitude);
-  if (r > 0) return `rgba(34,211,238,${0.14 + intensity * 0.8})`;
-  return `rgba(251,113,133,${0.14 + intensity * 0.8})`;
+  if (r > 0) return `rgba(198,255,0,${0.15 + intensity * 0.85})`;
+  return `rgba(255,77,141,${0.15 + intensity * 0.85})`;
 }
 
 function describe(r: number | null): string {
@@ -29,9 +29,9 @@ export function CorrelationMatrix({ columns, matrix }: CorrelationMatrixProps) {
   if (columns.length === 0) return null;
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto bg-black p-1">
       <div className="inline-block min-w-full">
-        <table className="border-separate border-spacing-1">
+        <table className="border-separate border-spacing-1.5">
           <caption className="sr-only">Pearson correlation matrix between numeric columns</caption>
           <thead>
             <tr>
@@ -39,7 +39,7 @@ export function CorrelationMatrix({ columns, matrix }: CorrelationMatrixProps) {
               {columns.map((name) => (
                 <th
                   key={name}
-                  className="max-w-[120px] truncate p-1 text-[11px] font-medium text-slate-400"
+                  className="max-w-[120px] truncate p-1 text-[10px] font-bold uppercase tracking-wider text-muted"
                   scope="col"
                   title={name}
                 >
@@ -52,7 +52,7 @@ export function CorrelationMatrix({ columns, matrix }: CorrelationMatrixProps) {
             {columns.map((rowName, rowIndex) => (
               <tr key={rowName}>
                 <th
-                  className="max-w-[120px] truncate p-1 text-right text-[11px] font-medium text-slate-400"
+                  className="max-w-[120px] truncate p-1 text-right text-[10px] font-bold uppercase tracking-wider text-muted"
                   scope="row"
                   title={rowName}
                 >
@@ -65,10 +65,10 @@ export function CorrelationMatrix({ columns, matrix }: CorrelationMatrixProps) {
                     <td
                       key={`${rowIndex}-${colIndex}`}
                       className={clsx(
-                        'h-9 min-w-[52px] rounded-md text-center text-[11px] font-medium',
-                        isDiagonal ? 'text-slate-500' : 'text-white',
+                        'h-9 min-w-[52px] text-center text-[10px] font-black border border-white/20 rounded-none',
+                        isDiagonal ? 'text-muted bg-lime/10' : 'text-white',
                       )}
-                      style={{ background: isDiagonal ? 'rgba(34,211,238,0.14)' : corrColor(value) }}
+                      style={{ background: isDiagonal ? 'rgba(198,255,0,0.2)' : corrColor(value) }}
                       title={
                         isDiagonal
                           ? `${rowName} with itself`
@@ -84,12 +84,12 @@ export function CorrelationMatrix({ columns, matrix }: CorrelationMatrixProps) {
           </tbody>
         </table>
       </div>
-      <div className="mt-3 flex items-center gap-3 text-[11px] text-slate-500">
+      <div className="mt-4 flex items-center gap-4 text-[10px] font-bold uppercase tracking-wider text-muted border-t border-white/10 pt-3">
         <span className="flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-sm bg-cyan-400/80" /> positive
+          <span className="h-3 w-3 border border-white bg-lime" /> positive
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-sm bg-rose-400/80" /> negative
+          <span className="h-3 w-3 border border-white bg-pink" /> negative
         </span>
         <span className="ml-auto">Pearson correlation</span>
       </div>

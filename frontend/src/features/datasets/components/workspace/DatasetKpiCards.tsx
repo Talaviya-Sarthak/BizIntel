@@ -17,7 +17,7 @@ interface DatasetKpiCardsProps {
 export function DatasetKpiCards({ items, loading }: DatasetKpiCardsProps) {
   if (loading) {
     return (
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6 bg-black">
         {Array.from({ length: items.length || 6 }).map((_, index) => (
           <SkeletonKpiCard key={index} />
         ))}
@@ -26,20 +26,20 @@ export function DatasetKpiCards({ items, loading }: DatasetKpiCardsProps) {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
+    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6 bg-black">
       {items.map((item) => (
         <div
           key={item.label}
-          className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"
+          className="border-2 border-white bg-ink-card p-4 shadow-brutal-sm rounded-md"
         >
-          <dt className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-slate-500">
-            {item.icon ? <item.icon className="h-3.5 w-3.5" /> : null}
+          <dt className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-wider text-muted">
+            {item.icon ? <item.icon className="h-4 w-4 text-white" /> : null}
             {item.label}
           </dt>
-          <dd className="mt-2 truncate text-2xl font-bold text-white" title={String(item.value)}>
+          <dd className="mt-2 truncate text-xl font-black uppercase text-white" title={String(item.value)}>
             {item.value}
           </dd>
-          {item.hint ? <div className="mt-1 text-xs text-slate-500">{item.hint}</div> : null}
+          {item.hint ? <div className="mt-1 text-[10px] font-bold uppercase tracking-wider text-muted">{item.hint}</div> : null}
         </div>
       ))}
     </div>

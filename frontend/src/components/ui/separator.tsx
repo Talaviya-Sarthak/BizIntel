@@ -10,8 +10,8 @@ export const Separator = React.forwardRef<HTMLDivElement, SeparatorProps>(
     <div
       ref={ref}
       className={clsx(
-        'shrink-0 bg-zinc-800',
-        orientation === 'horizontal' ? 'h-[1px] w-full' : 'h-full w-[1px]',
+        'shrink-0 bg-white',
+        orientation === 'horizontal' ? 'h-[2px] w-full' : 'h-full w-[2px]',
         className
       )}
       {...props}

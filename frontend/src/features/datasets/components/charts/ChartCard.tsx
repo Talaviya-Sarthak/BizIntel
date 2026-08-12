@@ -43,22 +43,22 @@ export function ChartCard({
   return (
     <section
       className={clsx(
-        'flex flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-5',
+        'flex flex-col border-2 border-white bg-ink-card p-5 shadow-brutal rounded-md',
         className,
       )}
       aria-label={title}
     >
-      <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-3 border-b-2 border-white pb-3">
         <div className="flex items-start gap-3">
           {Icon ? (
-            <span className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-cyan-400/10 text-cyan-400 ring-1 ring-cyan-400/20">
+            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center border-2 border-lime bg-lime/10 text-lime rounded-sm">
               <Icon className="h-4.5 w-4.5" />
             </span>
           ) : null}
           <div>
-            <h3 className="text-sm font-semibold text-white">{title}</h3>
+            <h3 className="text-sm font-bold uppercase tracking-wider text-white">{title}</h3>
             {description ? (
-              <p className="mt-0.5 text-xs leading-relaxed text-slate-400">{description}</p>
+              <p className="mt-0.5 text-xs font-semibold uppercase tracking-wider text-muted">{description}</p>
             ) : null}
           </div>
         </div>

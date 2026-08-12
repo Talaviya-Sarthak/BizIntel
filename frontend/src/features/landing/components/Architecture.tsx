@@ -1,34 +1,26 @@
-import { motion } from 'framer-motion';
 import EnterpriseAIPipeline from '../../../components/ui/ai-agent-pipeline';
 
 export function Architecture() {
   return (
-    <section id="architecture" className="relative py-16 sm:py-24 border-t border-zinc-800/80">
+    <section id="architecture" className="relative py-16 sm:py-24 border-t-2 border-white bg-black">
       <div className="container-shell">
         <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.2fr]">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-80px' }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <span className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/80 px-3.5 py-1 text-[11px] font-medium tracking-wide text-zinc-300">
+          <div className="flex flex-col items-start">
+            <span className="section-label">
               Enterprise Architecture
             </span>
-            <h2 className="mt-4 text-2xl font-bold tracking-tight text-zinc-100 sm:text-4xl font-display uppercase">
+            <h2 className="mt-4 text-3xl font-black tracking-tight text-white sm:text-4xl uppercase">
               A layered pipeline built for scale
             </h2>
-            <p className="mt-3 text-sm leading-relaxed text-zinc-400">
-              From raw enterprise data to business decisions, each layer is a
-              clean, replaceable module. The platform composes them into one
-              governed intelligence pipeline.
+            <p className="mt-3 text-sm font-bold uppercase tracking-wider text-muted leading-relaxed">
+              From raw enterprise data to business decisions, each layer is a clean, replaceable module. The platform composes them into one governed intelligence pipeline.
             </p>
 
-            <div className="mt-6 space-y-2.5">
+            <div className="mt-6 space-y-3">
               {['Decoupled, modular services', 'Versioned REST API', 'Schema-managed database', 'Extensible by design'].map(
                 (point) => (
-                  <div key={point} className="flex items-center gap-2.5 text-xs text-zinc-300">
-                    <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-zinc-800 text-[9px] font-bold text-zinc-300 border border-zinc-700">
+                  <div key={point} className="flex items-center gap-3 text-xs font-bold uppercase tracking-wider text-white">
+                    <span className="inline-flex h-5 w-5 items-center justify-center border border-lime bg-lime/10 text-[10px] font-black text-lime">
                       ✓
                     </span>
                     {point}
@@ -36,17 +28,11 @@ export function Architecture() {
                 ),
               )}
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.5, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full flex justify-center"
-          >
+          <div className="w-full flex justify-center">
             <EnterpriseAIPipeline />
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

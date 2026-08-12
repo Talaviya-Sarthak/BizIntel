@@ -25,19 +25,11 @@ export function LineChart({
   yKey,
   name,
   height = 300,
-  color = '#22d3ee',
+  color = '#C6FF00',
 }: LineChartProps) {
-  const gradientId = `ps05-grad-${yKey}`.replace(/[^a-zA-Z0-9-]/g, '-');
-
   return (
     <ResponsiveContainer width="100%" height={height}>
       <RechartsAreaChart data={data} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
-        <defs>
-          <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={color} stopOpacity={0.28} />
-            <stop offset="100%" stopColor={color} stopOpacity={0} />
-          </linearGradient>
-        </defs>
         <CartesianGrid {...CHART_GRID} />
         <XAxis
           dataKey={xKey}
@@ -49,14 +41,14 @@ export function LineChart({
         <YAxis tick={CHART_AXIS.tick} axisLine={false} tickLine={false} width={56} />
         <Tooltip content={<ChartTooltip />} formatter={(value: unknown) => formatChartValue(value)} />
         <Area
-          type="monotone"
+          type="linear"
           dataKey={yKey}
           name={name ?? yKey}
           stroke={color}
-          strokeWidth={2}
-          fill={`url(#${gradientId})`}
-          dot={false}
-          activeDot={{ r: 4, strokeWidth: 0 }}
+          strokeWidth={3}
+          fill="none"
+          dot={{ r: 2, fill: color, stroke: '#FFFFFF', strokeWidth: 1 }}
+          activeDot={{ r: 5, fill: color, stroke: '#FFFFFF', strokeWidth: 1.5 }}
         />
       </RechartsAreaChart>
     </ResponsiveContainer>

@@ -21,7 +21,7 @@ export function PieChart({
   outerRadius = '82%',
 }: PieChartProps) {
   return (
-    <div className="flex flex-col items-center gap-3">
+    <div className="flex flex-col items-center gap-4 bg-black">
       <ResponsiveContainer width="100%" height={height}>
         <RechartsPieChart>
           <Tooltip content={<ChartTooltip />} formatter={(value: unknown) => formatChartValue(value)} />
@@ -32,7 +32,8 @@ export function PieChart({
             innerRadius={innerRadius}
             outerRadius={outerRadius}
             paddingAngle={2}
-            stroke="rgba(2,6,23,0.8)"
+            stroke="#000000"
+            strokeWidth={2}
           >
             {data.map((entry, index) => (
               <Cell key={entry.name} fill={CHART_COLORS[index % CHART_COLORS.length]} />
@@ -40,15 +41,15 @@ export function PieChart({
           </Pie>
         </RechartsPieChart>
       </ResponsiveContainer>
-      <ul className="grid w-full max-w-sm grid-cols-2 gap-x-4 gap-y-1.5">
+      <ul className="grid w-full max-w-sm grid-cols-2 gap-x-4 gap-y-2">
         {data.map((entry, index) => (
-          <li key={entry.name} className="flex items-center gap-2 text-xs text-slate-400">
+          <li key={entry.name} className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted">
             <span
-              className="h-2 w-2 shrink-0 rounded-full"
+              className="h-3.5 w-3.5 shrink-0 border border-white rounded-none"
               style={{ background: CHART_COLORS[index % CHART_COLORS.length] }}
             />
             <span className="truncate">{entry.name}</span>
-            <span className="ml-auto font-medium text-white">
+            <span className="ml-auto font-black text-white">
               {formatChartValue(entry.value)}
             </span>
           </li>

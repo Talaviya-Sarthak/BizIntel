@@ -9,15 +9,17 @@
   }
 
   body {
-    @apply bg-surface-deep text-slate-200 font-sans;
-  }
-
-  .font-display {
-    font-family: 'Space Grotesk', sans-serif;
+    @apply bg-black text-white font-sans;
   }
 
   ::selection {
-    @apply bg-cyan-500/30 text-white;
+    @apply bg-lime/30 text-black;
+  }
+
+  /* Neo-Brutalist focus ring */
+  *:focus-visible {
+    outline: 2px solid #C6FF00;
+    outline-offset: 2px;
   }
 }
 
@@ -27,10 +29,56 @@
   }
 
   .section-label {
-    @apply inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 text-xs font-medium uppercase tracking-[0.18em] text-cyan-300/90;
+    @apply inline-flex items-center gap-2 border-2 border-white bg-ink-card px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-lime;
   }
 
   .input-field {
-    @apply w-full rounded-lg border border-white/10 bg-white/5 px-3.5 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20;
+    @apply w-full border-2 border-white bg-black px-3.5 py-2.5 text-sm text-white placeholder:text-muted outline-none transition-all rounded-md;
+  }
+
+  .input-field:focus {
+    @apply border-lime shadow-[4px_4px_0px_#C6FF00];
+  }
+
+  /* Subtle grid pattern for landing/auth backgrounds */
+  .neo-grid-bg {
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  /* Dense dot grid for hero section */
+  .neo-dot-bg {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* Brutalist card base */
+  .brutal-card {
+    @apply bg-ink-card border-2 border-white rounded-md;
+    box-shadow: 6px 6px 0px #FFFFFF;
+  }
+
+  .brutal-card-sm {
+    @apply bg-ink-card border-2 border-white rounded-md;
+    box-shadow: 4px 4px 0px #FFFFFF;
+  }
+
+  /* Brutalist hover effect */
+  .brutal-hover {
+    @apply transition-all duration-150;
+  }
+  .brutal-hover:hover {
+    transform: translate(3px, 3px);
+    box-shadow: 2px 2px 0px #FFFFFF;
+  }
+
+  /* Neo-Brutalist progress bar */
+  .neo-progress-track {
+    @apply h-2 w-full bg-ink-raised border border-white/30 rounded-none overflow-hidden;
+  }
+  .neo-progress-fill {
+    @apply h-full bg-lime transition-all duration-300;
   }
 }

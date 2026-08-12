@@ -1,37 +1,24 @@
-import { motion } from 'framer-motion';
 import { FeaturesSectionWithHoverEffects } from '../../../components/ui/feature-section-with-hover-effects';
 
 export function PlatformOverview() {
   return (
-    <section id="capabilities" className="relative py-16 sm:py-24 border-t border-zinc-800/80">
+    <section id="capabilities" className="relative py-16 sm:py-24 border-t-2 border-white bg-black">
       <div className="container-shell">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="max-w-2xl mx-auto text-center mb-10"
-        >
-          <span className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/80 px-3.5 py-1 text-[11px] font-medium tracking-wide text-zinc-300">
+        <div className="max-w-2xl mx-auto text-center mb-10">
+          <span className="section-label">
             Platform Capabilities
           </span>
-          <h2 className="mt-4 text-2xl font-bold tracking-tight text-zinc-100 sm:text-4xl font-display uppercase">
+          <h2 className="mt-4 text-3xl font-black tracking-tight text-white sm:text-4xl uppercase">
             Unified Analytics &amp; Intelligence Capabilities
           </h2>
-          <p className="mt-3 text-sm leading-relaxed text-zinc-400">
+          <p className="mt-2 text-sm font-bold uppercase tracking-wider text-muted">
             Engineered for quantitative research, business analytics, and generative decision-making in a single governed pipeline.
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.5, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-          className="rounded-2xl border border-zinc-800/80 bg-zinc-900/40 backdrop-blur-sm overflow-hidden shadow-2xl"
-        >
+        <div className="rounded-md border-2 border-white bg-ink-card overflow-hidden shadow-brutal">
           <FeaturesSectionWithHoverEffects />
-        </motion.div>
+        </div>
       </div>
     </section>
   );

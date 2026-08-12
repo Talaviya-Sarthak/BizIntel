@@ -19,34 +19,34 @@ export function DatasetSchema({ columns }: DatasetSchemaProps) {
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
+    <div className="overflow-hidden border-2 border-white bg-black shadow-brutal-sm rounded-md">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-white/10 text-left text-sm">
+        <table className="min-w-full text-left text-xs font-bold uppercase tracking-wider">
           <thead>
-            <tr className="text-[11px] uppercase tracking-wider text-slate-500">
-              <th className="px-5 py-3 font-semibold">Column</th>
-              <th className="px-5 py-3 font-semibold">Type</th>
-              <th className="px-5 py-3 font-semibold">Nullable</th>
-              <th className="px-5 py-3 text-right font-semibold">Null Count</th>
-              <th className="px-5 py-3 text-right font-semibold">Unique Count</th>
+            <tr className="border-b-2 border-white bg-ink-soft text-[10px] text-white">
+              <th className="px-5 py-3.5 font-bold">Column</th>
+              <th className="px-5 py-3.5 font-bold">Type</th>
+              <th className="px-5 py-3.5 font-bold">Nullable</th>
+              <th className="px-5 py-3.5 text-right font-bold">Null Count</th>
+              <th className="px-5 py-3.5 text-right font-bold">Unique Count</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/5">
+          <tbody className="divide-y border-white/20 bg-black text-white">
             {columns.map((column) => (
-              <tr key={column.id} className="transition hover:bg-white/[0.03]">
-                <td className="px-5 py-3 font-mono text-[13px] text-white">
+              <tr key={column.id} className="transition-colors hover:bg-ink-card">
+                <td className="px-5 py-3 font-mono text-[13px] text-white normal-case">
                   {column.columnName}
                 </td>
                 <td className="px-5 py-3">
-                  <span className="rounded border border-white/10 bg-white/5 px-2 py-0.5 font-mono text-[11px] text-cyan-300">
+                  <span className="border-2 border-white bg-black px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider text-lime rounded-sm">
                     {column.dataType}
                   </span>
                 </td>
-                <td className="px-5 py-3 text-slate-300">{column.nullable ? 'Yes' : 'No'}</td>
-                <td className="px-5 py-3 text-right text-slate-400">
+                <td className="px-5 py-3 text-white">{column.nullable ? 'Yes' : 'No'}</td>
+                <td className="px-5 py-3 text-right text-muted font-mono font-bold">
                   {formatNumber(column.nullCount)}
                 </td>
-                <td className="px-5 py-3 text-right text-slate-400">
+                <td className="px-5 py-3 text-right text-muted font-mono font-bold">
                   {formatNumber(column.uniqueCount)}
                 </td>
               </tr>

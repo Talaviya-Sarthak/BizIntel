@@ -47,20 +47,20 @@ interface FooterLink {
 
 export function Footer() {
   return (
-    <footer id="resources" className="border-t border-zinc-800/80 pt-14 pb-10 bg-zinc-950/60 backdrop-blur-sm">
+    <footer id="resources" className="border-t-2 border-white pt-14 pb-10 bg-ink-soft">
       <div className="container-shell">
         <div className="grid gap-10 lg:grid-cols-[1.3fr_1fr_1fr_1fr_1fr]">
-          <div className="flex flex-col justify-between">
+          <div className="flex flex-col justify-between gap-6">
             <div>
               <Logo />
-              <p className="mt-3.5 max-w-xs text-xs leading-relaxed text-zinc-400">
+              <p className="mt-4 max-w-xs text-xs font-bold uppercase tracking-wider text-muted leading-relaxed">
                 Unified analytics, strategy backtesting, and AI intelligence for enterprise decisions.
               </p>
             </div>
 
-            <div className="mt-6 flex flex-col gap-3">
-              <div className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/80 px-3 py-1 text-[11px] font-medium text-zinc-400 w-fit">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="flex flex-col gap-3">
+              <div className="inline-flex items-center gap-2 border-2 border-lime bg-lime/10 px-3.5 py-1 text-[10px] font-bold text-lime uppercase tracking-widest w-fit rounded-sm">
+                <span className="h-2 w-2 rounded-full bg-lime animate-pulse" />
                 All Systems Operational
               </div>
               <div className="flex items-center gap-2">
@@ -68,17 +68,17 @@ export function Footer() {
                   href="https://github.com"
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/60 text-zinc-400 transition hover:border-zinc-700 hover:text-zinc-100 hover:bg-zinc-800"
+                  className="inline-flex h-9 w-9 items-center justify-center border-2 border-white bg-black text-white hover:bg-lime hover:text-black transition-all rounded-md shadow-brutal-xs hover:translate-y-[1px]"
                   aria-label="GitHub"
                 >
-                  <GithubIcon className="h-3.5 w-3.5" />
+                  <GithubIcon className="h-4 w-4" />
                 </a>
                 <a
                   href="#resources"
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/60 text-zinc-400 transition hover:border-zinc-700 hover:text-zinc-100 hover:bg-zinc-800"
+                  className="inline-flex h-9 w-9 items-center justify-center border-2 border-white bg-black text-white hover:bg-lime hover:text-black transition-all rounded-md shadow-brutal-xs hover:translate-y-[1px]"
                   aria-label="Documentation"
                 >
-                  <DocumentIcon className="h-3.5 w-3.5" />
+                  <DocumentIcon className="h-4 w-4" />
                 </a>
               </div>
             </div>
@@ -86,21 +86,21 @@ export function Footer() {
 
           {FOOTER_COLUMNS.map((column) => (
             <div key={column.title}>
-              <h3 className="text-xs font-semibold text-zinc-200 uppercase tracking-wider">{column.title}</h3>
-              <ul className="mt-4 flex flex-col gap-2.5">
+              <h3 className="text-xs font-black text-white uppercase tracking-widest">{column.title}</h3>
+              <ul className="mt-4 flex flex-col gap-3">
                 {column.links.map((link: FooterLink) => (
                   <li key={link.label}>
                     {link.to ? (
                       <Link
                         to={link.to}
-                        className="text-xs text-zinc-400 transition hover:text-zinc-100"
+                        className="text-xs font-bold uppercase tracking-wider text-muted transition-colors hover:text-lime"
                       >
                         {link.label}
                       </Link>
                     ) : (
                       <a
                         href={link.href}
-                        className="text-xs text-zinc-400 transition hover:text-zinc-100"
+                        className="text-xs font-bold uppercase tracking-wider text-muted transition-colors hover:text-lime"
                       >
                         {link.label}
                       </a>
@@ -112,14 +112,14 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-zinc-800/80 pt-6 sm:flex-row">
-          <p className="text-[11px] text-zinc-500">
-            © {new Date().getFullYear()} PS-05 Enterprise Intelligence Platform. All rights reserved.
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t-2 border-white pt-8 sm:flex-row">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-muted">
+            © {new Date().getFullYear()} BizIntel Platform. All rights reserved.
           </p>
-          <div className="flex items-center gap-5 text-[11px] text-zinc-500">
-            <a href="#resources" className="transition hover:text-zinc-300">Privacy Policy</a>
-            <a href="#resources" className="transition hover:text-zinc-300">Terms of Service</a>
-            <a href="#top" className="transition hover:text-zinc-300">Back to top ↑</a>
+          <div className="flex items-center gap-5 text-[10px] font-bold uppercase tracking-widest text-muted">
+            <a href="#resources" className="transition-colors hover:text-white">Privacy Policy</a>
+            <a href="#resources" className="transition-colors hover:text-white">Terms of Service</a>
+            <a href="#top" className="transition-colors hover:text-white">Back to top ↑</a>
           </div>
         </div>
       </div>

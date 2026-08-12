@@ -28,36 +28,36 @@ export function DatasetPreview({ columnNames, preview, truncated }: DatasetPrevi
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
+    <div className="overflow-hidden border-2 border-white bg-black shadow-brutal-sm rounded-md">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-white/10 text-left text-sm">
+        <table className="min-w-full text-left text-xs font-bold uppercase tracking-wider">
           <thead>
-            <tr className="text-[11px] uppercase tracking-wider text-slate-500">
+            <tr className="border-b-2 border-white bg-ink-soft text-[10px] text-white">
               {columns ? (
                 columns.map((name) => (
-                  <th key={name} className="px-4 py-3 font-mono font-semibold">
+                  <th key={name} className="px-4 py-3.5 font-mono font-bold">
                     {name}
                   </th>
                 ))
               ) : (
-                <th className="px-4 py-3 font-semibold">Row</th>
+                <th className="px-4 py-3.5 font-bold">Row</th>
               )}
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/5">
+          <tbody className="divide-y border-white/20 bg-black text-white">
             {preview.map((row, rowIndex) => (
-              <tr key={rowIndex} className="transition hover:bg-white/[0.03]">
+              <tr key={rowIndex} className="transition-colors hover:bg-ink-card">
                 {columns ? (
                   columns.map((name) => (
                     <td
                       key={name}
-                      className="max-w-[240px] truncate whitespace-nowrap px-4 py-2.5 font-mono text-[13px] text-slate-300"
+                      className="max-w-[240px] truncate whitespace-nowrap px-4 py-3 font-mono text-[13px] text-white normal-case"
                     >
                       {renderCell(row[name])}
                     </td>
                   ))
                 ) : (
-                  <td className="px-4 py-2.5 font-mono text-[13px] text-slate-400">
+                  <td className="px-4 py-3 font-mono text-[13px] text-muted normal-case">
                     {JSON.stringify(row)}
                   </td>
                 )}
@@ -67,7 +67,7 @@ export function DatasetPreview({ columnNames, preview, truncated }: DatasetPrevi
         </table>
       </div>
       {truncated ? (
-        <p className="border-t border-white/10 px-5 py-3 text-xs text-slate-500">
+        <p className="border-t-2 border-white px-5 py-3.5 text-xs text-muted font-bold uppercase tracking-wider bg-black">
           Showing the first {preview.length} rows.
         </p>
       ) : null}

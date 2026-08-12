@@ -31,20 +31,20 @@ export function DatasetsPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 bg-black">
       <PageHeader
         title="Datasets"
         description="Your enterprise dataset registry. Upload CSV files, inspect their schema, and prepare them for DataMart analytics, backtesting, and the AI assistant."
         actions={
           <Button onClick={() => navigate('/datasets/upload')}>
-            <PlusIcon className="h-4 w-4" />
+            <PlusIcon className="h-4.5 w-4.5" />
             Upload Dataset
           </Button>
         }
       />
 
       {datasetsQuery.isLoading ? (
-        <div className="flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.02] py-24">
+        <div className="flex items-center justify-center border-2 border-white bg-ink-card py-24 rounded-md shadow-brutal-sm">
           <Spinner size="md" />
         </div>
       ) : datasetsQuery.isError ? (
@@ -59,7 +59,7 @@ export function DatasetsPage() {
           description="Upload transactional or analytical data to begin exploring your enterprise data."
           action={
             <Button onClick={() => navigate('/datasets/upload')}>
-              <UploadIcon className="h-4 w-4" />
+              <UploadIcon className="h-4.5 w-4.5" />
               Upload Dataset
             </Button>
           }
@@ -87,7 +87,7 @@ export function DatasetsPage() {
       />
 
       {deleteError ? (
-        <p className="rounded-lg border border-red-400/20 bg-red-400/[0.05] px-4 py-3 text-sm text-red-300">
+        <p className="border-2 border-pink bg-pink/5 px-4 py-3 text-sm font-bold uppercase tracking-wider text-pink rounded-md">
           {deleteError}
         </p>
       ) : null}

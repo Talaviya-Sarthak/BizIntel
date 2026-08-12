@@ -55,7 +55,7 @@ export function QuickActions() {
   const navigate = useNavigate();
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {ACTIONS.map((action) => {
         const enabled = Boolean(action.href);
         return (
@@ -65,29 +65,29 @@ export function QuickActions() {
             disabled={!enabled}
             onClick={() => action.href && navigate(action.href)}
             className={clsx(
-              'flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-left transition',
+              'flex items-start gap-3 border-2 border-white bg-ink-card p-4 text-left transition-all duration-150 rounded-md',
               enabled
-                ? 'cursor-pointer hover:border-cyan-400/30 hover:bg-white/[0.05]'
-                : 'cursor-not-allowed opacity-70',
+                ? 'cursor-pointer shadow-brutal-sm hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none'
+                : 'cursor-not-allowed opacity-60',
             )}
           >
-            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/5 text-slate-300 ring-1 ring-white/10">
+            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center border-2 border-white bg-black text-white rounded-md">
               <action.icon className="h-5 w-5" />
             </span>
             <span className="min-w-0">
-              <span className="flex items-center gap-2 text-sm font-semibold text-white">
+              <span className="flex flex-wrap items-center gap-2 text-sm font-bold uppercase tracking-wider text-white">
                 {action.label}
                 {action.soon ? (
-                  <span className="rounded-full border border-white/10 px-2 py-0.5 text-[10px] uppercase tracking-wider text-slate-500">
-                    Coming soon
+                  <span className="rounded-sm border border-yellow bg-yellow/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-yellow">
+                    Soon
                   </span>
                 ) : null}
               </span>
-              <span className="mt-0.5 block text-xs leading-relaxed text-slate-500">
+              <span className="mt-1 block text-xs leading-relaxed text-muted font-semibold">
                 {action.description}
               </span>
             </span>
-            {enabled ? <PlayIcon className="ml-auto h-4 w-4 shrink-0 text-slate-600" /> : null}
+            {enabled ? <PlayIcon className="ml-auto h-4 w-4 shrink-0 text-white stroke-[2.5]" /> : null}
           </button>
         );
       })}

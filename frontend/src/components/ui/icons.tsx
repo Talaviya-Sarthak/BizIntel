@@ -17,9 +17,9 @@ function createIcon(paths: React.ReactNode): Icon {
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        strokeWidth="2.2"
+        strokeLinecap="square"
+        strokeLinejoin="miter"
         {...base(props)}
         aria-hidden="true"
       >

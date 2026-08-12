@@ -65,7 +65,7 @@ export function DatasetWorkspacePage() {
 
   if (datasetQuery.isLoading) {
     return (
-      <div className="flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.02] py-24">
+      <div className="flex items-center justify-center border-2 border-white bg-ink-card py-24 rounded-md shadow-brutal-sm">
         <Spinner size="md" />
       </div>
     );
@@ -85,7 +85,7 @@ export function DatasetWorkspacePage() {
   const isFailed = dataset.status === 'FAILED';
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 bg-black">
       <DatasetHeader
         dataset={dataset}
         columnsCount={columnsQuery.data?.total ?? dataset.columnCount ?? undefined}
@@ -100,11 +100,11 @@ export function DatasetWorkspacePage() {
       />
 
       {isFailed && dataset.errorMessage ? (
-        <div className="flex items-start gap-3 rounded-2xl border border-red-400/20 bg-red-400/[0.05] p-5">
-          <XCircleIcon className="mt-0.5 h-5 w-5 shrink-0 text-red-400" />
+        <div className="flex items-start gap-3 border-2 border-pink bg-pink/5 p-5 rounded-md">
+          <XCircleIcon className="mt-0.5 h-5 w-5 shrink-0 text-pink" />
           <div>
-            <p className="text-sm font-medium text-red-300">Dataset could not be processed.</p>
-            <p className="mt-1 text-sm leading-relaxed text-red-200/70">{dataset.errorMessage}</p>
+            <p className="text-sm font-bold uppercase tracking-wider text-pink">Dataset could not be processed.</p>
+            <p className="mt-1.5 text-xs leading-relaxed text-pink font-semibold uppercase tracking-wider">{dataset.errorMessage}</p>
           </div>
         </div>
       ) : null}
@@ -113,11 +113,11 @@ export function DatasetWorkspacePage() {
         <>
           <DatasetTabs active={tab} onChange={setTab} />
 
-          <main className="flex flex-col gap-6">
+          <main className="flex flex-col gap-6 bg-black">
             {tab === 'overview' ? <OverviewSection datasetId={dataset.id} /> : null}
 
             {tab === 'columns' ? (
-              <div className="flex flex-col gap-5 xl:flex-row xl:items-start">
+              <div className="flex flex-col gap-5 xl:flex-row xl:items-start bg-black">
                 <div className="min-w-0 flex-1">
                   {columnsQuery.isLoading ? <Spinner size="md" /> : null}
                   {columnsQuery.isError ? (
@@ -142,7 +142,7 @@ export function DatasetWorkspacePage() {
                       onClose={() => setSelectedColumn(null)}
                     />
                   ) : (
-                    <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.02] px-6 py-16 text-center text-sm text-slate-500">
+                    <div className="border-2 border-dashed border-white bg-ink-card px-6 py-16 text-center text-xs font-bold uppercase tracking-wider text-muted rounded-md shadow-brutal-sm">
                       Select a column to inspect its statistics, distribution and outliers.
                     </div>
                   )}
@@ -165,13 +165,13 @@ export function DatasetWorkspacePage() {
           </main>
         </>
       ) : (
-        <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-8 text-center">
+        <div className="border-2 border-white bg-ink-card p-8 text-center rounded-md shadow-brutal-sm">
           {isFailed ? (
-            <p className="text-sm text-slate-400">
+            <p className="text-xs font-bold uppercase tracking-wider text-muted">
               The dataset workspace is unavailable because the dataset failed to process.
             </p>
           ) : (
-            <p className="flex items-center justify-center gap-2 text-sm text-slate-400">
+            <p className="flex items-center justify-center gap-2.5 text-xs font-bold uppercase tracking-wider text-muted">
               <Spinner size="sm" />
               This dataset is still being processed. Refresh shortly.
             </p>
@@ -180,8 +180,8 @@ export function DatasetWorkspacePage() {
       )}
 
       {deleteError ? (
-        <p className="flex items-center gap-2 rounded-lg border border-red-400/20 bg-red-400/[0.05] px-4 py-3 text-sm text-red-300">
-          <XCircleIcon className="h-4 w-4 shrink-0" />
+        <p className="flex items-center gap-2 border-2 border-pink bg-pink/5 px-4 py-3 text-xs font-bold uppercase tracking-wider text-pink rounded-md">
+          <XCircleIcon className="h-4.5 w-4.5 shrink-0 text-pink" />
           {deleteError}
         </p>
       ) : null}

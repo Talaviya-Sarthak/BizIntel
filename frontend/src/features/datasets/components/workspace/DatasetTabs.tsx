@@ -34,10 +34,10 @@ interface DatasetTabsProps {
 export function DatasetTabs({ active, onChange }: DatasetTabsProps) {
   return (
     <nav
-      className="sticky top-0 z-10 -mx-5 overflow-x-auto border-b border-white/10 bg-slate-950/90 px-5 py-0 backdrop-blur-sm sm:-mx-8 sm:px-8"
+      className="sticky top-0 z-10 -mx-5 overflow-x-auto border-b-2 border-white bg-black px-5 py-0 sm:-mx-8 sm:px-8"
       aria-label="Dataset workspace tabs"
     >
-      <div className="flex gap-1">
+      <div className="flex gap-1.5">
         {TABS.map((tab) => {
           const selected = tab.key === active;
           return (
@@ -47,13 +47,13 @@ export function DatasetTabs({ active, onChange }: DatasetTabsProps) {
               onClick={() => onChange(tab.key)}
               aria-current={selected ? 'page' : undefined}
               className={clsx(
-                'flex items-center gap-1.5 whitespace-nowrap border-b-2 px-3 py-3 text-sm font-medium transition',
+                'flex items-center gap-2 whitespace-nowrap border-b-3 px-3 py-3.5 text-xs font-bold uppercase tracking-wider transition-all duration-150 outline-none',
                 selected
-                  ? 'border-cyan-400 text-cyan-300'
-                  : 'border-transparent text-slate-500 hover:border-white/20 hover:text-slate-300',
+                  ? 'border-lime text-lime font-black'
+                  : 'border-transparent text-muted hover:border-white/30 hover:text-white',
               )}
             >
-              <tab.icon className="h-4 w-4" />
+              <tab.icon className="h-4.5 w-4.5" />
               {tab.label}
             </button>
           );

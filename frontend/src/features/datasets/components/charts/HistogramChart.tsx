@@ -22,7 +22,7 @@ interface HistogramChartProps {
 export function HistogramChart({
   buckets,
   height = 300,
-  color = '#22d3ee',
+  color = '#FF4D8D',
   formatValue = formatChartValue,
 }: HistogramChartProps) {
   const data = buckets.map((bucket) => ({
@@ -43,7 +43,7 @@ export function HistogramChart({
         />
         <YAxis tick={CHART_AXIS.tick} axisLine={false} tickLine={false} width={56} />
         <Tooltip content={<ChartTooltip />} formatter={(value: unknown) => formatChartValue(value)} />
-        <Bar dataKey="count" name="Count" radius={[3, 3, 0, 0]} fill={color}>
+        <Bar dataKey="count" name="Count" radius={0} stroke="#FFFFFF" strokeWidth={1} fill={color}>
           {data.map((_, index) => (
             <Cell
               key={index}

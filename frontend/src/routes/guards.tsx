@@ -42,10 +42,10 @@ export function GuestRoute({ children }: { children: ReactNode }) {
 
 export function FullPageLoader() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-surface-deep">
+    <div className="flex min-h-screen items-center justify-center bg-black">
       <div className="flex flex-col items-center gap-4">
         <Spinner size="md" />
-        <p className="text-sm text-slate-500">Loading</p>
+        <p className="text-xs font-bold uppercase tracking-widest text-muted">Loading</p>
       </div>
     </div>
   );

@@ -58,22 +58,22 @@ export function ChartBuilder({ datasetId, columns }: ChartBuilderProps) {
     (kind === 'scatter' && (!xCol || !yCol));
 
   return (
-    <div className="flex flex-col gap-5">
-      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h3 className="flex items-center gap-2 text-sm font-semibold text-white">
-            <ChartIcon className="h-4 w-4 text-cyan-400" />
+    <div className="flex flex-col gap-5 bg-black">
+      <div className="border-2 border-white bg-ink-card p-5 rounded-md shadow-brutal-sm">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-white pb-3">
+          <h3 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-white">
+            <ChartIcon className="h-4.5 w-4.5 text-lime" />
             Build a chart
           </h3>
-          <div className="inline-flex overflow-hidden rounded-lg border border-white/10">
+          <div className="inline-flex overflow-hidden border-2 border-white rounded-sm bg-black">
             {(['bar', 'line', 'scatter'] as const).map((option) => (
               <button
                 key={option}
                 type="button"
                 onClick={() => setKind(option)}
                 className={clsx(
-                  'px-3 py-1.5 text-xs font-medium capitalize transition',
-                  kind === option ? 'bg-cyan-400/15 text-cyan-300' : 'text-slate-500 hover:text-slate-300',
+                  'px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider transition-all duration-150',
+                  kind === option ? 'bg-lime text-black font-black' : 'text-muted hover:text-white',
                 )}
               >
                 {option}
@@ -87,39 +87,41 @@ export function ChartBuilder({ datasetId, columns }: ChartBuilderProps) {
             <>
               <Field label="Group by" hint="Categorical column">
                 <select value={groupByCol} onChange={(e) => setGroupByCol(e.target.value)}>
-                  <option value="">Select…</option>
+                  <option value="" className="bg-black text-white">Select…</option>
                   {categorical.map((c) => (
-                    <option key={c.name} value={c.name}>{c.name}</option>
+                    <option key={c.name} value={c.name} className="bg-black text-white">{c.name}</option>
                   ))}
                 </select>
               </Field>
               <Field label="Aggregation">
                 <select value={aggregation} onChange={(e) => setAggregation(e.target.value as AggregationFunction)}>
                   {AGGREGATIONS.map((agg) => (
-                    <option key={agg} value={agg}>{agg}</option>
+                    <option key={agg} value={agg} className="bg-black text-white">{agg}</option>
                   ))}
                 </select>
               </Field>
               {aggregation !== 'count' ? (
                 <Field label="Metric column">
                   <select value={metricCol} onChange={(e) => setMetricCol(e.target.value)}>
-                    <option value="">Select…</option>
+                    <option value="" className="bg-black text-white">Select…</option>
                     {numeric.map((c) => (
-                      <option key={c.name} value={c.name}>{c.name}</option>
+                      <option key={c.name} value={c.name} className="bg-black text-white">{c.name}</option>
                     ))}
                   </select>
                 </Field>
               ) : null}
               <Field label={`Show top ${topN}`}>
-                <input
-                  type="range"
-                  min={5}
-                  max={30}
-                  step={1}
-                  value={topN}
-                  onChange={(e) => setTopN(Number(e.target.value))}
-                  className="w-36 accent-cyan-400"
-                />
+                <div className="flex items-center h-9">
+                  <input
+                    type="range"
+                    min={5}
+                    max={30}
+                    step={1}
+                    value={topN}
+                    onChange={(e) => setTopN(Number(e.target.value))}
+                    className="w-36 accent-lime"
+                  />
+                </div>
               </Field>
             </>
           ) : null}
@@ -128,32 +130,32 @@ export function ChartBuilder({ datasetId, columns }: ChartBuilderProps) {
             <>
               <Field label="Date column">
                 <select value={dateCol} onChange={(e) => setDateCol(e.target.value)}>
-                  <option value="">Select…</option>
+                  <option value="" className="bg-black text-white">Select…</option>
                   {dates.map((c) => (
-                    <option key={c.name} value={c.name}>{c.name}</option>
+                    <option key={c.name} value={c.name} className="bg-black text-white">{c.name}</option>
                   ))}
                 </select>
               </Field>
               <Field label="Granularity">
                 <select value={granularity} onChange={(e) => setGranularity(e.target.value as TimeGranularity)}>
                   {GRANULARITIES.map((g) => (
-                    <option key={g} value={g}>{g}</option>
+                    <option key={g} value={g} className="bg-black text-white">{g}</option>
                   ))}
                 </select>
               </Field>
               <Field label="Aggregation">
                 <select value={aggregation} onChange={(e) => setAggregation(e.target.value as AggregationFunction)}>
                   {AGGREGATIONS.map((agg) => (
-                    <option key={agg} value={agg}>{agg}</option>
+                    <option key={agg} value={agg} className="bg-black text-white">{agg}</option>
                   ))}
                 </select>
               </Field>
               {aggregation !== 'count' ? (
                 <Field label="Metric column">
                   <select value={metricCol} onChange={(e) => setMetricCol(e.target.value)}>
-                    <option value="">Select…</option>
+                    <option value="" className="bg-black text-white">Select…</option>
                     {numeric.map((c) => (
-                      <option key={c.name} value={c.name}>{c.name}</option>
+                      <option key={c.name} value={c.name} className="bg-black text-white">{c.name}</option>
                     ))}
                   </select>
                 </Field>
@@ -165,17 +167,17 @@ export function ChartBuilder({ datasetId, columns }: ChartBuilderProps) {
             <>
               <Field label="X column">
                 <select value={xCol} onChange={(e) => setXCol(e.target.value)}>
-                  <option value="">Select…</option>
+                  <option value="" className="bg-black text-white">Select…</option>
                   {numeric.map((c) => (
-                    <option key={c.name} value={c.name}>{c.name}</option>
+                    <option key={c.name} value={c.name} className="bg-black text-white">{c.name}</option>
                   ))}
                 </select>
               </Field>
               <Field label="Y column">
                 <select value={yCol} onChange={(e) => setYCol(e.target.value)}>
-                  <option value="">Select…</option>
+                  <option value="" className="bg-black text-white">Select…</option>
                   {numeric.map((c) => (
-                    <option key={c.name} value={c.name}>{c.name}</option>
+                    <option key={c.name} value={c.name} className="bg-black text-white">{c.name}</option>
                   ))}
                 </select>
               </Field>
@@ -183,9 +185,9 @@ export function ChartBuilder({ datasetId, columns }: ChartBuilderProps) {
           ) : null}
 
           {needsRun ? (
-            <p className="flex items-center gap-1.5 text-xs text-slate-500">
-              <PlayIcon className="h-3.5 w-3.5" />
-              Complete the fields above to render.
+            <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-muted py-2">
+              <PlayIcon className="h-4 w-4" />
+              Complete fields to render
             </p>
           ) : null}
         </div>
@@ -264,12 +266,12 @@ export function ChartBuilder({ datasetId, columns }: ChartBuilderProps) {
 
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
-    <label className="flex min-w-[150px] flex-col gap-1.5 text-xs text-slate-500">
+    <label className="flex min-w-[150px] flex-col gap-1.5 text-[10px] font-bold uppercase tracking-wider text-white">
       <span>
         {label}
-        {hint ? <span className="ml-1 text-slate-600">({hint})</span> : null}
+        {hint ? <span className="ml-1 text-muted">({hint})</span> : null}
       </span>
-      <div className="[&_select]:h-9 [&_select]:w-full [&_select]:rounded-lg [&_select]:border [&_select]:border-white/10 [&_select]:bg-slate-900 [&_select]:px-2.5 [&_select]:text-sm [&_select]:text-slate-200 [&_select]:focus:border-cyan-400/50 [&_select]:focus:outline-none">
+      <div className="[&_select]:h-10 [&_select]:w-full [&_select]:border-2 [&_select]:border-white [&_select]:bg-black [&_select]:px-3 [&_select]:text-xs [&_select]:font-bold [&_select]:uppercase [&_select]:tracking-wider [&_select]:text-white [&_select]:focus:border-lime [&_select]:focus:shadow-[4px_4px_0px_#C6FF00] [&_select]:focus:outline-none [&_select]:rounded-md">
         {children}
       </div>
     </label>

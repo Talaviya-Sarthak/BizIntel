@@ -38,10 +38,10 @@ export function SuggestedCharts({ datasetId, columns }: SuggestedChartsProps) {
   }
 
   return (
-    <div className="flex flex-col gap-5">
-      <div className="flex items-center gap-2">
-        <SparklesIcon className="h-4 w-4 text-cyan-400" />
-        <h2 className="text-sm font-semibold text-white">Suggested charts</h2>
+    <div className="flex flex-col gap-5 bg-black">
+      <div className="flex items-center gap-2 border-b-2 border-white pb-3">
+        <SparklesIcon className="h-5 w-5 text-lime" />
+        <h2 className="text-sm font-bold uppercase tracking-wider text-white">Suggested charts</h2>
       </div>
 
       {dateColumn ? (

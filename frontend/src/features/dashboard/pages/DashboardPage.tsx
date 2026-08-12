@@ -28,12 +28,12 @@ export function DashboardPage() {
   const firstName = user?.name?.split(/\s+/)[0] ?? 'there';
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 bg-black">
       <header>
-        <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+        <h1 className="text-3xl font-black uppercase tracking-tight text-white sm:text-4xl">
           {greeting()}, {firstName}
         </h1>
-        <p className="mt-1.5 text-sm leading-relaxed text-slate-400">
+        <p className="mt-1.5 text-xs font-bold uppercase tracking-wider text-muted">
           Here&apos;s an overview of your intelligence workspace.
         </p>
       </header>
@@ -47,7 +47,7 @@ export function DashboardPage() {
       ) : null}
 
       <section aria-label="Key metrics">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-slate-500">
+        <h2 className="mb-4 text-xs font-bold uppercase tracking-widest text-muted">
           Overview
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -70,12 +70,12 @@ export function DashboardPage() {
       </section>
 
       <section aria-label="Recent datasets">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-500">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-muted">
             Recent datasets
           </h2>
           {summaryQuery.data ? (
-            <span className="text-xs text-slate-500">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted">
               {formatNumber(summaryQuery.data.datasets.byStatus.READY)} ready ·{' '}
               {formatNumber(summaryQuery.data.datasets.byStatus.FAILED)} failed
             </span>
@@ -88,19 +88,19 @@ export function DashboardPage() {
       </section>
 
       <section aria-label="Quick actions">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-slate-500">
+        <h2 className="mb-4 text-xs font-bold uppercase tracking-widest text-muted">
           Quick actions
         </h2>
         <QuickActions />
       </section>
 
       <section aria-label="Module status">
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-          <p className="flex items-center gap-2 text-sm font-medium text-white">
-            <SparklesIcon className="h-4 w-4 text-cyan-400" />
+        <div className="border-2 border-white bg-ink-card p-6 shadow-brutal rounded-md">
+          <p className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-white">
+            <SparklesIcon className="h-4.5 w-4.5 text-lime" />
             Platform roadmap
           </p>
-          <p className="mt-2 text-sm leading-relaxed text-slate-400">
+          <p className="mt-2.5 text-xs font-semibold leading-relaxed text-muted uppercase tracking-wider">
             Datasets are the shared foundation for everything that follows. DataMart
             Analytics, Backtesting, and the AI Assistant will all consume the datasets you
             upload here.
@@ -109,7 +109,7 @@ export function DashboardPage() {
             {['DataMart Analytics', 'Backtesting', 'AI Assistant'].map((module) => (
               <span
                 key={module}
-                className="rounded-full border border-white/10 px-3 py-1 text-[11px] uppercase tracking-wider text-slate-500"
+                className="border border-white bg-black px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-muted rounded-sm"
               >
                 {module} · coming soon
               </span>

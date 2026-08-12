@@ -2,6 +2,7 @@ import type { Dataset, DatasetColumn } from '../models/dataset.model';
 import { storageService } from './storage.service';
 import { duckdbService, csvTableRef, quoteIdent, DuckDbError, type Row } from './duckdb.service';
 import { ApiError } from '../utils/httpError';
+import { buildFilterWhere, resolveColumn } from '../utils/filterSql';
 import {
   classifyColumnCategory,
   isCategoricalCategory,
@@ -9,8 +10,6 @@ import {
   isNumericCategory,
   type ColumnCategory,
   type ExplorerRequest,
-  type FilterCondition,
-  type FilterNode,
   type GroupByRequest,
   type ScatterRequest,
   type TimeGranularity,
@@ -1041,78 +1040,8 @@ function describeCorrelation(r: number): string {
 }
 
 // ---------------------------------------------------------------------------
-// Filter / search builders (identifiers validated, values parameterized)
+// Search builder (explorer-specific; identifiers validated, values parameterized)
 // ---------------------------------------------------------------------------
-
-function buildFilterWhere(
-  node: FilterNode | undefined,
-  columns: DatasetColumn[],
-): { clause: string; params: unknown[] } {
-  if (!node) return { clause: '', params: [] };
-  if ('nodes' in node) {
-    const parts = node.nodes.map((child) => buildFilterWhere(child, columns));
-    const nonEmpty = parts.filter((part) => part.clause !== '');
-    if (nonEmpty.length === 0) return { clause: '', params: [] };
-    return {
-      clause: `(${nonEmpty.map((part) => part.clause).join(` ${node.conjunction} `)})`,
-      params: nonEmpty.flatMap((part) => part.params),
-    };
-  }
-  return buildConditionWhere(node, columns);
-}
-
-function buildConditionWhere(
-  condition: FilterCondition,
-  columns: DatasetColumn[],
-): { clause: string; params: unknown[] } {
-  const column = resolveColumn(columns, condition.column);
-  const q = quoteIdent(column.columnName);
-  const value = coerceFilterValue(column, condition.value);
-
-  switch (condition.operator) {
-    case 'eq':
-      return { clause: `${q} = ?`, params: [value] };
-    case 'neq':
-      return { clause: `${q} IS DISTINCT FROM ?`, params: [value] };
-    case 'gt':
-      return { clause: `${q} > ?`, params: [value] };
-    case 'gte':
-      return { clause: `${q} >= ?`, params: [value] };
-    case 'lt':
-      return { clause: `${q} < ?`, params: [value] };
-    case 'lte':
-      return { clause: `${q} <= ?`, params: [value] };
-    case 'contains':
-      return {
-        clause: `CAST(${q} AS VARCHAR) ILIKE '%' || ? || '%'`,
-        params: [escapeLike(String(value ?? ''))],
-      };
-    case 'not_contains':
-      return {
-        clause: `NOT (CAST(${q} AS VARCHAR) ILIKE '%' || ? || '%')`,
-        params: [escapeLike(String(value ?? ''))],
-      };
-    case 'is_null':
-      return { clause: `${q} IS NULL`, params: [] };
-    case 'is_not_null':
-      return { clause: `${q} IS NOT NULL`, params: [] };
-    case 'in':
-    case 'not_in': {
-      const values = Array.isArray(condition.value) ? condition.value : [condition.value];
-      const coerced = values.map((entry) => coerceFilterValue(column, entry));
-      const placeholders = coerced.map(() => '?').join(', ');
-      const op = condition.operator === 'in' ? 'IN' : 'NOT IN';
-      return { clause: `${q} ${op} (${placeholders})`, params: coerced };
-    }
-    case 'between':
-      return {
-        clause: `${q} BETWEEN ? AND ?`,
-        params: [value, coerceFilterValue(column, condition.value2)],
-      };
-    default:
-      throw ApiError.badRequest('INVALID_FILTER_OPERATOR', 'Unsupported filter operator');
-  }
-}
 
 function buildSearchWhere(
   search: ExplorerRequest['search'],
@@ -1135,18 +1064,6 @@ function buildSearchWhere(
   return { clause: `(${clause})`, params: targets.map(() => like) };
 }
 
-function coerceFilterValue(column: DatasetColumn, value: unknown): unknown {
-  const category = classifyColumnCategory(column.dataType);
-  if (isNumericCategory(category)) {
-    const n = Number(value);
-    return Number.isNaN(n) ? null : n;
-  }
-  if (category === 'boolean') {
-    return value === true || value === 'true' || value === 1 || value === '1';
-  }
-  return value;
-}
-
 function escapeLike(input: string): string {
   return input.replace(/\\/g, '\\\\').replace(/%/g, '\\%').replace(/_/g, '\\_');
 }
@@ -1155,6 +1072,7 @@ function escapeLike(input: string): string {
 // Shared helpers
 // ---------------------------------------------------------------------------
 
+<<<<<<< HEAD
 /**
  * Wraps DuckDB execution errors into user-friendly ApiError instances so the
  * client receives a meaningful message instead of a generic 500.
@@ -1183,6 +1101,8 @@ function resolveColumn(columns: DatasetColumn[], name: string): DatasetColumn {
   return column;
 }
 
+=======
+>>>>>>> 50ef85d75a69eea2f7a08a00898025714d3b3ab1
 function countCategory(
   counts: Map<ColumnCategory, number>,
   predicate: (category: ColumnCategory) => boolean,

@@ -40,7 +40,7 @@ export default function AuthContainer({ initialMode = "login" }: AuthContainerPr
   };
 
   return (
-    <AuthBackground activeTab={mode} onTabChange={handleModeChange}>
+    <AuthBackground>
       {mode === "login" && (
         <LoginPage
           onNavigateSignUp={() => handleModeChange("signup")}

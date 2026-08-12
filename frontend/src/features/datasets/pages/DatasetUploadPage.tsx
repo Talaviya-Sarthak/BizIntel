@@ -12,17 +12,16 @@ export function DatasetUploadPage() {
   const [description, setDescription] = useState('');
 
   return (
-    <div className="mx-auto flex max-w-3xl flex-col gap-6">
+    <div className="mx-auto flex max-w-3xl flex-col gap-6 bg-black">
       <PageHeader
         title="Upload Dataset"
         description="Upload a CSV file. It will be validated, profiled with DuckDB, and its metadata stored in the dataset registry."
       />
 
-      <div className="flex items-start gap-2 rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.05] px-4 py-3 text-sm text-cyan-200">
-        <InfoIcon className="mt-0.5 h-4 w-4 shrink-0" />
-        <p>
-          CSV is supported today. Parquet, Excel, and JSON ingest will be added on top of the
-          same pipeline.
+      <div className="flex items-start gap-3 border-2 border-lime bg-lime/5 px-4 py-3 text-xs font-bold uppercase tracking-wider text-lime rounded-md">
+        <InfoIcon className="mt-0.5 h-4.5 w-4.5 shrink-0" />
+        <p className="leading-relaxed">
+          CSV is supported today. Parquet, Excel, and JSON ingest will be added on top of the same pipeline.
         </p>
       </div>
 
