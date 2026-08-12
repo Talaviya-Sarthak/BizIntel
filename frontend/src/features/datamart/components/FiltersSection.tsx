@@ -67,11 +67,6 @@ interface FiltersSectionProps {
   onChange: (next: FilterNode | null) => void;
 }
 
-/**
- * Builds a recursive filter tree (AND/OR groups of conditions) matching the
- * backend's FilterNode schema. Column references are validated against the
- * selected datasets' schemas and flagged when ambiguous.
- */
 export function FiltersSection({ sources, root, onChange }: FiltersSectionProps) {
   return (
     <div className="flex flex-col gap-3">
@@ -85,7 +80,7 @@ export function FiltersSection({ sources, root, onChange }: FiltersSectionProps)
         />
       ) : (
         <div className="flex flex-col items-start gap-2">
-          <p className="text-sm text-slate-500">
+          <p className="text-xs text-zinc-400">
             No filters — the query runs over every row in the combined datasets.
           </p>
           <Button
@@ -99,8 +94,9 @@ export function FiltersSection({ sources, root, onChange }: FiltersSectionProps)
                 ],
               })
             }
+            className="border-white/[0.08] bg-zinc-900 text-zinc-200"
           >
-            <PlusIcon className="h-4 w-4" />
+            <PlusIcon className="h-3.5 w-3.5" />
             Add filter
           </Button>
         </div>
@@ -123,7 +119,7 @@ function FilterNodeEditor({ node, onReplace, onClear, sources, showRemove = fals
   if ('conjunction' in node) {
     const conjoined = node;
     return (
-      <div className="flex flex-col gap-2 rounded-xl border border-cyan-400/20 bg-cyan-400/[0.03] p-3">
+      <div className="flex flex-col gap-2 rounded-xl border border-white/[0.06] bg-[#141414] p-3">
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
@@ -133,7 +129,7 @@ function FilterNodeEditor({ node, onReplace, onClear, sources, showRemove = fals
                 nodes: conjoined.nodes,
               })
             }
-            className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-xs font-semibold text-cyan-300 transition hover:border-cyan-400/40"
+            className="flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-zinc-800 px-2.5 py-0.5 text-xs font-semibold text-zinc-100 transition-colors hover:border-white/20"
           >
             <FilterIcon className="h-3.5 w-3.5" />
             {conjoined.conjunction}
@@ -147,8 +143,9 @@ function FilterNodeEditor({ node, onReplace, onClear, sources, showRemove = fals
                 nodes: [...conjoined.nodes, { column: '', operator: 'eq', value: '' as unknown }],
               })
             }
+            className="text-xs text-zinc-300 hover:text-white"
           >
-            <PlusIcon className="h-4 w-4" />
+            <PlusIcon className="h-3.5 w-3.5" />
             Condition
           </Button>
           <Button
@@ -160,25 +157,26 @@ function FilterNodeEditor({ node, onReplace, onClear, sources, showRemove = fals
                 nodes: [...conjoined.nodes, { conjunction: 'OR', nodes: [] as FilterNode[] }],
               })
             }
+            className="text-xs text-zinc-300 hover:text-white"
           >
-            <PlusIcon className="h-4 w-4" />
+            <PlusIcon className="h-3.5 w-3.5" />
             Group
           </Button>
           {showRemove ? (
             <Button
               variant="ghost"
               size="sm"
-              className="ml-auto text-slate-400"
+              className="ml-auto text-xs text-zinc-400 hover:text-red-400"
               onClick={onClear}
             >
-              <CloseIcon className="h-4 w-4" />
+              <CloseIcon className="h-3.5 w-3.5" />
               Clear
             </Button>
           ) : null}
         </div>
 
         {conjoined.nodes.length === 0 ? (
-          <p className="text-xs text-slate-500">Empty group — add a condition.</p>
+          <p className="text-xs text-zinc-500">Empty group — add a condition.</p>
         ) : (
           <div className="flex flex-col gap-2">
             {conjoined.nodes.map((child, index) => (
@@ -198,13 +196,13 @@ function FilterNodeEditor({ node, onReplace, onClear, sources, showRemove = fals
                   variant="ghost"
                   size="icon"
                   aria-label="Remove condition"
-                  className="mt-1 text-slate-500 hover:text-red-300"
+                  className="mt-1 text-zinc-400 hover:text-red-400"
                   onClick={() => {
                     const nodes = conjoined.nodes.filter((_, i) => i !== index);
                     onReplace({ ...conjoined, nodes });
                   }}
                 >
-                  <TrashIcon className="h-4 w-4" />
+                  <TrashIcon className="h-3.5 w-3.5" />
                 </Button>
               </div>
             ))}
@@ -284,16 +282,12 @@ function ConditionEditor({ condition, onReplace, columns }: ConditionEditorProps
           onChange={(event) => update({ value: coerceValue(event.target.value, isNumeric) })}
         />
       ) : (
-        <p className="flex items-end pb-2 text-xs text-slate-500">No value needed.</p>
+        <p className="flex items-end pb-2 text-xs text-zinc-500">No value needed.</p>
       )}
     </div>
   );
 }
 
-/**
- * Light client-side coercion so numeric operations send numbers and CSV inputs
- * become arrays. Full type checking remains the compiler's job at run time.
- */
 function coerceValue(raw: string, isNumeric: boolean): unknown {
   if (raw.trim() === '') return '' as unknown;
   if (raw.includes(',')) {

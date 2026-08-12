@@ -9,11 +9,6 @@ interface DataSourceSelectorProps {
   onChange: (next: string[]) => void;
 }
 
-/**
- * Multi-select of READY datasets plus a summary of total datasets.
- * Columns are derived from schemas (owned by DataMart so the builder does
- * not depend on the datasets workspace).
- */
 export function DataSourceSelector({ sources, selected, onChange }: DataSourceSelectorProps) {
   const datasetsQuery = useDataMartDatasets();
   const total = datasetsQuery.data?.total ?? sources.length;
@@ -25,9 +20,9 @@ export function DataSourceSelector({ sources, selected, onChange }: DataSourceSe
   return (
     <div className="flex flex-col gap-2">
       {sources.length === 0 ? (
-        <p className="flex items-start gap-2 text-sm text-slate-400">
-          <AlertIcon className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />
-          No ready datasets yet. Upload a dataset and wait for it to finish processing first.
+        <p className="flex items-start gap-2 text-xs text-amber-300">
+          <AlertIcon className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-400" />
+          No ready datasets available. Upload a dataset and wait for processing.
         </p>
       ) : (
         <ul className="grid gap-2 sm:grid-cols-2">
@@ -38,8 +33,8 @@ export function DataSourceSelector({ sources, selected, onChange }: DataSourceSe
                 <label
                   className={
                     active
-                      ? 'flex cursor-pointer items-start gap-3 rounded-xl border border-cyan-400/30 bg-cyan-400/[0.05] p-3 transition'
-                      : 'flex cursor-pointer items-start gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-3 transition hover:border-white/25'
+                      ? 'flex cursor-pointer items-start gap-3 rounded-xl border border-white/40 bg-zinc-800/90 p-3 transition-all shadow-xs'
+                      : 'flex cursor-pointer items-start gap-3 rounded-xl border border-white/[0.06] bg-[#141414] p-3 transition-all hover:border-white/20'
                   }
                 >
                   <Checkbox
@@ -49,10 +44,10 @@ export function DataSourceSelector({ sources, selected, onChange }: DataSourceSe
                   />
                   <span className="min-w-0 flex-1">
                     <span className="flex items-center gap-2">
-                      <DatabaseIcon className="h-4 w-4 shrink-0 text-cyan-400" />
-                      <span className="truncate text-sm font-medium text-white">{source.name}</span>
+                      <DatabaseIcon className="h-3.5 w-3.5 shrink-0 text-zinc-200" />
+                      <span className="truncate text-xs font-semibold text-zinc-100">{source.name}</span>
                     </span>
-                    <span className="mt-0.5 block text-xs text-slate-500">
+                    <span className="mt-0.5 block text-[11px] text-zinc-400 font-mono">
                       {source.columns.length} column{source.columns.length === 1 ? '' : 's'}
                     </span>
                   </span>
@@ -62,9 +57,8 @@ export function DataSourceSelector({ sources, selected, onChange }: DataSourceSe
           })}
         </ul>
       )}
-      <p className="text-xs text-slate-600">
-        {total} dataset{total === 1 ? '' : 's'} in your library · {sources.length} ready · up to 8
-        per query
+      <p className="text-[11px] text-zinc-400">
+        {total} dataset{total === 1 ? '' : 's'} in library · {sources.length} ready · up to 8 per query
       </p>
     </div>
   );

@@ -37,7 +37,7 @@ export function AnalysesPage() {
 
   if (analysesQuery.isLoading) {
     return (
-      <div className="flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.02] py-24">
+      <div className="flex items-center justify-center rounded-xl border border-white/[0.06] bg-[#181818] py-20">
         <Spinner size="md" />
       </div>
     );
@@ -57,11 +57,11 @@ export function AnalysesPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Analyses"
-        description="Saved queries you can rerun anytime. Each execution produces a fresh, timestamped result."
+        title="Saved Analyses"
+        description="Saved queries you can rerun anytime. Each execution produces a fresh, timestamped result set."
         actions={
-          <Button variant="primary" onClick={() => navigate('/datamart/query')}>
-            <PlusIcon className="h-4 w-4" />
+          <Button variant="primary" onClick={() => navigate('/datamart/query')} className="bg-white hover:bg-zinc-200 text-black font-semibold text-xs border border-white/20">
+            <PlusIcon className="h-3.5 w-3.5" />
             New analysis
           </Button>
         }
@@ -70,26 +70,26 @@ export function AnalysesPage() {
       {items.length === 0 ? (
         <EmptyState
           icon={TrendingUpIcon}
-          title="No analyses yet"
+          title="No analyses created yet"
           description="Build your first query and save it as a reusable analysis."
           action={
-            <Button onClick={() => navigate('/datamart/query')}>
-              <PlusIcon className="h-4 w-4" />
+            <Button onClick={() => navigate('/datamart/query')} className="bg-white text-black hover:bg-zinc-200 font-semibold text-xs">
+              <PlusIcon className="h-3.5 w-3.5" />
               New query
             </Button>
           }
         />
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
+        <div className="overflow-hidden rounded-xl border border-white/[0.06] bg-[#181818] shadow-sm">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[680px] text-left text-sm">
+            <table className="w-full min-w-[680px] text-left text-xs">
               <thead>
-                <tr className="border-b border-white/10 text-[11px] uppercase tracking-wider text-slate-500">
-                  <th className="px-4 py-3 font-medium">Name</th>
-                  <th className="px-4 py-3 font-medium">Datasets</th>
-                  <th className="px-4 py-3 font-medium">Dimensions</th>
-                  <th className="px-4 py-3 font-medium">Metrics</th>
-                  <th className="px-4 py-3 font-medium">Last run</th>
+                <tr className="border-b border-white/[0.06] text-[10.5px] uppercase tracking-wider text-zinc-400 font-semibold bg-zinc-900/60">
+                  <th className="px-4 py-3 font-semibold">Name</th>
+                  <th className="px-4 py-3 font-semibold">Datasets</th>
+                  <th className="px-4 py-3 font-semibold">Dimensions</th>
+                  <th className="px-4 py-3 font-semibold">Metrics</th>
+                  <th className="px-4 py-3 font-semibold">Last run</th>
                   <th className="px-4 py-3" />
                 </tr>
               </thead>
@@ -97,23 +97,23 @@ export function AnalysesPage() {
                 {items.map((analysis) => (
                   <tr
                     key={analysis.id}
-                    className="cursor-pointer border-b border-white/5 transition last:border-0 hover:bg-white/[0.03]"
+                    className="cursor-pointer border-b border-white/[0.04] transition-colors last:border-0 hover:bg-white/[0.02]"
                     onClick={() => navigate(`/datamart/analyses/${analysis.id}`)}
                   >
                     <td className="px-4 py-3">
-                      <p className="font-medium text-white">{analysis.name}</p>
+                      <p className="font-semibold text-zinc-100">{analysis.name}</p>
                       {analysis.description ? (
-                        <p className="mt-0.5 max-w-xs truncate text-xs text-slate-500">
+                        <p className="mt-0.5 max-w-xs truncate text-[11px] text-zinc-400">
                           {analysis.description}
                         </p>
                       ) : null}
                     </td>
-                    <td className="px-4 py-3 text-slate-300">{analysis.datasetIds.length}</td>
-                    <td className="px-4 py-3 text-slate-300">
+                    <td className="px-4 py-3 text-zinc-300 font-mono">{analysis.datasetIds.length}</td>
+                    <td className="px-4 py-3 text-zinc-300 font-mono">
                       {analysis.queryConfig.dimensions.length}
                     </td>
-                    <td className="px-4 py-3 text-slate-300">{analysis.queryConfig.metrics.length}</td>
-                    <td className="px-4 py-3 text-slate-400">
+                    <td className="px-4 py-3 text-zinc-300 font-mono">{analysis.queryConfig.metrics.length}</td>
+                    <td className="px-4 py-3 text-zinc-400 text-[11px]">
                       {analysis.lastExecutedAt ? formatDate(analysis.lastExecutedAt) : 'Never'}
                     </td>
                     <td className="px-4 py-3">
@@ -122,27 +122,27 @@ export function AnalysesPage() {
                           type="button"
                           aria-label={`Run ${analysis.name}`}
                           title="Run now"
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-cyan-400/10 hover:text-cyan-300 disabled:opacity-50"
+                          className="inline-flex h-7 w-7 items-center justify-center rounded-lg text-zinc-400 transition hover:bg-white/10 hover:text-white disabled:opacity-50"
                           disabled={executeMutation.isPending}
                           onClick={(event) => {
                             event.stopPropagation();
                             void handleRun(analysis.id);
                           }}
                         >
-                          <PlayIcon className="h-4 w-4" />
+                          <PlayIcon className="h-3.5 w-3.5" />
                         </button>
                         <button
                           type="button"
                           aria-label={`Delete ${analysis.name}`}
                           title="Delete"
-                          className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-400/10 hover:text-red-300 disabled:opacity-50"
+                          className="inline-flex h-7 w-7 items-center justify-center rounded-lg text-zinc-400 transition hover:bg-red-400/10 hover:text-red-400 disabled:opacity-50"
                           disabled={deleteMutation.isPending}
                           onClick={(event) => {
                             event.stopPropagation();
                             void handleDelete(analysis.id);
                           }}
                         >
-                          <TrashIcon className="h-4 w-4" />
+                          <TrashIcon className="h-3.5 w-3.5" />
                         </button>
                       </div>
                     </td>
@@ -155,13 +155,13 @@ export function AnalysesPage() {
       )}
 
       {deleteError ? (
-        <p className="rounded-lg border border-red-400/20 bg-red-400/[0.05] px-4 py-3 text-sm text-red-300">
+        <p className="rounded-lg border border-red-400/20 bg-red-400/[0.05] px-4 py-3 text-xs text-red-300">
           {deleteError}
         </p>
       ) : null}
 
       {executeMutation.error ? (
-        <p className="rounded-lg border border-red-400/20 bg-red-400/[0.05] px-4 py-3 text-sm text-red-300">
+        <p className="rounded-lg border border-red-400/20 bg-red-400/[0.05] px-4 py-3 text-xs text-red-300">
           {describeDataMartError(toApiError(executeMutation.error)).message}
         </p>
       ) : null}

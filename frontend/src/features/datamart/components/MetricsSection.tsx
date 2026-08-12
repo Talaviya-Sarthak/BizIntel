@@ -49,8 +49,6 @@ export function MetricsSection({ sources, metrics, onChange }: MetricsSectionPro
     onChange(metrics.filter((metric) => metric.id !== id));
   }
 
-  // Formula quick-insert helpers use the safe grammar; the string is only
-  // assembled here, never evaluated.
   function insertAggregation(id: string, aggregation: DataMartAggregation) {
     const metric = metrics.find((entry) => entry.id === id);
     if (!metric) return;
@@ -73,7 +71,7 @@ export function MetricsSection({ sources, metrics, onChange }: MetricsSectionPro
     <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-3">
         {metrics.map((metric) => (
-          <div key={metric.id} className="flex flex-col gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-3">
+          <div key={metric.id} className="flex flex-col gap-3 rounded-xl border border-white/[0.06] bg-[#141414] p-3">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
               <div className="flex-1 sm:flex sm:gap-2">
                 <div className="flex-1">
@@ -113,9 +111,10 @@ export function MetricsSection({ sources, metrics, onChange }: MetricsSectionPro
                 variant="ghost"
                 size="icon"
                 aria-label="Remove metric"
+                className="text-zinc-400 hover:text-red-400"
                 onClick={() => remove(metric.id)}
               >
-                <TrashIcon className="h-4 w-4" />
+                <TrashIcon className="h-3.5 w-3.5" />
               </Button>
             </div>
 
@@ -139,8 +138,8 @@ export function MetricsSection({ sources, metrics, onChange }: MetricsSectionPro
             </div>
 
             {metric.column ? (
-              <p className="text-[11px] text-slate-500">
-                Output: <span className="font-mono text-slate-400">
+              <p className="text-[11px] text-zinc-400">
+                Output: <span className="font-mono text-zinc-200">
                   {metric.aggregation ? `${metric.aggregation.toUpperCase()}(${metric.column})` : metric.formula || '—'}
                 </span>
                 {metric.alias ? ` → ${metric.alias}` : ''}
@@ -150,11 +149,11 @@ export function MetricsSection({ sources, metrics, onChange }: MetricsSectionPro
         ))}
       </div>
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm" onClick={add}>
-          <PlusIcon className="h-4 w-4" />
+        <Button variant="outline" size="sm" onClick={add} className="border-white/[0.08] bg-zinc-900 text-zinc-200">
+          <PlusIcon className="h-3.5 w-3.5" />
           Add metric
         </Button>
-        <span className="text-xs text-slate-500">
+        <span className="text-[11px] text-zinc-400">
           <HashIcon className="mr-1 inline h-3.5 w-3.5" />
           Metrics summarize rows; add one or more to aggregate.
         </span>
@@ -177,32 +176,25 @@ function SigmaIcon(props: { className?: string }) {
   );
 }
 
-/**
- * Structured formula editor for a calculated metric. Builds expressions from
- * whitelisted aggregations over the selected column — user text is inserted
- * into the value field verbatim, and only the aggregate fragments are
- * generated for the formula. The full expression is validated server-side by
- * the compiler; this builder never evaluates JavaScript.
- */
 export function FormulaBuilder({ metric, onFormulaChange, onInsertAggregation }: FormulaBuilderProps) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-xs font-medium text-zinc-300">Formula (optional)</label>
+      <label className="text-xs font-semibold text-zinc-300">Formula (optional)</label>
       <Input
         id={`formula-${metric.id}`}
         placeholder="e.g. sum(revenue) / count(*) — aggregate over a column or use an expression"
         value={metric.formula ?? ''}
         onChange={(event) => onFormulaChange(event.target.value)}
       />
-      <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500">
-        <SigmaIcon className="h-3.5 w-3.5 text-cyan-400" />
+      <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-zinc-400">
+        <SigmaIcon className="h-3.5 w-3.5 text-zinc-300" />
         <span className="mr-1">Insert an aggregation:</span>
         {(['sum', 'avg', 'count', 'count_distinct', 'median'] as DataMartAggregation[]).map((aggregation) => (
           <button
             key={aggregation}
             type="button"
             onClick={() => onInsertAggregation(aggregation)}
-            className="rounded-full border border-white/10 px-2 py-0.5 font-mono text-slate-300 transition hover:border-cyan-400/40 hover:text-cyan-300"
+            className="rounded-full border border-white/[0.08] bg-zinc-900 px-2 py-0.5 font-mono text-zinc-300 transition-colors hover:border-white/20 hover:text-white"
           >
             {aggregation}
           </button>
@@ -212,6 +204,5 @@ export function FormulaBuilder({ metric, onFormulaChange, onInsertAggregation }:
   );
 }
 
-// Re-export METRIC_FORMATS typing note so format selectors can share labels.
 export const METRIC_FORMAT_OPTIONS: { value: MetricFormat; label: string }[] =
   METRIC_FORMATS.map((format) => ({ value: format, label: format }));

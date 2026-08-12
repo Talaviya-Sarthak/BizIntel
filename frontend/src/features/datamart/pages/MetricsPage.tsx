@@ -120,7 +120,7 @@ export function MetricsPage() {
 
   if (metricsQuery.isLoading) {
     return (
-      <div className="flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.02] py-24">
+      <div className="flex items-center justify-center rounded-xl border border-white/[0.06] bg-[#181818] py-20">
         <Spinner size="md" />
       </div>
     );
@@ -137,11 +137,11 @@ export function MetricsPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Metrics"
+        title="Metrics Catalog"
         description="Promote your most-used aggregations to reusable KPIs. Each metric can be executed against its dataset and dropped onto a dashboard."
         actions={
-          <Button variant="primary" onClick={() => setCreateOpen(true)}>
-            <PlusIcon className="h-4 w-4" />
+          <Button variant="primary" onClick={() => setCreateOpen(true)} className="bg-white hover:bg-zinc-200 text-black font-semibold text-xs border border-white/20">
+            <PlusIcon className="h-3.5 w-3.5" />
             New metric
           </Button>
         }
@@ -150,7 +150,7 @@ export function MetricsPage() {
       {metrics.length === 0 ? (
         <EmptyState
           icon={DatabaseZapIcon}
-          title="No metrics yet"
+          title="No metrics created yet"
           description="Create a metric from a column aggregation or a formula to start reusing it."
         />
       ) : (
@@ -160,33 +160,33 @@ export function MetricsPage() {
             return (
               <article
                 key={metric.id}
-                className="flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/[0.03] p-5"
+                className="flex flex-col gap-2 rounded-xl border border-white/[0.06] bg-[#181818] p-4 shadow-sm"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <h3 className="truncate text-sm font-semibold text-white">{metric.name}</h3>
+                    <h3 className="truncate text-xs font-semibold text-zinc-100">{metric.name}</h3>
                     {metric.description ? (
-                      <p className="mt-0.5 line-clamp-2 text-xs text-slate-500">{metric.description}</p>
+                      <p className="mt-0.5 line-clamp-2 text-[11px] text-zinc-400">{metric.description}</p>
                     ) : null}
                   </div>
                   <button
                     type="button"
                     aria-label={`Delete ${metric.name}`}
-                    className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-400/10 hover:text-red-300"
+                    className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-zinc-400 transition hover:bg-red-400/10 hover:text-red-400"
                     onClick={() => void handleDelete(metric.id)}
                   >
-                    <TrashIcon className="h-4 w-4" />
+                    <TrashIcon className="h-3.5 w-3.5" />
                   </button>
                 </div>
-                <p className="truncate font-mono text-xs text-cyan-300">
+                <p className="truncate font-mono text-[11px] text-zinc-200">
                   {describeMetricDefinition(metric.definition)}
                 </p>
-                <p className="text-xs text-slate-500">{metric.datasetName ?? '—'}</p>
-                <p className="my-2 text-3xl font-bold tabular-nums text-white">
+                <p className="text-[11px] text-zinc-400">{metric.datasetName ?? '—'}</p>
+                <p className="my-2 text-2xl font-bold tabular-nums text-zinc-100 font-mono">
                   {executed !== undefined ? formatMetricValue(executed, metric.format) : '—'}
                 </p>
-                <div className="mt-auto flex items-center justify-between border-t border-white/10 pt-3">
-                  <span className="text-[11px] uppercase tracking-wider text-slate-500">
+                <div className="mt-auto flex items-center justify-between border-t border-white/[0.06] pt-2.5">
+                  <span className="text-[10px] uppercase font-semibold tracking-wider text-zinc-400">
                     {METRIC_FORMAT_LABELS[metric.format]}
                   </span>
                   <Button
@@ -194,6 +194,7 @@ export function MetricsPage() {
                     size="sm"
                     disabled={executeMutation.isPending}
                     onClick={() => void handleExecute(metric.id)}
+                    className="border-white/[0.08] bg-zinc-900 text-zinc-200"
                   >
                     <DatabaseZapIcon className="h-3.5 w-3.5" />
                     Execute
@@ -206,19 +207,19 @@ export function MetricsPage() {
       )}
 
       {createMutation.error ? (
-        <p className="rounded-lg border border-red-400/20 bg-red-400/[0.05] px-4 py-3 text-sm text-red-300">
+        <p className="rounded-lg border border-red-400/20 bg-red-400/[0.05] px-4 py-3 text-xs text-red-300">
           {describeDataMartError(toApiError(createMutation.error)).message}
         </p>
       ) : null}
 
       {deleteError ? (
-        <p className="rounded-lg border border-red-400/20 bg-red-400/[0.05] px-4 py-3 text-sm text-red-300">
+        <p className="rounded-lg border border-red-400/20 bg-red-400/[0.05] px-4 py-3 text-xs text-red-300">
           {deleteError}
         </p>
       ) : null}
 
       {executeMutation.error ? (
-        <p className="rounded-lg border border-red-400/20 bg-red-400/[0.05] px-4 py-3 text-sm text-red-300">
+        <p className="rounded-lg border border-red-400/20 bg-red-400/[0.05] px-4 py-3 text-xs text-red-300">
           {describeDataMartError(toApiError(executeMutation.error)).message}
         </p>
       ) : null}
@@ -275,7 +276,7 @@ export function MetricsPage() {
             ]}
           />
 
-          <label className="flex items-center gap-2 text-xs font-medium text-slate-300">
+          <label className="flex items-center gap-2 text-xs font-medium text-zinc-300">
             <Checkbox
               checked={makeFormula}
               onCheckedChange={(checked) => {

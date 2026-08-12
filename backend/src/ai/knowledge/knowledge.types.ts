@@ -1,5 +1,5 @@
 /**
- * Enterprise Knowledge Engine (RAG) Type Definitions
+ * Production Knowledge Engine (RAG) Type Definitions
  * PS-05 Enterprise Intelligence Platform
  */
 
@@ -22,11 +22,16 @@ export interface KnowledgeDocumentMetadata {
   [key: string]: any;
 }
 
-/** Individual text chunk with metadata and position tracking */
+/** Rich Metadata attached to every semantic chunk */
 export interface KnowledgeChunkMetadata extends KnowledgeDocumentMetadata {
+  documentName?: string;
   chunkIndex: number;
+  totalChunks?: number;
   pageNumber?: number;
+  sectionHeading?: string;
   tokenEstimate: number;
+  sourcePath?: string;
+  embeddingVersion?: string;
 }
 
 /** Vector document chunk stored in the Knowledge Engine */
@@ -37,15 +42,33 @@ export interface KnowledgeChunk {
   metadata: KnowledgeChunkMetadata;
 }
 
-/** Search result returned by Vector Store query */
+/** Diagnostic telemetry generated during document validation */
+export interface DocumentValidationDiagnostics {
+  documentId: string;
+  filename: string;
+  totalPages: number;
+  extractedPages: number;
+  characterCount: number;
+  wordCount: number;
+  ocrPages: number;
+  chunkCount: number;
+  embeddingsCreated: number;
+  status: 'Complete' | 'Failed' | 'Warning';
+  extractionErrors: number;
+}
+
+/** Search result returned by Hybrid Vector + Keyword Store query */
 export interface VectorSearchResult {
   chunk: KnowledgeChunk;
   similarity: number;
+  keywordScore?: number;
+  hybridScore?: number;
 }
 
 /** Result returned by KnowledgeRetriever */
 export interface RetrievalResult {
   query: string;
+  expandedQueries?: string[];
   chunks: VectorSearchResult[];
   executionTimeMs: number;
 }
@@ -62,6 +85,7 @@ export interface KnowledgeAnswer {
   answer: string;
   chunks: VectorSearchResult[];
   citations: ResponseCitation[];
+  diagnostics?: DocumentValidationDiagnostics;
   executionTimeMs: number;
 }
 

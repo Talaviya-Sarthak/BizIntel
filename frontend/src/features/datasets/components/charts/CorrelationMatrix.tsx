@@ -6,12 +6,12 @@ interface CorrelationMatrixProps {
 }
 
 function corrColor(r: number | null): string {
-  if (r === null) return 'rgba(148,163,184,0.08)';
+  if (r === null) return 'rgba(255,255,255,0.03)';
   const magnitude = Math.abs(r);
-  if (magnitude < 0.05) return 'rgba(148,163,184,0.12)';
+  if (magnitude < 0.05) return 'rgba(255,255,255,0.05)';
   const intensity = Math.min(0.9, magnitude);
-  if (r > 0) return `rgba(34,211,238,${0.14 + intensity * 0.8})`;
-  return `rgba(251,113,133,${0.14 + intensity * 0.8})`;
+  if (r > 0) return `rgba(52,211,153,${0.14 + intensity * 0.7})`;
+  return `rgba(251,113,133,${0.14 + intensity * 0.7})`;
 }
 
 function describe(r: number | null): string {
@@ -39,7 +39,7 @@ export function CorrelationMatrix({ columns, matrix }: CorrelationMatrixProps) {
               {columns.map((name) => (
                 <th
                   key={name}
-                  className="max-w-[120px] truncate p-1 text-[11px] font-medium text-slate-400"
+                  className="max-w-[120px] truncate p-1 text-[10.5px] font-medium text-zinc-400"
                   scope="col"
                   title={name}
                 >
@@ -52,7 +52,7 @@ export function CorrelationMatrix({ columns, matrix }: CorrelationMatrixProps) {
             {columns.map((rowName, rowIndex) => (
               <tr key={rowName}>
                 <th
-                  className="max-w-[120px] truncate p-1 text-right text-[11px] font-medium text-slate-400"
+                  className="max-w-[120px] truncate p-1 text-right text-[10.5px] font-medium text-zinc-400"
                   scope="row"
                   title={rowName}
                 >
@@ -65,10 +65,10 @@ export function CorrelationMatrix({ columns, matrix }: CorrelationMatrixProps) {
                     <td
                       key={`${rowIndex}-${colIndex}`}
                       className={clsx(
-                        'h-9 min-w-[52px] rounded-md text-center text-[11px] font-medium',
-                        isDiagonal ? 'text-slate-500' : 'text-white',
+                        'h-8 min-w-[48px] rounded text-center text-[10.5px] font-semibold font-mono',
+                        isDiagonal ? 'text-zinc-500' : 'text-zinc-100',
                       )}
-                      style={{ background: isDiagonal ? 'rgba(34,211,238,0.14)' : corrColor(value) }}
+                      style={{ background: isDiagonal ? 'rgba(255,255,255,0.08)' : corrColor(value) }}
                       title={
                         isDiagonal
                           ? `${rowName} with itself`
@@ -84,14 +84,14 @@ export function CorrelationMatrix({ columns, matrix }: CorrelationMatrixProps) {
           </tbody>
         </table>
       </div>
-      <div className="mt-3 flex items-center gap-3 text-[11px] text-slate-500">
+      <div className="mt-3 flex items-center gap-3 text-[10.5px] text-zinc-400">
         <span className="flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-sm bg-cyan-400/80" /> positive
+          <span className="h-2.5 w-2.5 rounded-sm bg-emerald-400" /> positive
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-sm bg-rose-400/80" /> negative
+          <span className="h-2.5 w-2.5 rounded-sm bg-rose-400" /> negative
         </span>
-        <span className="ml-auto">Pearson correlation</span>
+        <span className="ml-auto font-mono text-[10px] text-zinc-500">Pearson Correlation</span>
       </div>
     </div>
   );

@@ -13,11 +13,11 @@ interface DatasetTableProps {
 
 export function DatasetTable({ datasets, onDelete, deletingId }: DatasetTableProps) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]">
+    <div className="overflow-hidden rounded-xl border border-white/[0.06] bg-[#181818] shadow-sm">
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-white/10 text-left text-sm">
+        <table className="min-w-full divide-y divide-white/[0.06] text-left text-xs">
           <thead>
-            <tr className="text-[11px] uppercase tracking-wider text-slate-500">
+            <tr className="text-[10.5px] uppercase font-semibold tracking-wider text-zinc-400 bg-zinc-900/60">
               <th className="px-5 py-3 font-semibold">Dataset Name</th>
               <th className="px-5 py-3 font-semibold">File Type</th>
               <th className="px-5 py-3 text-right font-semibold">Rows</th>
@@ -28,49 +28,49 @@ export function DatasetTable({ datasets, onDelete, deletingId }: DatasetTablePro
               <th className="px-5 py-3 text-right font-semibold">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/5">
+          <tbody className="divide-y divide-white/[0.04]">
             {datasets.map((dataset) => (
-              <tr key={dataset.id} className="transition hover:bg-white/[0.03]">
-                <td className="px-5 py-4">
+              <tr key={dataset.id} className="transition-colors hover:bg-white/[0.02]">
+                <td className="px-5 py-3.5">
                   <Link
                     to={`/datasets/${dataset.id}`}
-                    className="block max-w-[280px] truncate font-medium text-white hover:text-cyan-300"
+                    className="block max-w-[280px] truncate font-semibold text-zinc-100 hover:text-white"
                   >
                     {dataset.name}
                   </Link>
                   {dataset.description ? (
-                    <p className="mt-0.5 block max-w-[280px] truncate text-xs text-slate-500">
+                    <p className="mt-0.5 block max-w-[280px] truncate text-[11px] text-zinc-400">
                       {dataset.description}
                     </p>
                   ) : (
-                    <p className="mt-0.5 text-xs text-slate-600">{dataset.originalFilename}</p>
+                    <p className="mt-0.5 text-[11px] text-zinc-500">{dataset.originalFilename}</p>
                   )}
                 </td>
-                <td className="px-5 py-4">
-                  <span className="rounded border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] uppercase tracking-wider text-slate-400">
+                <td className="px-5 py-3.5">
+                  <span className="rounded border border-white/[0.08] bg-zinc-900 px-2 py-0.5 text-[10.5px] uppercase font-mono text-zinc-400">
                     {dataset.fileType}
                   </span>
                 </td>
-                <td className="px-5 py-4 text-right text-slate-300">
+                <td className="px-5 py-3.5 text-right text-zinc-300 font-mono">
                   {formatNumber(dataset.rowCount)}
                 </td>
-                <td className="px-5 py-4 text-right text-slate-300">
+                <td className="px-5 py-3.5 text-right text-zinc-300 font-mono">
                   {formatNumber(dataset.columnCount)}
                 </td>
-                <td className="px-5 py-4 text-right text-slate-400">
+                <td className="px-5 py-3.5 text-right text-zinc-400 font-mono">
                   {formatBytes(dataset.fileSize)}
                 </td>
-                <td className="px-5 py-4">
+                <td className="px-5 py-3.5">
                   <DatasetStatusBadge status={dataset.status} />
                 </td>
-                <td className="px-5 py-4 whitespace-nowrap text-slate-400">
+                <td className="px-5 py-3.5 whitespace-nowrap text-zinc-400 text-[11px]">
                   {formatDate(dataset.createdAt)}
                 </td>
-                <td className="px-5 py-4">
+                <td className="px-5 py-3.5">
                   <div className="flex items-center justify-end gap-2">
                     <Link
                       to={`/datasets/${dataset.id}`}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:border-cyan-400/50 hover:text-white"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-zinc-900 px-2.5 py-1 text-xs font-semibold text-zinc-200 transition-colors hover:bg-zinc-800 hover:text-white"
                     >
                       <EyeIcon className="h-3.5 w-3.5" />
                       View
@@ -81,9 +81,9 @@ export function DatasetTable({ datasets, onDelete, deletingId }: DatasetTablePro
                       onClick={() => onDelete(dataset)}
                       loading={deletingId === dataset.id}
                       aria-label={`Delete ${dataset.name}`}
-                      className="text-slate-400 hover:text-red-400"
+                      className="text-zinc-400 hover:text-red-400"
                     >
-                      <TrashIcon className="h-4 w-4" />
+                      <TrashIcon className="h-3.5 w-3.5" />
                     </Button>
                   </div>
                 </td>

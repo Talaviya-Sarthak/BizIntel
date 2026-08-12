@@ -16,8 +16,8 @@ export class KnowledgeCitations {
     for (const result of results) {
       const meta = result.chunk.metadata;
       const source = meta.filename || meta.source || 'Enterprise Document';
-      const pageRef = meta.pageNumber ? `Page ${meta.pageNumber}` : `Section ${meta.chunkIndex + 1}`;
-      const key = `${source}::${pageRef}`;
+      const pageRef = meta.pageNumber ? `Page ${meta.pageNumber}` : undefined;
+      const key = `${source}::${pageRef || ''}`;
 
       if (!citationsMap.has(key)) {
         citationsMap.set(key, {
@@ -31,16 +31,16 @@ export class KnowledgeCitations {
   }
 
   /**
-   * Formats citations into a clean Markdown reference block appended to answers.
+   * Formats citations into a clean Markdown reference block at the bottom of answers.
    */
   public formatCitationsMarkdown(citations: ResponseCitation[]): string {
     if (!citations || citations.length === 0) return '';
 
     const lines = citations.map(
-      (c) => `- **${c.source}**${c.reference ? ` (${c.reference})` : ''}`,
+      (c) => `📄 **${c.source}**${c.reference ? ` (${c.reference})` : ''}`,
     );
 
-    return `\n\n### 📚 Sources & Citations:\n${lines.join('\n')}`;
+    return `\n\n---\n\n### 📚 Sources & Citations:\n${lines.join('\n')}`;
   }
 }
 

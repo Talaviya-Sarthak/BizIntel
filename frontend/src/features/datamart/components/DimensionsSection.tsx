@@ -36,7 +36,7 @@ export function DimensionsSection({ sources, dimensions, onChange }: DimensionsS
           const selected = columns.find((column) => column.name === dimension.column);
           const isDate = selected ? isDateCategory(selected.category as ColumnCategory) : false;
           return (
-            <div key={dimension.id} className="flex flex-col gap-2 rounded-xl border border-white/10 bg-white/[0.02] p-3 sm:flex-row sm:items-end">
+            <div key={dimension.id} className="flex flex-col gap-2 rounded-xl border border-white/[0.06] bg-[#141414] p-3 sm:flex-row sm:items-end">
               <div className="flex-1">
                 <Select
                   label="Column"
@@ -80,19 +80,20 @@ export function DimensionsSection({ sources, dimensions, onChange }: DimensionsS
                 variant="ghost"
                 size="icon"
                 aria-label="Remove dimension"
+                className="text-zinc-400 hover:text-red-400"
                 onClick={() => remove(dimension.id)}
               >
-                <TrashIcon className="h-4 w-4" />
+                <TrashIcon className="h-3.5 w-3.5" />
               </Button>
             </div>
           );
         })}
       </div>
-      <Button variant="outline" size="sm" onClick={add} className="self-start">
-        <PlusIcon className="h-4 w-4" />
+      <Button variant="outline" size="sm" onClick={add} className="self-start border-white/[0.08] bg-zinc-900 text-zinc-200">
+        <PlusIcon className="h-3.5 w-3.5" />
         Add dimension
       </Button>
-      <div className="flex items-center gap-3 text-xs text-slate-500">
+      <div className="flex items-center gap-3 text-[11px] text-zinc-400">
         <span className="flex items-center gap-1"><ColumnsIcon className="h-3.5 w-3.5" /> Breakdown</span>
         <span className="flex items-center gap-1"><HashIcon className="h-3.5 w-3.5" /> Category</span>
         <span className="flex items-center gap-1"><CalendarIcon className="h-3.5 w-3.5" /> Dates group by day/week/month/quarter/year</span>

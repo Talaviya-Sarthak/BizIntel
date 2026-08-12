@@ -19,6 +19,13 @@ export class KnowledgeVectorStore {
   }
 
   /**
+   * Retrieves all stored vector chunks for hybrid search & BM25 scoring.
+   */
+  public getAllChunks(): KnowledgeChunk[] {
+    return Array.from(this.chunks.values());
+  }
+
+  /**
    * Performs top-K Cosine Similarity vector search against stored chunks.
    *
    * @param queryVector Embedding vector of the query

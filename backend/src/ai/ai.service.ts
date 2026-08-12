@@ -1,5 +1,7 @@
 import { env } from '../config/env';
+import { logger } from '../config/logger';
 import { ApiError } from '../utils/httpError';
+import { responsePresentationAgent, ResponsePresentationAgent } from './agents/response.presentation.agent';
 import { artifactGenerator, ArtifactGenerator } from './artifacts/artifact.generator';
 import type { GeneratedArtifact } from './artifacts/artifact.types';
 import { executionEngine, ExecutionEngine } from './execution/execution.service';
@@ -11,7 +13,7 @@ import { intentRouter } from './router/router';
 import { initializeDefaultTools } from './tools/tool.factory';
 import { toolRegistry } from './tools/tool.registry';
 import type { ToolContext } from './tools/tool.types';
-import { visualizationService, VisualizationService } from './visualization/visualization.generator';
+import { visualDecisionEngine, VisualDecisionEngine } from './visualization/visual.decision.engine';
 import type { VisualizationResult } from './visualization/visualization.types';
 
 export interface AIServiceChatResult {
@@ -24,7 +26,8 @@ export interface AIServiceChatResult {
 export class AIService {
   constructor(
     private readonly execEngine: ExecutionEngine = executionEngine,
-    private readonly vizService: VisualizationService = visualizationService,
+    private readonly presentationAgent: ResponsePresentationAgent = responsePresentationAgent,
+    private readonly visualEngine: VisualDecisionEngine = visualDecisionEngine,
     private readonly artGenerator: ArtifactGenerator = artifactGenerator,
   ) {
     initializeDefaultTools(toolRegistry);
@@ -55,6 +58,17 @@ export class AIService {
     const intentResult = await intentRouter.classify(message);
     const executionPlan = aiOrchestrator.plan(intentResult);
 
+    logger.info(
+      {
+        message,
+        intent: intentResult.intent,
+        confidence: intentResult.confidence,
+        pipeline: executionPlan.pipeline,
+        selectedTool: executionPlan.selectedTool,
+      },
+      '[AI Pipeline Step 1-2] Intent Classified & Planned',
+    );
+
     // 3. Multi-Step Execution Graph Build & Execution
     const graph = this.execEngine.buildGraph(executionPlan);
     const context: ToolContext = {
@@ -73,60 +87,98 @@ export class AIService {
       metadata: { executionTimeMs: 0, intent: executionPlan.intent, timestamp: new Date().toISOString() },
     };
 
+    logger.info(
+      {
+        toolId: toolResult.toolId,
+        success: toolResult.success,
+        generatedSQL: toolResult.data?.generatedSQL || 'N/A',
+        datasetName: toolResult.data?.datasetName || 'N/A',
+        hasData: !!toolResult.data,
+      },
+      '[AI Pipeline Step 3-4] Tool Execution & SQL Completed',
+    );
+
     // 4. Save Tool Result & Build Memory Context
     memoryManager.saveToolResult(session.sessionId, toolResult);
     const memoryContext = memoryManager.buildContext(session.sessionId, message, executionPlan, toolResult);
 
-    // 5. Synthesize Executive Response
-    const response = await responseGenerator.generate({
+    // 5. Synthesize Raw Answer with LLM Response Generator
+    const rawResponse = await responseGenerator.generate({
       userQuestion: message,
       executionPlan,
       toolResult,
       memoryContext,
     });
 
-    // 6. Generate Visualizations & Smart Artifact Exports
-    const visualizations = this.vizService.generateVisualizations(toolResult);
+    logger.info(
+      {
+        rawAnswerLength: rawResponse.answer.length,
+        rawAnswerSnippet: rawResponse.answer.substring(0, 100),
+      },
+      '[AI Pipeline Step 5] LLM Answer Synthesized',
+    );
 
+    // 6. Response Presentation Agent (Transforms raw text into clean, structured presentation output)
+    const presentation = this.presentationAgent.present({
+      userQuestion: message,
+      rawText: rawResponse.answer,
+      executionPlan,
+      toolResult,
+    });
+
+    const finalResponse: AIResponse = {
+      ...rawResponse,
+      answer: presentation.answer,
+    };
+
+    // 7. Visualization Decision Agent (Confidence scoring, SQL result dependence, max 0-2 charts)
+    const visualizations = this.visualEngine.selectVisualizations(
+      message,
+      executionPlan.intent,
+      toolResult,
+    );
+
+    logger.info(
+      {
+        chartCount: visualizations.length,
+        chartTypes: visualizations.map((v) => v.chartType),
+      },
+      '[AI Pipeline Step 7] Visual Decision Engine Selected Charts',
+    );
+
+    // 8. Explicit Export Artifacts Generation ONLY when explicitly requested by user
     const artifacts: GeneratedArtifact[] = [];
     const msgLower = message.toLowerCase();
-
-    // Check if user explicitly asked to export or download a report
     const isExplicitExportRequest =
       msgLower.includes('export') ||
       msgLower.includes('download') ||
       msgLower.includes('generate report') ||
       msgLower.includes('create report') ||
       msgLower.includes('save csv') ||
-      msgLower.includes('download pdf');
+      msgLower.includes('download pdf') ||
+      msgLower.includes('export csv') ||
+      msgLower.includes('save markdown');
 
-    // Check if intent is a data-producing analytical workflow with actual data arrays
-    const isDataIntent =
-      (executionPlan.intent === 'analytics' || executionPlan.intent === 'backtesting') &&
-      ((Array.isArray(toolResult.data?.datasets) && toolResult.data.datasets.length > 0) ||
-        (Array.isArray(toolResult.data?.recentBacktests) && toolResult.data.recentBacktests.length > 0));
-
-    // Never generate artifacts for general greetings, general chat, or simple questions
-    if (executionPlan.intent !== 'general' && (isExplicitExportRequest || isDataIntent)) {
+    if (isExplicitExportRequest) {
       const artifactFormat = msgLower.includes('csv') ? 'csv' : msgLower.includes('json') ? 'json' : 'markdown';
       const artifact = this.artGenerator.generateReportArtifact(
-        `Report_${executionPlan.intent}`,
-        response.answer,
+        `Export_${executionPlan.intent}`,
+        finalResponse.answer,
         toolResult,
-        response.metadata.citations || [],
+        finalResponse.metadata.citations || [],
         artifactFormat,
       );
       artifacts.push(artifact);
     }
 
-    // 7. Save Assistant Message & Maintain Memory
-    memoryManager.saveAssistantMessage(session.sessionId, response.answer);
+    // 9. Save Assistant Message & Maintain Memory
+    memoryManager.saveAssistantMessage(session.sessionId, finalResponse.answer);
     void memoryManager.summarizeConversation(session.sessionId);
     memoryManager.trimConversation(session.sessionId);
 
     return {
       sessionId: session.sessionId,
-      response,
+      response: finalResponse,
       visualizations,
       artifacts,
     };

@@ -57,7 +57,7 @@ export function DashboardsPage() {
 
   if (dashboardsQuery.isLoading) {
     return (
-      <div className="flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.02] py-24">
+      <div className="flex items-center justify-center rounded-xl border border-white/[0.06] bg-[#181818] py-20">
         <Spinner size="md" />
       </div>
     );
@@ -74,11 +74,11 @@ export function DashboardsPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Dashboards"
+        title="Live Dashboards"
         description="Arrange analyses and metrics into live, at-a-glance dashboards. Widgets pull fresh results whenever you open one."
         actions={
-          <Button variant="primary" onClick={() => setCreateOpen(true)}>
-            <PlusIcon className="h-4 w-4" />
+          <Button variant="primary" onClick={() => setCreateOpen(true)} className="bg-white hover:bg-zinc-200 text-black font-semibold text-xs border border-white/20">
+            <PlusIcon className="h-3.5 w-3.5" />
             New dashboard
           </Button>
         }
@@ -87,42 +87,42 @@ export function DashboardsPage() {
       {dashboards.length === 0 ? (
         <EmptyState
           icon={GridIcon}
-          title="No dashboards yet"
-          description="Create a dashboard to arrange your saved analyses and metrics as widgets."
+          title="No dashboards created yet"
+          description="Create a dashboard to arrange your saved analyses and metrics as interactive widgets."
         />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {dashboards.map((dashboard) => (
             <article
               key={dashboard.id}
-              className="group flex cursor-pointer flex-col gap-2 rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition hover:border-white/25"
+              className="group flex cursor-pointer flex-col gap-2 rounded-xl border border-white/[0.06] bg-[#181818] p-4 shadow-sm transition hover:border-white/20"
               onClick={() => navigate(`/datamart/dashboards/${dashboard.id}`)}
             >
               <div className="flex items-start justify-between gap-2">
-                <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-cyan-400/10 text-cyan-400 ring-1 ring-cyan-400/20">
+                <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-zinc-800 text-zinc-100 border border-zinc-700/60 shadow-xs">
                   <GridIcon className="h-4 w-4" />
                 </span>
                 <button
                   type="button"
                   aria-label={`Delete ${dashboard.name}`}
-                  className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-400/10 hover:text-red-300 opacity-0 group-hover:opacity-100"
+                  className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-zinc-400 transition hover:bg-red-400/10 hover:text-red-400 opacity-0 group-hover:opacity-100"
                   onClick={(event) => {
                     event.stopPropagation();
                     void handleDelete(dashboard.id);
                   }}
                 >
-                  <TrashIcon className="h-4 w-4" />
+                  <TrashIcon className="h-3.5 w-3.5" />
                 </button>
               </div>
-              <h3 className="mt-1 truncate text-sm font-semibold text-white">{dashboard.name}</h3>
+              <h3 className="mt-1 truncate text-xs font-semibold text-zinc-100">{dashboard.name}</h3>
               {dashboard.description ? (
-                <p className="line-clamp-2 text-xs text-slate-500">{dashboard.description}</p>
+                <p className="line-clamp-2 text-[11px] text-zinc-400">{dashboard.description}</p>
               ) : null}
-              <div className="mt-auto flex items-center justify-between text-xs text-slate-500">
+              <div className="mt-auto flex items-center justify-between text-[10.5px] text-zinc-500 pt-2">
                 <span>{dashboard.layout}-column layout</span>
                 <span>{formatDate(dashboard.createdAt)}</span>
               </div>
-              <Button variant="ghost" size="sm" className="mt-2 w-full">
+              <Button variant="ghost" size="sm" className="mt-2 w-full text-zinc-300 hover:text-white hover:bg-white/[0.05]">
                 <EyeIcon className="h-3.5 w-3.5" />
                 Open
               </Button>
@@ -132,13 +132,13 @@ export function DashboardsPage() {
       )}
 
       {createMutation.error ? (
-        <p className="rounded-lg border border-red-400/20 bg-red-400/[0.05] px-4 py-3 text-sm text-red-300">
+        <p className="rounded-lg border border-red-400/20 bg-red-400/[0.05] px-4 py-3 text-xs text-red-300">
           {toApiError(createMutation.error).message}
         </p>
       ) : null}
 
       {deleteError ? (
-        <p className="rounded-lg border border-red-400/20 bg-red-400/[0.05] px-4 py-3 text-sm text-red-300">
+        <p className="rounded-lg border border-red-400/20 bg-red-400/[0.05] px-4 py-3 text-xs text-red-300">
           {deleteError}
         </p>
       ) : null}

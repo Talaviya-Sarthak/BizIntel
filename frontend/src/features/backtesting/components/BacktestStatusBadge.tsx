@@ -2,8 +2,8 @@ import { clsx } from 'clsx';
 import type { BacktestStatus } from '../types';
 
 const STYLES: Record<BacktestStatus, { label: string; dot: string; text: string; ring: string }> = {
-  PENDING: { label: 'Pending', dot: 'bg-slate-400', text: 'text-slate-300', ring: 'ring-slate-400/20' },
-  RUNNING: { label: 'Running', dot: 'bg-cyan-400', text: 'text-cyan-300', ring: 'ring-cyan-400/20' },
+  PENDING: { label: 'Pending', dot: 'bg-zinc-400', text: 'text-zinc-300', ring: 'ring-zinc-400/20' },
+  RUNNING: { label: 'Running', dot: 'bg-zinc-200', text: 'text-zinc-100', ring: 'ring-white/20' },
   COMPLETED: { label: 'Completed', dot: 'bg-emerald-400', text: 'text-emerald-300', ring: 'ring-emerald-400/20' },
   FAILED: { label: 'Failed', dot: 'bg-red-400', text: 'text-red-300', ring: 'ring-red-400/20' },
 };
@@ -15,9 +15,8 @@ export function BacktestStatusBadge({ status }: { status: BacktestStatus }) {
   return (
     <span
       className={clsx(
-        'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium ring-1',
+        'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[10.5px] font-medium border border-white/[0.08] bg-zinc-900',
         style.text,
-        style.ring,
       )}
     >
       <span className="relative flex h-1.5 w-1.5">

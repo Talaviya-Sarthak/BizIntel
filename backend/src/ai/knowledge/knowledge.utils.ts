@@ -4,14 +4,27 @@
  */
 
 /**
- * Normalizes raw document text by removing control characters, excess whitespace, and normalizing newlines.
+ * Normalizes raw document text by removing control characters, PDF binary residues,
+ * font CMap artifacts, and normalizing newlines.
  */
 export function normalizeDocumentText(text: string): string {
   if (!text) return '';
+
   return text
     .replace(/\r\n/g, '\n')
     .replace(/\r/g, '\n')
-    .replace(/[\x00-\x09\x0B-\x1F\x7F]/g, '') // remove non-printable ASCII
+    // Remove PDF CMap / Font glyph table artifacts (e.g., <0059> <006B> endcmap CMapName)
+    .replace(/<[0-9a-fA-F]{4,}>/g, ' ')
+    .replace(/\b(endbfrange|endcmap|CMapName|defineresource|begincmap|beginbfrange|endcodespacerange|findresource)\b/gi, ' ')
+    // Remove PDF stream residue
+    .replace(/\/Filter\s*\/[A-Za-z0-9]+/g, ' ')
+    .replace(/\/Length\s+\d+/g, ' ')
+    // Remove non-printable ASCII / binary control bytes
+    .replace(/[\x00-\x09\x0B-\x1F\x7F-\x9F]/g, ' ')
+    // Strip non-standard binary characters while keeping standard punctuation & letters
+    .replace(/[^\x20-\x7E\n\t]/g, ' ')
+    // Collapse excess spaces and newlines
+    .replace(/[ \t]+/g, ' ')
     .replace(/\n{3,}/g, '\n\n')
     .trim();
 }

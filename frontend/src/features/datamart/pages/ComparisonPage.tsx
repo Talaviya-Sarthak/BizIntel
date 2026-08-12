@@ -22,7 +22,7 @@ export function ComparisonPage() {
 
   if (sourcesQuery.isLoading) {
     return (
-      <div className="flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.02] py-24">
+      <div className="flex items-center justify-center rounded-xl border border-white/[0.06] bg-[#181818] py-20">
         <Spinner size="md" />
       </div>
     );
@@ -39,7 +39,7 @@ export function ComparisonPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title="Compare datasets"
+        title="Compare Datasets"
         description="Pick two datasets to see whether they share compatible columns and how their basic statistics line up."
       />
 
@@ -65,7 +65,7 @@ export function ComparisonPage() {
       </div>
 
       {comparison.isLoading ? (
-        <div className="flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.02] py-24">
+        <div className="flex items-center justify-center rounded-xl border border-white/[0.06] bg-[#181818] py-20">
           <Spinner size="md" />
         </div>
       ) : comparison.isError ? (
@@ -79,14 +79,14 @@ export function ComparisonPage() {
           <div
             className={
               ready.compatible
-                ? 'flex items-center gap-3 rounded-xl border border-emerald-400/20 bg-emerald-400/[0.05] p-4 text-sm text-emerald-300'
-                : 'flex items-center gap-3 rounded-xl border border-amber-400/20 bg-amber-400/[0.05] p-4 text-sm text-amber-300'
+                ? 'flex items-center gap-3 rounded-xl border border-emerald-400/20 bg-emerald-400/[0.05] p-4 text-xs text-emerald-300'
+                : 'flex items-center gap-3 rounded-xl border border-amber-400/20 bg-amber-400/[0.05] p-4 text-xs text-amber-300'
             }
           >
             {ready.compatible ? (
-              <CheckCircleIcon className="h-5 w-5 shrink-0" />
+              <CheckCircleIcon className="h-4 w-4 shrink-0" />
             ) : (
-              <XCircleIcon className="h-5 w-5 shrink-0" />
+              <XCircleIcon className="h-4 w-4 shrink-0" />
             )}
             {ready.compatible
               ? `Datasets share ${ready.sharedColumns.length} compatible column${ready.sharedColumns.length === 1 ? '' : 's'} — they can be joined.`
@@ -95,12 +95,12 @@ export function ComparisonPage() {
 
           <div className="grid gap-4 sm:grid-cols-2">
             {ready.datasets.map((dataset, index) => (
-              <div key={dataset.id} className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-                <h3 className="text-sm font-semibold text-white">
+              <div key={dataset.id} className="rounded-xl border border-white/[0.06] bg-[#181818] p-4 shadow-sm">
+                <h3 className="text-xs font-semibold text-zinc-100">
                   {index === 0 ? 'Dataset A' : 'Dataset B'}
                 </h3>
-                <p className="mt-0.5 text-sm text-slate-300">{dataset.name}</p>
-                <p className="mt-3 text-xs text-slate-500">
+                <p className="mt-0.5 text-xs text-zinc-300 font-semibold">{dataset.name}</p>
+                <p className="mt-2 text-[11px] text-zinc-400 font-mono">
                   {formatNumber(dataset.rowCount)} rows · {dataset.columnCount} columns ·{' '}
                   {dataset.fileType} · {formatDate(dataset.createdAt)}
                 </p>
@@ -108,36 +108,36 @@ export function ComparisonPage() {
             ))}
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-2">
-            <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-              <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold text-white">
-                <ColumnsIcon className="h-4 w-4 text-cyan-400" />
-                Column compatibility
+          <div className="grid gap-5 lg:grid-cols-2">
+            <section className="rounded-xl border border-white/[0.06] bg-[#181818] p-4 sm:p-5 shadow-sm">
+              <h3 className="mb-3 flex items-center gap-2 text-xs font-semibold text-zinc-100 border-b border-white/[0.06] pb-2">
+                <ColumnsIcon className="h-3.5 w-3.5 text-zinc-300" />
+                Column Compatibility
               </h3>
               {ready.columns.length === 0 ? (
                 <EmptyState title="No columns to compare" description="Both datasets appear to have no columns." />
               ) : (
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left text-sm">
+                  <table className="w-full text-left text-xs">
                     <thead>
-                      <tr className="border-b border-white/10 text-[11px] uppercase tracking-wider text-slate-500">
-                        <th className="px-3 py-2 font-medium">Column</th>
-                        <th className="px-3 py-2 font-medium">Type A</th>
-                        <th className="px-3 py-2 font-medium">Type B</th>
-                        <th className="px-3 py-2 font-medium">Compatible</th>
+                      <tr className="border-b border-white/[0.06] text-[10.5px] uppercase tracking-wider text-zinc-400 font-semibold bg-zinc-900/60">
+                        <th className="px-3 py-2 font-semibold">Column</th>
+                        <th className="px-3 py-2 font-semibold">Type A</th>
+                        <th className="px-3 py-2 font-semibold">Type B</th>
+                        <th className="px-3 py-2 font-semibold">Compatible</th>
                       </tr>
                     </thead>
                     <tbody>
                       {ready.columns.map((column) => (
-                        <tr key={column.name} className="border-b border-white/5 last:border-0">
-                          <td className="px-3 py-2 text-slate-200">{column.name}</td>
-                          <td className="px-3 py-2 text-slate-400">{column.typeA ?? '—'}</td>
-                          <td className="px-3 py-2 text-slate-400">{column.typeB ?? '—'}</td>
+                        <tr key={column.name} className="border-b border-white/[0.04] last:border-0">
+                          <td className="px-3 py-2 text-zinc-200 font-semibold">{column.name}</td>
+                          <td className="px-3 py-2 text-zinc-400 font-mono">{column.typeA ?? '—'}</td>
+                          <td className="px-3 py-2 text-zinc-400 font-mono">{column.typeB ?? '—'}</td>
                           <td className="px-3 py-2">
                             {column.compatible ? (
-                              <CheckCircleIcon className="h-4 w-4 text-emerald-400" />
+                              <CheckCircleIcon className="h-3.5 w-3.5 text-emerald-400" />
                             ) : (
-                              <XCircleIcon className="h-4 w-4 text-red-400" />
+                              <XCircleIcon className="h-3.5 w-3.5 text-red-400" />
                             )}
                           </td>
                         </tr>
@@ -148,28 +148,28 @@ export function ComparisonPage() {
               )}
             </section>
 
-            <section className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-              <h3 className="mb-3 text-sm font-semibold text-white">Basic statistics</h3>
+            <section className="rounded-xl border border-white/[0.06] bg-[#181818] p-4 sm:p-5 shadow-sm">
+              <h3 className="mb-3 text-xs font-semibold text-zinc-100 border-b border-white/[0.06] pb-2">Basic Statistics Comparison</h3>
               {ready.summary.length === 0 ? (
                 <EmptyState title="No statistics available" description="Nothing to compare yet." />
               ) : (
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left text-sm">
+                  <table className="w-full text-left text-xs">
                     <thead>
-                      <tr className="border-b border-white/10 text-[11px] uppercase tracking-wider text-slate-500">
-                        <th className="px-3 py-2 font-medium">Metric</th>
-                        <th className="px-3 py-2 font-medium">Dataset A</th>
-                        <th className="px-3 py-2 font-medium">Dataset B</th>
+                      <tr className="border-b border-white/[0.06] text-[10.5px] uppercase tracking-wider text-zinc-400 font-semibold bg-zinc-900/60">
+                        <th className="px-3 py-2 font-semibold">Metric</th>
+                        <th className="px-3 py-2 font-semibold">Dataset A</th>
+                        <th className="px-3 py-2 font-semibold">Dataset B</th>
                       </tr>
                     </thead>
                     <tbody>
                       {ready.summary.map((entry) => (
-                        <tr key={entry.metric} className="border-b border-white/5 last:border-0">
-                          <td className="px-3 py-2 capitalize text-slate-200">{entry.metric}</td>
-                          <td className="px-3 py-2 tabular-nums text-slate-300">
+                        <tr key={entry.metric} className="border-b border-white/[0.04] last:border-0">
+                          <td className="px-3 py-2 capitalize text-zinc-200 font-semibold">{entry.metric}</td>
+                          <td className="px-3 py-2 tabular-nums text-zinc-300 font-mono">
                             {entry.datasetA === null ? '—' : entry.datasetA.toLocaleString('en-US')}
                           </td>
-                          <td className="px-3 py-2 tabular-nums text-slate-300">
+                          <td className="px-3 py-2 tabular-nums text-zinc-300 font-mono">
                             {entry.datasetB === null ? '—' : entry.datasetB.toLocaleString('en-US')}
                           </td>
                         </tr>
@@ -184,8 +184,8 @@ export function ComparisonPage() {
       ) : (
         <EmptyState
           icon={ColumnsIcon}
-          title="Choose two datasets"
-          description="The comparison shows how compatible the datasets are and how their sizes line up."
+          title="Choose two datasets to compare"
+          description="The comparison engine checks schema compatibility, shared keys, and row counts."
         />
       )}
     </div>

@@ -1,6 +1,15 @@
-import { DEFAULT_CHUNK_OVERLAP, DEFAULT_CHUNK_SIZE } from './knowledge.constants';
+import {
+  DEFAULT_CHUNK_OVERLAP,
+  DEFAULT_CHUNK_SIZE,
+  EMBEDDING_VERSION,
+} from './knowledge.constants';
 import type { KnowledgeChunk, KnowledgeDocumentMetadata } from './knowledge.types';
 import { estimateTokenCount, normalizeDocumentText } from './knowledge.utils';
+
+export interface PageContent {
+  pageNumber: number;
+  text: string;
+}
 
 export interface ChunkerOptions {
   chunkSize?: number;
@@ -21,39 +30,80 @@ export class KnowledgeChunker {
   }
 
   /**
-   * Recursively splits document text into chunks preserving sentence/paragraph boundaries where possible.
+   * Splits per-page or full document text into semantic chunks aligned with paragraph,
+   * section, and heading boundaries.
    *
-   * @param rawText Full raw document text
+   * @param pages Extracted array of page contents (or full document text)
    * @param metadata Base document metadata
-   * @returns Array of KnowledgeChunk objects with chunk indices and token estimates
+   * @returns Array of semantic KnowledgeChunk objects
    */
-  public splitDocument(rawText: string, metadata: KnowledgeDocumentMetadata): KnowledgeChunk[] {
-    const normalized = normalizeDocumentText(rawText);
-    if (!normalized) return [];
+  public splitPages(pages: PageContent[], metadata: KnowledgeDocumentMetadata): KnowledgeChunk[] {
+    const allChunks: { text: string; pageNumber: number; sectionHeading?: string }[] = [];
+    let currentHeading = '';
 
-    const rawChunks = this.recursiveSplitText(normalized, this.chunkSize, this.chunkOverlap);
+    for (const page of pages) {
+      const normalizedPageText = normalizeDocumentText(page.text);
+      if (!normalizedPageText) continue;
 
-    return rawChunks.map((text, index) => {
-      const tokenEstimate = estimateTokenCount(text);
+      // Extract current heading if present on this page
+      const headingMatch = normalizedPageText.match(/(?:^|\n)(?:#+\s*|SECTION\s+\d+|CHAPTER\s+\d+|[A-Z0-9\s]{4,30}:?\n)([^\n]+)/i);
+      if (headingMatch && headingMatch[1]) {
+        currentHeading = headingMatch[1].trim();
+      }
+
+      // Split page text semantically into paragraphs and sections
+      const rawPageChunks = this.semanticSplitText(normalizedPageText, this.chunkSize, this.chunkOverlap);
+
+      for (const chunkText of rawPageChunks) {
+        allChunks.push({
+          text: chunkText,
+          pageNumber: page.pageNumber,
+          sectionHeading: currentHeading || metadata.title,
+        });
+      }
+    }
+
+    const totalChunks = allChunks.length;
+
+    return allChunks.map((c, index) => {
+      const tokenEstimate = estimateTokenCount(c.text);
       return {
         id: `chk_${metadata.documentId}_${index}`,
-        text,
+        text: c.text,
         metadata: {
           ...metadata,
+          documentName: metadata.title || metadata.filename,
           chunkIndex: index,
-          pageNumber: metadata.pageCount ? Math.floor((index / rawChunks.length) * metadata.pageCount) + 1 : 1,
+          totalChunks,
+          pageNumber: c.pageNumber,
+          sectionHeading: c.sectionHeading,
           tokenEstimate,
+          sourcePath: metadata.source || metadata.filename,
+          embeddingVersion: EMBEDDING_VERSION,
         },
       };
     });
   }
 
-  private recursiveSplitText(text: string, chunkSize: number, chunkOverlap: number): string[] {
+  /**
+   * Semantic chunking over a single full document string fallback.
+   */
+  public splitDocument(rawText: string, metadata: KnowledgeDocumentMetadata): KnowledgeChunk[] {
+    const pages: PageContent[] = [{ pageNumber: 1, text: rawText }];
+    return this.splitPages(pages, metadata);
+  }
+
+  /**
+   * Recursively splits document text along semantic boundaries (headings, paragraphs, lists, sentences)
+   * avoiding cutting paragraphs in half where possible.
+   */
+  private semanticSplitText(text: string, chunkSize: number, chunkOverlap: number): string[] {
     if (text.length <= chunkSize) {
       return [text];
     }
 
-    const separators = ['\n\n', '\n', '. ', '? ', '! ', '; ', ' ', ''];
+    // Ordered list of semantic separators
+    const separators = ['\n\n---\n\n', '\n\n', '\n# ', '\n## ', '\n### ', '\n• ', '\n- ', '\n', '. ', '? ', '! ', '; ', ' '];
     let chosenSeparator = '';
 
     for (const sep of separators) {
@@ -75,7 +125,7 @@ export class KnowledgeChunker {
       if (piece.length <= chunkSize) {
         currentChunk = piece;
       } else {
-        if (currentChunk) {
+        if (currentChunk.trim()) {
           chunks.push(currentChunk.trim());
         }
 

@@ -9,7 +9,8 @@ export class UploadService {
   constructor(private readonly ingestionService: KnowledgeIngestionService = knowledgeIngestionService) {}
 
   /**
-   * Processes uploaded file and automatically triggers RAG chunking and vector indexing.
+   * Processes uploaded file and automatically triggers page-by-page RAG chunking,
+   * semantic validation, and vector indexing.
    */
   public async processUpload(
     filename: string,
@@ -19,7 +20,7 @@ export class UploadService {
     const fileId = `file_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
     const inferredType = this.mapFileType(filename, fileTypeHint);
 
-    logger.info({ fileId, filename, inferredType }, 'Processing uploaded file for RAG ingestion');
+    logger.info({ fileId, filename, inferredType }, 'Processing uploaded file for production RAG ingestion');
 
     let chunkCount = 0;
     if (['pdf', 'docx', 'txt', 'markdown'].includes(inferredType)) {
@@ -30,6 +31,10 @@ export class UploadService {
         fileType: inferredType as SupportedDocumentFormat,
       });
       chunkCount = chunks.length;
+
+      if (chunks.diagnostics && chunks.diagnostics.status === 'Failed') {
+        logger.error({ diagnostics: chunks.diagnostics }, 'Document upload validation failed');
+      }
     }
 
     const record: UploadRecord = {
@@ -46,11 +51,13 @@ export class UploadService {
     this.records.set(fileId, record);
 
     return {
-      success: true,
+      success: chunkCount > 0,
       fileId,
       filename,
       chunkCount,
-      message: `File "${filename}" successfully ingested and indexed into RAG vector store.`,
+      message: chunkCount > 0
+        ? `File "${filename}" successfully ingested and indexed into RAG vector store (${chunkCount} semantic chunks).`
+        : `I couldn't fully process this PDF because parts of the document couldn't be extracted. Please re-upload the document or use a searchable PDF.`,
     };
   }
 
@@ -68,7 +75,7 @@ export class UploadService {
     if (ext === 'docx' || ext === 'doc') return 'docx';
     if (ext === 'md' || ext === 'markdown') return 'markdown';
     if (ext === 'csv') return 'csv';
-    if (ext === 'xlsx' || ext === 'xls') return 'xlsx';
+    if (ext === 'xls' || ext === 'xlsx') return 'xlsx';
     return 'txt';
   }
 }

@@ -15,8 +15,13 @@ export class GeneralTool implements AITool {
       success: true,
       toolId: this.id,
       data: {
-        response: 'Hello! I am your Enterprise Intelligence Assistant. How can I assist you with analytics, backtesting, or retail data today?',
         query: context.query,
+        capabilities: [
+          'Enterprise DataMart SQL Analytics & Schema Profiling',
+          'Quantitative Trading Strategy Backtesting',
+          'Knowledge Base RAG Document Intelligence',
+          'Retail Catalog Search',
+        ],
       },
       metadata: {
         executionTimeMs: Date.now() - startTime,

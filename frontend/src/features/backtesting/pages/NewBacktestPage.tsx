@@ -117,7 +117,7 @@ export function NewBacktestPage() {
 
   if (datasetsQuery.isLoading || strategiesQuery.isLoading) {
     return (
-      <div className="flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.02] py-24">
+      <div className="flex items-center justify-center rounded-xl border border-white/[0.06] bg-[#181818] py-20">
         <Spinner size="md" />
       </div>
     );
@@ -137,9 +137,9 @@ export function NewBacktestPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">New backtest</h1>
-        <p className="mt-1.5 text-sm leading-relaxed text-slate-400">
+      <div className="border-b border-white/[0.06] pb-4">
+        <h1 className="text-xl font-bold tracking-tight text-zinc-100 sm:text-2xl">New Backtest Strategy Run</h1>
+        <p className="mt-1 text-xs leading-relaxed text-zinc-400">
           Configure a strategy run against a dataset&apos;s OHLCV columns. Signals execute at the
           next bar&apos;s open with commission and slippage applied.
         </p>
@@ -156,40 +156,39 @@ export function NewBacktestPage() {
                 type="button"
                 onClick={() => setStep(index)}
                 className={clsx(
-                  'flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition',
+                  'flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition-all',
                   active
-                    ? 'border-cyan-400/40 bg-cyan-400/10 text-cyan-300'
+                    ? 'border-white/40 bg-zinc-800 text-white shadow-xs'
                     : done
-                      ? 'border-white/10 bg-white/[0.03] text-slate-300 hover:border-white/20'
-                      : 'border-white/10 text-slate-600',
+                      ? 'border-white/[0.06] bg-[#161616] text-zinc-300 hover:border-white/20'
+                      : 'border-white/[0.04] text-zinc-500',
                 )}
               >
                 {done ? <CheckCircleIcon className="h-3.5 w-3.5 text-emerald-400" /> : null}
                 <span>
-                  <span className="mr-1 text-slate-500">{index + 1}.</span>
+                  <span className="mr-1 text-zinc-500">{index + 1}.</span>
                   {label}
                 </span>
               </button>
-              {index < STEPS.length - 1 ? <span className="h-px w-3 bg-white/10" /> : null}
+              {index < STEPS.length - 1 ? <span className="h-px w-3 bg-white/[0.06]" /> : null}
             </li>
           );
         })}
       </ol>
 
-      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+      <div className="rounded-xl border border-white/[0.06] bg-[#181818] p-5 sm:p-6 shadow-sm">
         {step === 0 ? (
-          <section className="flex flex-col gap-5">
+          <section className="flex flex-col gap-4">
             <div>
-              <h2 className="text-lg font-semibold text-white">Choose a dataset</h2>
-              <p className="mt-1 text-sm text-slate-500">
+              <h2 className="text-sm font-semibold text-zinc-100">Choose a dataset</h2>
+              <p className="mt-0.5 text-xs text-zinc-400">
                 The dataset must contain OHLCV columns (date, open, high, low, close). Only ready
                 datasets can be backtested.
               </p>
             </div>
             {readyDatasets.length === 0 ? (
-              <p className="text-sm text-slate-400">
-                No ready datasets yet. <span className="text-cyan-400">Upload a CSV</span> and wait
-                for it to finish processing first.
+              <p className="text-xs text-zinc-400">
+                No ready datasets available yet. <span className="text-zinc-200 underline">Upload a CSV</span> first.
               </p>
             ) : (
               <Select
@@ -207,15 +206,15 @@ export function NewBacktestPage() {
             )}
             {datasetId ? (
               compatibility.isLoading ? (
-                <p className="text-sm text-slate-400">Checking market-data compatibility…</p>
+                <p className="text-xs text-zinc-400">Checking market-data compatibility…</p>
               ) : compatibility.isError ? (
                 <ErrorState message={toApiError(compatibility.error).message} onRetry={() => compatibility.refetch()} />
               ) : compatibility.data && !compatibility.data.compatible ? (
                 <div className="flex items-start gap-3 rounded-xl border border-red-400/20 bg-red-400/[0.05] p-4">
-                  <XCircleIcon className="mt-0.5 h-5 w-5 shrink-0 text-red-400" />
+                  <XCircleIcon className="mt-0.5 h-4 w-4 shrink-0 text-red-400" />
                   <div>
-                    <p className="text-sm font-medium text-red-300">Dataset is not market data</p>
-                    <ul className="mt-1 list-inside list-disc text-sm text-red-200/70">
+                    <p className="text-xs font-semibold text-red-300">Dataset is not market data</p>
+                    <ul className="mt-1 list-inside list-disc text-xs text-red-200/70">
                       {compatibility.data.issues.slice(0, 4).map((issue) => (
                         <li key={issue}>{issue}</li>
                       ))}
@@ -223,8 +222,8 @@ export function NewBacktestPage() {
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-2 rounded-xl border border-emerald-400/20 bg-emerald-400/[0.05] p-4 text-sm text-emerald-300">
-                  <CheckCircleIcon className="h-5 w-5 shrink-0" />
+                <div className="flex items-center gap-2 rounded-xl border border-emerald-400/20 bg-emerald-400/[0.05] p-4 text-xs text-emerald-300">
+                  <CheckCircleIcon className="h-4 w-4 shrink-0" />
                   OHLCV columns detected
                   {compatibility.data?.volumeColumn ? ' (with volume)' : ''}.
                 </div>
@@ -236,8 +235,8 @@ export function NewBacktestPage() {
         {step === 1 ? (
           <section className="flex flex-col gap-4">
             <div>
-              <h2 className="text-lg font-semibold text-white">Choose a strategy</h2>
-              <p className="mt-1 text-sm text-slate-500">
+              <h2 className="text-sm font-semibold text-zinc-100">Choose a strategy</h2>
+              <p className="mt-0.5 text-xs text-zinc-400">
                 Each strategy is deterministic and long-only. Signals execute at the next bar open.
               </p>
             </div>
@@ -250,18 +249,18 @@ export function NewBacktestPage() {
                     type="button"
                     onClick={() => selectStrategy(entry)}
                     className={clsx(
-                      'flex flex-col gap-2 rounded-2xl border p-4 text-left transition',
+                      'flex flex-col gap-2 rounded-xl border p-4 text-left transition-all',
                       selected
-                        ? 'border-cyan-400/40 bg-cyan-400/[0.06]'
-                        : 'border-white/10 bg-white/[0.02] hover:border-white/25',
+                        ? 'border-white/40 bg-zinc-800 text-white shadow-xs'
+                        : 'border-white/[0.06] bg-[#141414] hover:border-white/20 text-zinc-300',
                     )}
                   >
                     <span className="flex items-center justify-between">
-                      <span className="text-sm font-semibold text-white">{entry.name}</span>
-                      {selected ? <CheckCircleIcon className="h-4 w-4 text-cyan-400" /> : null}
+                      <span className="text-xs font-semibold text-zinc-100">{entry.name}</span>
+                      {selected ? <CheckCircleIcon className="h-4 w-4 text-white" /> : null}
                     </span>
-                    <span className="text-xs leading-relaxed text-slate-500">{entry.description}</span>
-                    <span className="mt-auto text-[11px] uppercase tracking-wider text-slate-600">
+                    <span className="text-[11px] leading-relaxed text-zinc-400">{entry.description}</span>
+                    <span className="mt-auto text-[10px] uppercase font-semibold tracking-wider text-zinc-400">
                       {entry.parameters.length} parameter{entry.parameters.length === 1 ? '' : 's'}
                     </span>
                   </button>
@@ -272,10 +271,10 @@ export function NewBacktestPage() {
         ) : null}
 
         {step === 2 ? (
-          <section className="flex flex-col gap-5">
+          <section className="flex flex-col gap-4">
             <div>
-              <h2 className="text-lg font-semibold text-white">Strategy parameters</h2>
-              <p className="mt-1 text-sm text-slate-500">
+              <h2 className="text-sm font-semibold text-zinc-100">Strategy parameters</h2>
+              <p className="mt-0.5 text-xs text-zinc-400">
                 Tune {strategy?.name} for this run. Defaults are pre-filled.
               </p>
             </div>
@@ -286,19 +285,18 @@ export function NewBacktestPage() {
                 onChange={(field, value) => setParameters((current) => ({ ...current, [field]: value }))}
               />
             ) : null}
-            <p className="rounded-lg border border-white/10 bg-white/[0.02] px-4 py-3 text-xs leading-relaxed text-slate-500">
+            <p className="rounded-lg border border-white/[0.06] bg-zinc-900 px-4 py-3 text-xs leading-relaxed text-zinc-400">
               {strategy?.executionModel}
             </p>
           </section>
         ) : null}
 
         {step === 3 ? (
-          <section className="flex flex-col gap-5">
+          <section className="flex flex-col gap-4">
             <div>
-              <h2 className="text-lg font-semibold text-white">Execution settings</h2>
-              <p className="mt-1 text-sm text-slate-500">
-                Capital is deployed in whole shares, never on leverage. Commission and slippage are
-                applied on every fill.
+              <h2 className="text-sm font-semibold text-zinc-100">Execution settings</h2>
+              <p className="mt-0.5 text-xs text-zinc-400">
+                Capital is deployed in whole shares. Commission and slippage are applied on every fill.
               </p>
             </div>
             <div className="grid gap-4 sm:grid-cols-3">
@@ -351,24 +349,23 @@ export function NewBacktestPage() {
         ) : null}
 
         {step === 4 ? (
-          <section className="flex flex-col gap-5">
+          <section className="flex flex-col gap-4">
             <div>
-              <h2 className="text-lg font-semibold text-white">Date range (optional)</h2>
-              <p className="mt-1 text-sm text-slate-500">
+              <h2 className="text-sm font-semibold text-zinc-100">Date range (optional)</h2>
+              <p className="mt-0.5 text-xs text-zinc-400">
                 Leave both empty to run over the entire dataset history.
               </p>
             </div>
             {dateRangeQuery.isLoading ? (
-              <p className="text-sm text-slate-400">Checking available date range…</p>
+              <p className="text-xs text-zinc-400">Checking available date range…</p>
             ) : dateRangeQuery.isError ? (
-              <p className="text-sm text-red-300">{toApiError(dateRangeQuery.error).message}</p>
+              <p className="text-xs text-red-300">{toApiError(dateRangeQuery.error).message}</p>
             ) : availableStart && availableEnd ? (
-              <p className="text-sm text-slate-400">
+              <p className="text-xs text-zinc-400 font-mono">
                 {dateRangeQuery.data?.dateColumn} spans{' '}
-                <span className="font-medium text-slate-200">{availableStart}</span> →{' '}
-                <span className="font-medium text-slate-200">{availableEnd}</span> (
-                {dateRangeQuery.data?.totalRows.toLocaleString() ?? '?'} rows). Dates are bounded
-                to the data.
+                <span className="font-semibold text-zinc-200">{availableStart}</span> →{' '}
+                <span className="font-semibold text-zinc-200">{availableEnd}</span> (
+                {dateRangeQuery.data?.totalRows.toLocaleString() ?? '?'} rows).
               </p>
             ) : null}
             <div className="grid gap-4 sm:grid-cols-2">
@@ -392,7 +389,7 @@ export function NewBacktestPage() {
               />
             </div>
             {!dateStepValid ? (
-              <p className="text-sm text-red-300">
+              <p className="text-xs text-red-300">
                 {endDate && startDate && new Date(endDate) < new Date(startDate)
                   ? 'End date must be after the start date.'
                   : startOutOfRange
@@ -406,11 +403,11 @@ export function NewBacktestPage() {
         ) : null}
 
         {step === 5 ? (
-          <section className="flex flex-col gap-5">
+          <section className="flex flex-col gap-4">
             <div>
-              <h2 className="text-lg font-semibold text-white">Review & run</h2>
-              <p className="mt-1 text-sm text-slate-500">
-                Verify the configuration before executing. Large datasets may take a few seconds.
+              <h2 className="text-sm font-semibold text-zinc-100">Review & run</h2>
+              <p className="mt-0.5 text-xs text-zinc-400">
+                Verify the configuration before executing your backtest run.
               </p>
             </div>
 
@@ -422,7 +419,7 @@ export function NewBacktestPage() {
               onChange={(event) => setName(event.target.value)}
             />
 
-            <dl className="grid gap-x-6 gap-y-2 rounded-xl border border-white/10 bg-white/[0.02] p-5 text-sm sm:grid-cols-2">
+            <dl className="grid gap-x-6 gap-y-2 rounded-xl border border-white/[0.06] bg-zinc-900 p-4 text-xs sm:grid-cols-2">
               <ReviewItem label="Dataset" value={datasetsQuery.data?.datasets.find((d) => d.id === datasetId)?.name ?? '—'} />
               <ReviewItem label="Strategy" value={strategy?.name ?? '—'} />
               <ReviewItem label="Initial capital" value={capital || '—'} />
@@ -446,18 +443,19 @@ export function NewBacktestPage() {
         ) : null}
 
         {/* Navigation */}
-        <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-5">
+        <div className="mt-6 flex items-center justify-between border-t border-white/[0.06] pt-4">
           <Button
             variant="ghost"
             disabled={step === 0}
             onClick={() => setStep((current) => Math.max(0, current - 1))}
+            className="text-zinc-400 hover:text-white"
           >
-            <ChevronRightIcon className="h-4 w-4 rotate-180" />
+            <ChevronRightIcon className="h-3.5 w-3.5 rotate-180" />
             Back
           </Button>
 
           {step < STEPS.length - 1 ? (
-            <Button variant="primary" disabled={!canContinue()} onClick={() => setStep((current) => current + 1)}>
+            <Button variant="primary" disabled={!canContinue()} onClick={() => setStep((current) => current + 1)} className="bg-white hover:bg-zinc-200 text-black font-semibold text-xs">
               Continue
             </Button>
           ) : (
@@ -466,8 +464,9 @@ export function NewBacktestPage() {
               loading={createMutation.isPending}
               disabled={!datasetId || !strategy}
               onClick={() => void handleRun()}
+              className="bg-white hover:bg-zinc-200 text-black font-semibold text-xs"
             >
-              <PlayIcon className="h-4 w-4" />
+              <PlayIcon className="h-3.5 w-3.5" />
               {createMutation.isPending ? 'Running backtest…' : 'Run backtest'}
             </Button>
           )}
@@ -479,9 +478,9 @@ export function NewBacktestPage() {
 
 function ReviewItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between gap-4">
-      <dt className="text-xs uppercase tracking-wider text-slate-500">{label}</dt>
-      <dd className="text-right font-medium text-slate-200">{value}</dd>
+    <div className="flex items-center justify-between gap-4 py-1 border-b border-white/[0.03]">
+      <dt className="text-[10.5px] uppercase font-semibold tracking-wider text-zinc-400">{label}</dt>
+      <dd className="text-right font-semibold text-zinc-200 font-mono">{value}</dd>
     </div>
   );
 }

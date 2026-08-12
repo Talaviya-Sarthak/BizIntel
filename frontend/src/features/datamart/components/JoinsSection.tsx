@@ -19,10 +19,6 @@ interface JoinsSectionProps {
   onChange: (next: JoinRow[]) => void;
 }
 
-/**
- * Join editor. Each join links two datasets already selected in the query
- * via matching columns. The compiler joins in the order rows are listed.
- */
 export function JoinsSection({ sources, joins, onChange }: JoinsSectionProps) {
   function add() {
     const base = sources[0]?.id ?? '';
@@ -59,26 +55,27 @@ export function JoinsSection({ sources, joins, onChange }: JoinsSectionProps) {
   return (
     <div className="flex flex-col gap-3">
       {joins.length === 0 ? (
-        <p className="text-sm text-slate-500">
+        <p className="text-xs text-zinc-400">
           No joins — the query reads from the first selected dataset only. Add joins to combine
           multiple datasets (common keys only).
         </p>
       ) : (
         <div className="flex flex-col gap-3">
           {joins.map((join) => (
-            <div key={join.id} className="flex flex-col gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-3">
-              <div className="flex items-center justify-between gap-2">
-                <p className="flex items-center gap-1.5 text-xs font-medium text-slate-400">
-                  <LinkIcon className="h-3.5 w-3.5 text-cyan-400" />
-                  Join
+            <div key={join.id} className="flex flex-col gap-3 rounded-xl border border-white/[0.06] bg-[#141414] p-3">
+              <div className="flex items-center justify-between gap-2 border-b border-white/[0.04] pb-2">
+                <p className="flex items-center gap-1.5 text-xs font-semibold text-zinc-200">
+                  <LinkIcon className="h-3.5 w-3.5 text-zinc-400" />
+                  Join Condition
                 </p>
                 <Button
                   variant="ghost"
                   size="icon"
                   aria-label="Remove join"
+                  className="text-zinc-400 hover:text-red-400"
                   onClick={() => remove(join.id)}
                 >
-                  <TrashIcon className="h-4 w-4" />
+                  <TrashIcon className="h-3.5 w-3.5" />
                 </Button>
               </div>
               <div className="flex flex-col gap-2 lg:flex-row lg:items-end">
@@ -131,8 +128,8 @@ export function JoinsSection({ sources, joins, onChange }: JoinsSectionProps) {
           ))}
         </div>
       )}
-      <Button variant="outline" size="sm" onClick={add} className="self-start">
-        <PlusIcon className="h-4 w-4" />
+      <Button variant="outline" size="sm" onClick={add} className="self-start border-white/[0.08] bg-zinc-900 text-zinc-200">
+        <PlusIcon className="h-3.5 w-3.5" />
         Add join
       </Button>
     </div>

@@ -37,25 +37,124 @@ export class IntentRouter {
   }
 
   /**
+   * Fast deterministic heuristic intent detector to ensure business data queries never fall through to general intent.
+   */
+  private detectHeuristicIntent(query: string): IntentResult | null {
+    const q = query.toLowerCase();
+
+    // Analytics Keywords
+    if (
+      q.includes('product') ||
+      q.includes('revenue') ||
+      q.includes('sales') ||
+      q.includes('order') ||
+      q.includes('customer') ||
+      q.includes('units') ||
+      q.includes('total') ||
+      q.includes('top') ||
+      q.includes('highest') ||
+      q.includes('lowest') ||
+      q.includes('month') ||
+      q.includes('trend') ||
+      q.includes('column') ||
+      q.includes('schema') ||
+      q.includes('dataset') ||
+      q.includes('analyze') ||
+      q.includes('analysis') ||
+      q.includes('amount') ||
+      q.includes('region') ||
+      q.includes('row')
+    ) {
+      return {
+        intent: 'analytics',
+        confidence: 0.98,
+        reason: 'Deterministic keyword match for analytics intent',
+      };
+    }
+
+    // Backtesting Keywords
+    if (
+      q.includes('backtest') ||
+      q.includes('strategy') ||
+      q.includes('sma') ||
+      q.includes('rsi') ||
+      q.includes('drawdown') ||
+      q.includes('sharpe') ||
+      q.includes('trading') ||
+      q.includes('crossover')
+    ) {
+      return {
+        intent: 'backtesting',
+        confidence: 0.98,
+        reason: 'Deterministic keyword match for backtesting intent',
+      };
+    }
+
+    // Knowledge RAG Keywords
+    if (
+      q.includes('policy') ||
+      q.includes('handbook') ||
+      q.includes('document') ||
+      q.includes('refund') ||
+      q.includes('leave') ||
+      q.includes('file') ||
+      q.includes('pdf') ||
+      q.includes('rules')
+    ) {
+      return {
+        intent: 'knowledge',
+        confidence: 0.98,
+        reason: 'Deterministic keyword match for knowledge intent',
+      };
+    }
+
+    // Retail Catalog Keywords
+    if (
+      q.includes('sku') ||
+      q.includes('inventory') ||
+      q.includes('catalog') ||
+      q.includes('price') ||
+      q.includes('stock')
+    ) {
+      return {
+        intent: 'retail',
+        confidence: 0.98,
+        reason: 'Deterministic keyword match for retail intent',
+      };
+    }
+
+    return null;
+  }
+
+  /**
    * Classify user query intent into one of the 5 supported categories.
    *
    * @param query Raw user input text
    * @returns IntentResult carrying intent, confidence score, and rationale
    */
   public async classify(query: string): Promise<IntentResult> {
-    const fallbackResult: IntentResult = {
-      intent: DEFAULT_FALLBACK_INTENT,
-      confidence: 0.5,
-      reason: 'Default fallback intent triggered due to parsing error or low confidence',
-    };
+    const qTrimmed = (query || '').trim();
 
-    if (!query || !query.trim()) {
+    if (!qTrimmed) {
       return {
         intent: 'general',
         confidence: 1.0,
         reason: 'Empty query defaults to general intent',
       };
     }
+
+    // 1. Fast deterministic heuristic check first
+    const heuristic = this.detectHeuristicIntent(qTrimmed);
+    if (heuristic) {
+      logger.info({ query: qTrimmed, intent: heuristic.intent, confidence: heuristic.confidence }, 'Intent Router (Heuristic Match)');
+      return heuristic;
+    }
+
+    const fallbackResult: IntentResult = {
+      intent: DEFAULT_FALLBACK_INTENT,
+      confidence: 0.5,
+      reason: 'Default fallback intent triggered due to parsing error or low confidence',
+    };
 
     if (!this.model) {
       this.initModel();
@@ -65,7 +164,7 @@ export class IntentRouter {
     try {
       const messages = [
         new SystemMessage(INTENT_CLASSIFICATION_SYSTEM_PROMPT),
-        new HumanMessage(query.trim()),
+        new HumanMessage(qTrimmed),
       ];
 
       const response = await this.model.invoke(messages);
@@ -73,9 +172,11 @@ export class IntentRouter {
         ? response.content
         : JSON.stringify(response.content);
 
-      return this.parseAndValidateResponse(rawContent);
+      const parsed = this.parseAndValidateResponse(rawContent);
+      logger.info({ query: qTrimmed, intent: parsed.intent, confidence: parsed.confidence, reason: parsed.reason }, 'Intent Router (LLM Classified)');
+      return parsed;
     } catch (error: any) {
-      logger.error({ err: error, query }, 'Error during IntentRouter classification');
+      logger.error({ err: error, query: qTrimmed }, 'Error during IntentRouter classification');
       return fallbackResult;
     }
   }
