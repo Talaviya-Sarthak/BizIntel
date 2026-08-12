@@ -20,7 +20,7 @@ export function IntelligenceConsole() {
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
             <span className="font-mono text-[10px] font-semibold text-zinc-400 tracking-wider">
-              PS-05 INTELLIGENCE CONSOLE
+              BizIntel-INTELLIGENCE CONSOLE
             </span>
           </div>
           <div className="flex items-center gap-2 font-mono text-[10px] text-zinc-500">

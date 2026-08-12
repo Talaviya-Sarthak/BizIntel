@@ -26,7 +26,7 @@ export function Logo({ className }: LogoProps) {
         <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.9)]" />
       </span>
       <span className="text-base font-bold tracking-tight text-white">
-        PS-05
+        BizIntel
         <span className="ml-2 hidden text-xs font-medium uppercase tracking-[0.22em] text-slate-500 sm:inline">
           Intelligence
         </span>
