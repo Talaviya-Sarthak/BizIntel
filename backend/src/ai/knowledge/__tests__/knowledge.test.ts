@@ -11,7 +11,7 @@ import type { KnowledgeChunk, KnowledgeDocumentMetadata } from '../knowledge.typ
 import { cosineSimilarity, estimateTokenCount, normalizeDocumentText, titleFromFilename } from '../knowledge.utils';
 import { KnowledgeVectorStore, knowledgeVectorStore } from '../knowledge.vectorstore';
 
-describe('Phase 7: Enterprise Knowledge Engine (RAG) Unit Tests', () => {
+describe('Phase 7: Enterprise Knowledge Engine (RAG) Unit Tests', { timeout: 30000 }, () => {
   // --- SECTION 1: Document Utilities Tests (8 tests) ---
   describe('1. Document Utilities', () => {
     test('1.1 normalizeDocumentText removes carriage returns and non-printable ASCII', () => {

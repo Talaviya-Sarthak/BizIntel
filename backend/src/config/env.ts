@@ -27,6 +27,8 @@ const envSchema = z.object({
     .string()
     .min(1, 'DATABASE_URL is required (Neon PostgreSQL connection string)'),
 
+  SUPABASE_DB_URL: z.string().optional().default(''),
+
   JWT_SECRET: z
     .string()
     .min(32, 'JWT_SECRET must be at least 32 characters long'),
@@ -57,6 +59,18 @@ if (!parsed.success) {
 }
 
 export const env = parsed.data;
+
+/**
+ * Effective PostgreSQL connection string.
+ * Automatically falls back to DATABASE_URL if SUPABASE_DB_URL contains placeholder values.
+ */
+const rawSupabaseUrl = process.env.SUPABASE_DB_URL || env.SUPABASE_DB_URL;
+const isPlaceholderSupabase =
+  !rawSupabaseUrl ||
+  rawSupabaseUrl.includes('YOUR_PASSWORD') ||
+  rawSupabaseUrl.includes('<PASSWORD>');
+
+export const effectiveDatabaseUrl = isPlaceholderSupabase ? env.DATABASE_URL : rawSupabaseUrl;
 
 /** Maximum accepted dataset upload size in bytes. */
 export const MAX_DATASET_SIZE_BYTES = env.MAX_DATASET_SIZE_MB * 1024 * 1024;

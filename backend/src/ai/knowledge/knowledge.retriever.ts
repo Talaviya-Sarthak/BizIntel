@@ -33,12 +33,18 @@ export class KnowledgeRetriever {
       return { query, chunks: [], executionTimeMs: Date.now() - startTime };
     }
 
+    console.log('\n========== RAG RETRIEVAL DEBUG ==========');
+    console.log(`Incoming Question: "${query}"`);
+
     try {
       // 1. Query Expansion (Generate expanded search terms)
       const expandedQueries = this.expandQuery(query);
 
       // 2. Vector Similarity Search
       const queryVector = await this.embeddingService.embedQuery(query);
+      console.log(`↓ Generated embedding (${queryVector.length} dimensions)`);
+      console.log('↓ Vector search & BM25 hybrid matching');
+
       const vectorResults = await this.vectorStore.search(queryVector, topK * 2, minSimilarity);
 
       // 3. BM25 / Keyword Search scoring across all vector store chunks
@@ -59,6 +65,20 @@ export class KnowledgeRetriever {
         return a.chunk.metadata.chunkIndex - b.chunk.metadata.chunkIndex;
       });
 
+      console.log('\n↓ Top similarity scores & page numbers:');
+      let totalContextChars = 0;
+      for (const res of topChunks) {
+        const scoreStr = (res.hybridScore ?? res.similarity).toFixed(2);
+        const pageNum = res.chunk.metadata.pageNumber || 1;
+        const section = res.chunk.metadata.sectionHeading || 'General';
+        console.log(`  • Similarity: ${scoreStr} | Page ${pageNum} | Section: "${section}"`);
+        totalContextChars += res.chunk.text.length;
+      }
+
+      const promptContextTokens = Math.round(totalContextChars / 4);
+      console.log(`\nPrompt context size: ${promptContextTokens.toLocaleString()} tokens`);
+      console.log('=========================================\n');
+
       const executionTimeMs = Date.now() - startTime;
       logger.info(
         { query, retrievedCount: topChunks.length, expandedCount: expandedQueries.length, executionTimeMs },
@@ -73,6 +93,7 @@ export class KnowledgeRetriever {
       };
     } catch (error) {
       logger.error({ err: error, query }, 'KnowledgeRetriever query failure');
+      console.log('=========================================\n');
       return {
         query,
         chunks: [],
@@ -82,7 +103,7 @@ export class KnowledgeRetriever {
   }
 
   /**
-   * Generates expanded synonym terms for short user queries (Step 7 Query Expansion).
+   * Generates expanded synonym terms for short user queries.
    */
   private expandQuery(query: string): string[] {
     const terms = [query];
@@ -102,7 +123,7 @@ export class KnowledgeRetriever {
   }
 
   /**
-   * Combines Vector Cosine Similarity with BM25 Keyword Search scores (Step 8 Hybrid Search).
+   * Combines Vector Cosine Similarity with BM25 Keyword Search scores.
    */
   private performHybridScoring(
     query: string,
@@ -112,7 +133,6 @@ export class KnowledgeRetriever {
   ): VectorSearchResult[] {
     const resultMap = new Map<string, VectorSearchResult>();
 
-    // Add initial vector results
     for (const vRes of vectorResults) {
       resultMap.set(vRes.chunk.id, {
         ...vRes,
@@ -121,7 +141,6 @@ export class KnowledgeRetriever {
       });
     }
 
-    // Extract query keywords (excluding stop words)
     const keywords = this.extractKeywords([...expandedQueries, query].join(' '));
 
     if (keywords.length > 0) {
@@ -140,7 +159,6 @@ export class KnowledgeRetriever {
         if (keywordScore > 0) {
           const existing = resultMap.get(chunk.id);
           const similarity = existing ? existing.similarity : 0.05;
-          // Hybrid Weighted Reciprocal Rank Fusion formula: 65% vector similarity + 35% BM25 keyword score
           const hybridScore = 0.65 * similarity + 0.35 * keywordScore;
 
           resultMap.set(chunk.id, {

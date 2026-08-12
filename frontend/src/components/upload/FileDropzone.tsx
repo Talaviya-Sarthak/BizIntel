@@ -14,13 +14,34 @@ export const FileDropzone: React.FC<FileDropzoneProps> = ({ onIngestSuccess }) =
     setStatusMsg(`Reading "${file.name}"...`);
 
     try {
-      const text = await file.text();
-      setStatusMsg(`Ingesting into RAG Vector Store...`);
-      const res = await ingestDocument(file.name, text);
-      setStatusMsg(`Indexed "${file.name}" into ${res.chunkCount} chunks!`);
+      let content: string;
+      const isBinary = /\.(pdf|docx|doc|xlsx|xls)$/i.test(file.name);
+
+      if (isBinary) {
+        const arrayBuffer = await file.arrayBuffer();
+        const bytes = new Uint8Array(arrayBuffer);
+        let binaryStr = '';
+        const chunkSize = 8192;
+        for (let i = 0; i < bytes.length; i += chunkSize) {
+          binaryStr += String.fromCharCode.apply(null, Array.from(bytes.subarray(i, i + chunkSize)));
+        }
+        content = `data:${file.type || 'application/octet-stream'};base64,${btoa(binaryStr)}`;
+      } else {
+        content = await file.text();
+      }
+
+      setStatusMsg(`Ingesting "${file.name}" into Supabase pgvector...`);
+      const res = await ingestDocument(file.name, content);
+
+      if (res.success && res.chunkCount > 0) {
+        setStatusMsg(`✅ Indexed "${file.name}" into ${res.chunkCount} semantic chunks in Supabase!`);
+      } else {
+        setStatusMsg(`⚠️ Upload issue: ${res.message}`);
+      }
+
       if (onIngestSuccess) onIngestSuccess(res);
     } catch (err: any) {
-      setStatusMsg(`Upload failed: ${err?.message || 'Error uploading document'}`);
+      setStatusMsg(`❌ Upload failed: ${err?.message || 'Error uploading document'}`);
     } finally {
       setIsUploading(false);
     }

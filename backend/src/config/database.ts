@@ -9,10 +9,8 @@ pgTypes.setTypeParser(pgTypes.builtins.INT8, (value: string) => Number(value));
 pgTypes.setTypeParser(pgTypes.builtins.NUMERIC, (value: string) => Number(value));
 
 /**
- * PostgreSQL connection pool (Neon Serverless PostgreSQL).
- *
- * Connections are created lazily; the first query establishes the pool.
- * Never log the connection string or credentials.
+ * Main Application PostgreSQL connection pool (Neon PostgreSQL).
+ * Used for authentication, users, datasets, backtesting, datamart, etc.
  */
 export const pool = new Pool({
   connectionString: env.DATABASE_URL,
@@ -22,5 +20,29 @@ export const pool = new Pool({
 });
 
 pool.on('error', (error) => {
-  logger.error({ err: error }, 'Unexpected error on idle PostgreSQL client');
+  logger.error({ err: error }, 'Unexpected error on idle Neon PostgreSQL client');
 });
+
+/**
+ * Dedicated Supabase pgvector Connection Pool for RAG Knowledge Base ONLY.
+ */
+const rawSupabaseUrl = process.env.SUPABASE_DB_URL || env.SUPABASE_DB_URL;
+const isPlaceholderSupabase =
+  !rawSupabaseUrl ||
+  rawSupabaseUrl.includes('YOUR_PASSWORD') ||
+  rawSupabaseUrl.includes('<PASSWORD>');
+
+export const supabasePool = isPlaceholderSupabase
+  ? pool // Fallback to Neon pool if Supabase URL is unconfigured/placeholder
+  : new Pool({
+      connectionString: rawSupabaseUrl,
+      max: 10,
+      idleTimeoutMillis: 30_000,
+      connectionTimeoutMillis: 10_000,
+    });
+
+if (!isPlaceholderSupabase) {
+  supabasePool.on('error', (error) => {
+    logger.error({ err: error }, 'Unexpected error on idle Supabase pgvector client');
+  });
+}
