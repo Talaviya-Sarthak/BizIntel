@@ -10,5 +10,6 @@ const router = Router();
 router.use(authenticate);
 
 router.post('/chat', validate(chatInputSchema), aiController.chat);
+router.get('/stream', aiController.streamChat);
 
 export default router;
