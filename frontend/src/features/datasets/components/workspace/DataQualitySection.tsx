@@ -14,13 +14,13 @@ interface DataQualitySectionProps {
 function qualityTone(quality: QualityColumnRow['quality']) {
   switch (quality) {
     case 'Excellent':
-      return { badge: 'bg-emerald-400/10 text-emerald-300 ring-emerald-400/30', bar: 'bg-emerald-400' };
+      return { badge: 'border-2 border-lime text-lime bg-lime/10', bar: 'bg-lime' };
     case 'Good':
-      return { badge: 'bg-cyan-400/10 text-cyan-300 ring-cyan-400/30', bar: 'bg-cyan-400' };
+      return { badge: 'border-2 border-lime text-lime bg-lime/10', bar: 'bg-lime' };
     case 'Fair':
-      return { badge: 'bg-amber-400/10 text-amber-300 ring-amber-400/30', bar: 'bg-amber-400' };
+      return { badge: 'border-2 border-yellow text-yellow bg-yellow/10', bar: 'bg-yellow' };
     case 'Poor':
-      return { badge: 'bg-red-400/10 text-red-300 ring-red-400/30', bar: 'bg-red-400' };
+      return { badge: 'border-2 border-pink text-pink bg-pink/10', bar: 'bg-pink' };
   }
 }
 
@@ -30,7 +30,11 @@ export function DataQualitySection({ datasetId }: DataQualitySectionProps) {
   const quality = qualityQuery.data;
 
   if (qualityQuery.isLoading) {
-    return <SkeletonTable rows={6} cols={6} />;
+    return (
+      <div className="bg-black">
+        <SkeletonTable rows={6} cols={6} />
+      </div>
+    );
   }
 
   if (qualityQuery.isError || !quality) {
@@ -43,8 +47,8 @@ export function DataQualitySection({ datasetId }: DataQualitySectionProps) {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+    <div className="flex flex-col gap-6 bg-black">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 bg-black">
         <SummaryTile
           icon={XCircleIcon}
           label="Missing values"
@@ -75,58 +79,58 @@ export function DataQualitySection({ datasetId }: DataQualitySectionProps) {
         />
       </div>
 
-      <section aria-label="Column quality" className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
-        <div className="border-b border-white/10 px-5 py-4">
-          <h3 className="text-sm font-semibold text-white">Column quality</h3>
-          <p className="mt-0.5 text-xs text-slate-400">
+      <section aria-label="Column quality" className="overflow-hidden border-2 border-white bg-black shadow-brutal rounded-md">
+        <div className="border-b-2 border-white px-5 py-4 bg-ink-soft">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-white">Column quality</h3>
+          <p className="mt-1 text-xs font-bold uppercase tracking-wider text-muted">
             Missing, unique and invalid share per column.
           </p>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
+          <table className="w-full text-left text-xs font-bold uppercase tracking-wider">
             <thead>
-              <tr className="border-b border-white/10 text-[11px] uppercase tracking-wider text-slate-500">
-                <th className="px-5 py-3 font-medium">Column</th>
-                <th className="px-5 py-3 font-medium">Type</th>
-                <th className="px-5 py-3 font-medium">Missing</th>
-                <th className="px-5 py-3 font-medium">Unique</th>
-                <th className="px-5 py-3 font-medium">Invalid</th>
-                <th className="px-5 py-3 font-medium">Completeness</th>
-                <th className="px-5 py-3 text-right font-medium">Quality</th>
+              <tr className="border-b-2 border-white bg-ink-soft text-[10px] text-white">
+                <th className="px-5 py-3.5 font-bold">Column</th>
+                <th className="px-5 py-3.5 font-bold">Type</th>
+                <th className="px-5 py-3.5 font-bold">Missing</th>
+                <th className="px-5 py-3.5 font-bold">Unique</th>
+                <th className="px-5 py-3.5 font-bold">Invalid</th>
+                <th className="px-5 py-3.5 font-bold">Completeness</th>
+                <th className="px-5 py-3.5 text-right font-bold">Quality</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="divide-y border-white/20 bg-black text-white">
               {quality.columns.map((row) => {
                 const tone = qualityTone(row.quality);
                 const completeness = Math.max(0, 100 - row.missingPct);
                 return (
-                  <tr key={row.column} className="border-b border-white/5 transition hover:bg-white/[0.02]">
-                    <td className="max-w-[220px] truncate px-5 py-3 font-medium text-white" title={row.column}>
+                  <tr key={row.column} className="transition-colors hover:bg-ink-card">
+                    <td className="max-w-[220px] truncate px-5 py-4 font-bold text-white normal-case text-sm" title={row.column}>
                       {row.column}
                     </td>
-                    <td className="px-5 py-3 text-slate-400">{row.type}</td>
-                    <td className="px-5 py-3 text-slate-300">
+                    <td className="px-5 py-4 text-muted font-mono">{row.type}</td>
+                    <td className="px-5 py-4 text-white">
                       {formatNumber(row.missing)}
-                      <span className="ml-1.5 text-xs text-slate-500">{row.missingPct.toFixed(1)}%</span>
+                      <span className="ml-1.5 text-xs text-muted font-bold font-mono">{row.missingPct.toFixed(1)}%</span>
                     </td>
-                    <td className="px-5 py-3 text-slate-300">
+                    <td className="px-5 py-4 text-white">
                       {formatNumber(row.unique)}
-                      <span className="ml-1.5 text-xs text-slate-500">{row.uniquePct.toFixed(0)}%</span>
+                      <span className="ml-1.5 text-xs text-muted font-bold font-mono">{row.uniquePct.toFixed(0)}%</span>
                     </td>
-                    <td className="px-5 py-3 text-slate-300">{formatNumber(row.invalid)}</td>
-                    <td className="px-5 py-3">
-                      <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-20 overflow-hidden rounded-full bg-white/10">
+                    <td className="px-5 py-4 text-white font-mono">{formatNumber(row.invalid)}</td>
+                    <td className="px-5 py-4">
+                      <div className="flex items-center gap-2.5">
+                        <div className="h-3 w-20 overflow-hidden border border-white bg-black rounded-sm">
                           <div
-                            className={clsx('h-full rounded-full', tone.bar)}
+                            className={clsx('h-full', tone.bar)}
                             style={{ width: `${Math.min(100, completeness)}%` }}
                           />
                         </div>
-                        <span className="text-xs text-slate-500">{completeness.toFixed(0)}%</span>
+                        <span className="text-xs text-muted font-bold font-mono">{completeness.toFixed(0)}%</span>
                       </div>
                     </td>
-                    <td className="px-5 py-3 text-right">
-                      <span className={clsx('inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ring-1', tone.badge)}>
+                    <td className="px-5 py-4 text-right">
+                      <span className={clsx('inline-flex px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-sm', tone.badge)}>
                         {row.quality}
                       </span>
                     </td>
@@ -151,19 +155,19 @@ interface SummaryTileProps {
 
 function SummaryTile({ icon: Icon, label, value, detail, tone }: SummaryTileProps) {
   const tones = {
-    good: 'text-emerald-400 bg-emerald-400/10 ring-emerald-400/20',
-    warning: 'text-amber-400 bg-amber-400/10 ring-amber-400/20',
-    bad: 'text-red-400 bg-red-400/10 ring-red-400/20',
+    good: 'text-lime bg-lime/10 border-lime',
+    warning: 'text-yellow bg-yellow/10 border-yellow',
+    bad: 'text-pink bg-pink/10 border-pink',
   } as const;
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-      <span className={clsx('inline-flex h-9 w-9 items-center justify-center rounded-xl ring-1', tones[tone])}>
-        <Icon className="h-4.5 w-4.5" />
+    <div className="border-2 border-white bg-ink-card p-5 shadow-brutal-sm rounded-md">
+      <span className={clsx('inline-flex h-9 w-9 items-center justify-center border-2 rounded-sm', tones[tone])}>
+        <Icon className="h-5 w-5" />
       </span>
-      <p className="mt-3 text-[11px] uppercase tracking-wider text-slate-500">{label}</p>
-      <p className="mt-1 text-2xl font-bold text-white">{value}</p>
-      <p className="mt-0.5 text-xs text-slate-500">{detail}</p>
+      <p className="mt-3.5 text-[9px] font-bold uppercase tracking-widest text-muted">{label}</p>
+      <p className="mt-1 text-2xl font-black text-white">{value}</p>
+      <p className="mt-1 text-xs font-bold uppercase tracking-wider text-muted">{detail}</p>
     </div>
   );
 }

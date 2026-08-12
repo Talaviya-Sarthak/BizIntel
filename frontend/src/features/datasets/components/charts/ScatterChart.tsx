@@ -24,7 +24,7 @@ export function ScatterChart({
   xName,
   yName,
   height = 340,
-  color = '#22d3ee',
+  color = '#C6FF00',
 }: ScatterChartProps) {
   return (
     <ResponsiveContainer width="100%" height={height}>
@@ -49,12 +49,12 @@ export function ScatterChart({
           width={60}
           tickFormatter={(value: number) => formatChartValue(value)}
         />
-        <ZAxis range={[36, 36]} />
+        <ZAxis range={[50, 50]} />
         <Tooltip
           cursor={{ strokeDasharray: '3 3' }}
           content={<ChartTooltip formatter={(value) => formatChartValue(value)} />}
         />
-        <Scatter data={data} fill={color} fillOpacity={0.55} />
+        <Scatter data={data} fill={color} fillOpacity={0.7} stroke="#FFFFFF" strokeWidth={1} />
       </RechartsScatterChart>
     </ResponsiveContainer>
   );

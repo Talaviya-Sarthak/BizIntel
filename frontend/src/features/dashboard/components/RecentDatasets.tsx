@@ -19,7 +19,7 @@ export function RecentDatasets({ datasets, isLoading }: RecentDatasetsProps) {
         {[0, 1, 2].map((item) => (
           <div
             key={item}
-            className="h-44 animate-pulse rounded-2xl border border-white/10 bg-white/[0.03]"
+            className="h-44 animate-pulse rounded-md border-2 border-white bg-ink-card shadow-brutal-sm"
           />
         ))}
       </div>
@@ -34,7 +34,7 @@ export function RecentDatasets({ datasets, isLoading }: RecentDatasetsProps) {
         description="Upload your first dataset to start analyzing enterprise data."
         action={
           <Button onClick={() => navigate('/datasets/upload')}>
-            <UploadIcon className="h-4 w-4" />
+            <UploadIcon className="h-4.5 w-4.5" />
             Upload Dataset
           </Button>
         }

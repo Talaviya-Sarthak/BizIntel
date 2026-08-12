@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Plus } from 'lucide-react';
 
 interface FAQItem {
@@ -49,26 +48,26 @@ export function FAQ() {
   };
 
   return (
-    <section id="faq" className="relative py-16 sm:py-24 border-t border-zinc-800/80">
+    <section id="faq" className="relative py-16 sm:py-24 border-t-2 border-white bg-black">
       <div className="container-shell max-w-4xl mx-auto">
         {/* Title */}
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-extrabold tracking-tight text-zinc-50 sm:text-5xl font-display uppercase">
+          <h2 className="text-3xl font-black tracking-tight text-white sm:text-5xl uppercase">
             Frequently Asked Questions
           </h2>
-          <p className="mt-3 text-xs sm:text-sm text-zinc-400 max-w-xl mx-auto">
+          <p className="mt-2 text-sm font-bold uppercase tracking-wider text-muted max-w-xl mx-auto">
             Everything you need to know about our enterprise intelligence platform, backtesting engine, and AI assistant.
           </p>
         </div>
 
         {/* 5 Accordion Questions List */}
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4">
           {FAQS.map((item) => {
             const isOpen = openId === item.id;
             return (
               <div
                 key={item.id}
-                className="rounded-xl border border-zinc-800/80 bg-zinc-900/50 p-5 transition-colors duration-200 hover:border-zinc-700/80"
+                className="border-2 border-white bg-ink-card p-5 shadow-brutal-sm rounded-md"
               >
                 <button
                   type="button"
@@ -76,34 +75,23 @@ export function FAQ() {
                   className="w-full flex items-center justify-between text-left focus-visible:outline-none"
                   aria-expanded={isOpen}
                 >
-                  <span className="text-sm sm:text-base font-bold text-zinc-100 pr-4">
+                  <span className="text-sm sm:text-base font-black uppercase text-white pr-4">
                     {item.question}
                   </span>
-                  <motion.div
-                    animate={{ rotate: isOpen ? 45 : 0 }}
-                    transition={{ duration: 0.2, ease: 'easeInOut' }}
-                    className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-zinc-400 hover:text-zinc-100 transition-colors"
+                  <div
+                    className={`inline-flex h-7 w-7 shrink-0 items-center justify-center border-2 border-white bg-black text-white hover:bg-lime hover:text-black transition-all rounded-md ${
+                      isOpen ? 'rotate-45 bg-lime text-black' : ''
+                    }`}
                   >
-                    <Plus className="h-4 w-4" />
-                  </motion.div>
+                    <Plus className="h-4 w-4 stroke-[3]" />
+                  </div>
                 </button>
 
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      key="answer"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                      className="overflow-hidden"
-                    >
-                      <div className="mt-3 pt-3 border-t border-zinc-800/50 text-xs sm:text-sm text-zinc-400 leading-relaxed">
-                        {item.answer}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                {isOpen && (
+                  <div className="mt-4 pt-4 border-t-2 border-white text-xs sm:text-sm text-muted font-medium leading-relaxed">
+                    {item.answer}
+                  </div>
+                )}
               </div>
             );
           })}

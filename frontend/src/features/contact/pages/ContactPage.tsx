@@ -41,65 +41,65 @@ export function ContactPage() {
         <Navbar />
 
         {/* Main Non-Scrollable Centered Card Container */}
-        <main className="flex-1 flex items-center justify-center px-4 pt-16 pb-4 relative z-10 w-full">
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/90 shadow-2xl overflow-hidden max-w-4xl w-full grid grid-cols-1 md:grid-cols-[1.2fr_1fr] backdrop-blur-md">
+        <main className="flex-1 flex items-center justify-center px-4 pt-20 pb-4 relative z-10 w-full">
+          <div className="border-2 border-white bg-ink-card shadow-brutal overflow-hidden max-w-4xl w-full grid grid-cols-1 md:grid-cols-[1.2fr_1fr] rounded-md">
             {/* Left Column: Get in touch info */}
-            <div className="p-8 flex flex-col justify-between">
+            <div className="p-8 flex flex-col justify-between gap-6 bg-black">
               <div>
-                <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-50">
+                <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white uppercase">
                   Get in touch
                 </h1>
-                <p className="mt-3 text-xs leading-relaxed text-zinc-400 max-w-sm">
+                <p className="mt-2 text-xs font-bold uppercase tracking-wider text-muted max-w-sm">
                   If you have any questions regarding our Services or need help, please fill out the form here. We do our best to respond within 1 business day.
                 </p>
               </div>
 
-              <div className="mt-8 flex flex-col gap-4">
+              <div className="flex flex-col gap-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex items-center gap-3">
-                    <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950 text-zinc-300">
-                      <Mail className="h-4 w-4" />
+                    <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center border-2 border-white bg-ink-card text-white rounded-md">
+                      <Mail className="h-5 w-5" />
                     </div>
                     <div>
-                      <h3 className="text-xs font-semibold text-zinc-100">Email</h3>
-                      <p className="text-[11px] text-zinc-400 truncate">support@ps05.io</p>
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-white">Email</h3>
+                      <p className="text-[11px] text-muted font-bold truncate">support@ps05.io</p>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950 text-zinc-300">
-                      <Phone className="h-4 w-4" />
+                    <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center border-2 border-white bg-ink-card text-white rounded-md">
+                      <Phone className="h-5 w-5" />
                     </div>
                     <div>
-                      <h3 className="text-xs font-semibold text-zinc-100">Phone</h3>
-                      <p className="text-[11px] text-zinc-400">+1 (800) 555-0199</p>
+                      <h3 className="text-xs font-bold uppercase tracking-wider text-white">Phone</h3>
+                      <p className="text-[11px] text-muted font-bold">+1 (800) 555-0199</p>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3 pt-2">
-                  <div className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950 text-emerald-400">
-                    <Clock className="h-4 w-4" />
+                  <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center border-2 border-lime bg-lime/10 text-lime rounded-md">
+                    <Clock className="h-5 w-5" />
                   </div>
                   <div>
-                    <h3 className="text-xs font-semibold text-zinc-100">Response SLA</h3>
-                    <p className="text-[11px] text-zinc-400">Under 2 hours during business hours</p>
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-lime">Response SLA</h3>
+                    <p className="text-[11px] text-muted font-bold">Under 2 hours during business hours</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Right Column: Minimal Form */}
-            <div className="p-8 border-t md:border-t-0 md:border-l border-zinc-800/80 bg-zinc-950/60 flex flex-col justify-center">
+            <div className="p-8 border-t md:border-t-0 md:border-l-2 border-white bg-ink-soft flex flex-col justify-center">
               {submitted ? (
-                <div className="flex flex-col items-center justify-center py-6 text-center gap-3">
-                  <div className="h-12 w-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-                    <CheckCircle2 className="h-6 w-6" />
+                <div className="flex flex-col items-center justify-center py-6 text-center gap-4">
+                  <div className="h-14 w-14 border-2 border-lime bg-lime/10 flex items-center justify-center text-lime rounded-md">
+                    <CheckCircle2 className="h-7 w-7" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-zinc-100">Message Sent</h3>
-                    <p className="mt-1 text-xs text-zinc-400 max-w-xs">
-                      We'll respond to <span className="font-semibold text-zinc-200">{email}</span> shortly.
+                    <h3 className="text-sm font-bold uppercase tracking-wider text-white">Message Sent</h3>
+                    <p className="mt-1 text-xs text-muted font-bold">
+                      We'll respond to <span className="text-white">{email}</span> shortly.
                     </p>
                   </div>
                   <Button
@@ -112,22 +112,22 @@ export function ContactPage() {
                       setMessage('');
                     }}
                     variant="outline"
-                    className="h-8 text-xs border-zinc-800 bg-zinc-900 text-zinc-100 hover:bg-zinc-800 mt-2"
+                    className="w-full mt-2"
                   >
                     Send Another Message
                   </Button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                   {errorMessage && (
-                    <div className="flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-2 text-xs text-red-400">
-                      <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                    <div className="flex items-center gap-2 border-2 border-pink bg-pink/5 p-2.5 text-xs font-bold uppercase tracking-wider text-pink">
+                      <AlertCircle className="h-4 w-4 shrink-0" />
                       <span>{errorMessage}</span>
                     </div>
                   )}
 
-                  <div className="grid gap-1">
-                    <label htmlFor="contact-name" className="text-xs font-semibold text-zinc-200">
+                  <div className="grid gap-1.5">
+                    <label htmlFor="contact-name" className="text-xs font-bold uppercase tracking-wider text-white">
                       Name
                     </label>
                     <input
@@ -137,12 +137,12 @@ export function ContactPage() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder=""
-                      className="h-9 w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 text-xs text-zinc-100 focus:outline-none focus:border-zinc-700 transition-colors"
+                      className="h-10 w-full border-2 border-white bg-black px-3 text-sm text-white placeholder:text-muted outline-none transition-all rounded-md focus:border-lime focus:shadow-[4px_4px_0px_#C6FF00]"
                     />
                   </div>
 
-                  <div className="grid gap-1">
-                    <label htmlFor="contact-email" className="text-xs font-semibold text-zinc-200">
+                  <div className="grid gap-1.5">
+                    <label htmlFor="contact-email" className="text-xs font-bold uppercase tracking-wider text-white">
                       Email
                     </label>
                     <input
@@ -152,12 +152,12 @@ export function ContactPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder=""
-                      className="h-9 w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 text-xs text-zinc-100 focus:outline-none focus:border-zinc-700 transition-colors"
+                      className="h-10 w-full border-2 border-white bg-black px-3 text-sm text-white placeholder:text-muted outline-none transition-all rounded-md focus:border-lime focus:shadow-[4px_4px_0px_#C6FF00]"
                     />
                   </div>
 
-                  <div className="grid gap-1">
-                    <label htmlFor="contact-phone" className="text-xs font-semibold text-zinc-200">
+                  <div className="grid gap-1.5">
+                    <label htmlFor="contact-phone" className="text-xs font-bold uppercase tracking-wider text-white">
                       Phone
                     </label>
                     <input
@@ -166,12 +166,12 @@ export function ContactPage() {
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder=""
-                      className="h-9 w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 text-xs text-zinc-100 focus:outline-none focus:border-zinc-700 transition-colors"
+                      className="h-10 w-full border-2 border-white bg-black px-3 text-sm text-white placeholder:text-muted outline-none transition-all rounded-md focus:border-lime focus:shadow-[4px_4px_0px_#C6FF00]"
                     />
                   </div>
 
-                  <div className="grid gap-1">
-                    <label htmlFor="contact-message" className="text-xs font-semibold text-zinc-200">
+                  <div className="grid gap-1.5">
+                    <label htmlFor="contact-message" className="text-xs font-bold uppercase tracking-wider text-white">
                       Message
                     </label>
                     <textarea
@@ -181,14 +181,14 @@ export function ContactPage() {
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       placeholder=""
-                      className="w-full rounded-lg border border-zinc-800 bg-zinc-950 p-3 text-xs text-zinc-100 focus:outline-none focus:border-zinc-700 transition-colors resize-none"
+                      className="w-full border-2 border-white bg-black p-3 text-sm text-white placeholder:text-muted outline-none transition-all rounded-md focus:border-lime focus:shadow-[4px_4px_0px_#C6FF00] resize-none"
                     />
                   </div>
 
                   <Button
                     type="submit"
                     loading={submitting}
-                    className="w-full h-10 mt-1 rounded-lg bg-zinc-100 text-zinc-950 hover:bg-zinc-200 text-xs font-semibold transition-colors"
+                    className="w-full mt-2"
                   >
                     Submit
                   </Button>
@@ -199,10 +199,10 @@ export function ContactPage() {
         </main>
 
         {/* Minimal Footer Bar */}
-        <footer className="w-full border-t border-zinc-800/80 py-3 px-6 bg-zinc-950/80 backdrop-blur-sm z-10 flex items-center justify-between text-[11px] text-zinc-500">
+        <footer className="w-full border-t-2 border-white py-3.5 px-6 bg-black z-10 flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-muted">
           <span>© {new Date().getFullYear()} BizIntel-Enterprise Intelligence. All rights reserved.</span>
-          <span className="inline-flex items-center gap-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="inline-flex items-center gap-2 border border-lime bg-lime/10 px-2 py-0.5 text-lime rounded-sm">
+            <span className="h-1.5 w-1.5 rounded-full bg-lime animate-pulse" />
             All Systems Operational
           </span>
         </footer>

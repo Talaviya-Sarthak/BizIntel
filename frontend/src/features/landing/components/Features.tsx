@@ -43,7 +43,7 @@ const FEATURES = [
   {
     icon: ShieldIcon,
     title: 'Secure architecture',
-    description: 'JWT authentication, hashed credentials, and validated API boundaries.',
+    description: 'JWT authentication, credentials encryption, and validated API boundaries.',
   },
   {
     icon: ServerIcon,
@@ -54,32 +54,31 @@ const FEATURES = [
 
 export function Features() {
   return (
-    <section id="features" className="relative py-16 sm:py-24 border-t border-zinc-800/80">
+    <section id="features" className="relative py-16 sm:py-24 border-t-2 border-white bg-black">
       <div className="container-shell">
         <div className="mx-auto max-w-2xl text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/80 px-3 py-1 text-[11px] font-medium tracking-wide text-zinc-300">
+          <span className="section-label">
             Capabilities
           </span>
-          <h2 className="mt-4 text-2xl font-bold tracking-tight text-zinc-100 sm:text-3xl">
+          <h2 className="mt-4 text-3xl font-black tracking-tight text-white sm:text-4xl uppercase">
             Built for the demands of enterprise analytics
           </h2>
-          <p className="mt-3 text-sm leading-relaxed text-zinc-400">
-            Every capability is designed to be modular, auditable, and ready to
-            integrate with the rest of the platform.
+          <p className="mt-2 text-sm font-bold uppercase tracking-wider text-muted">
+            Every capability is designed to be modular, auditable, and ready to integrate with the rest of the platform.
           </p>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {FEATURES.map((feature) => (
             <div
               key={feature.title}
-              className="group rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-4.5 transition duration-200 hover:border-zinc-700 hover:bg-zinc-900/60"
+              className="group border-2 border-white bg-ink-card p-5 shadow-brutal hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-brutal-press transition-all duration-150 rounded-md"
             >
-              <div className="inline-flex h-8.5 w-8.5 items-center justify-center rounded-lg bg-zinc-800 text-zinc-300 border border-zinc-700/60 transition group-hover:text-zinc-100">
-                <feature.icon className="h-4 w-4" />
+              <div className="inline-flex h-10 w-10 items-center justify-center border-2 border-lime bg-lime/10 text-lime transition-all">
+                <feature.icon className="h-5 w-5" />
               </div>
-              <h3 className="mt-3.5 text-xs font-semibold text-zinc-100">{feature.title}</h3>
-              <p className="mt-1.5 text-xs leading-relaxed text-zinc-400">
+              <h3 className="mt-4 text-xs font-bold uppercase tracking-wider text-white">{feature.title}</h3>
+              <p className="mt-2 text-xs leading-relaxed text-muted font-medium">
                 {feature.description}
               </p>
             </div>

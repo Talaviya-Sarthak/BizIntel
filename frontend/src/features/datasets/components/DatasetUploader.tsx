@@ -130,21 +130,21 @@ export function DatasetUploader({
         onDragLeave={() => setDragActive(false)}
         onDrop={handleDrop}
         className={clsx(
-          'flex flex-col items-center justify-center rounded-2xl border-2 border-dashed px-6 py-14 text-center transition',
+          'flex flex-col items-center justify-center border-2 border-dashed px-6 py-14 text-center transition-all duration-150 rounded-md outline-none',
           dragActive
-            ? 'border-cyan-400/70 bg-cyan-400/[0.06]'
-            : 'border-white/15 bg-white/[0.02] hover:border-cyan-400/40',
+            ? 'border-lime bg-lime/5 shadow-[4px_4px_0px_#C6FF00]'
+            : 'border-white bg-ink-card hover:border-lime focus:border-lime',
         )}
       >
-        <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-400/10 text-cyan-400 ring-1 ring-cyan-400/20">
+        <span className="inline-flex h-14 w-14 items-center justify-center border-2 border-lime bg-lime/10 text-lime rounded-sm">
           <UploadIcon className="h-7 w-7" />
         </span>
-        <p className="mt-5 text-sm font-medium text-white">
+        <p className="mt-5 text-sm font-bold uppercase tracking-wider text-white">
           Drag & drop your CSV file here
         </p>
-        <p className="mt-1 text-xs text-slate-500">
+        <p className="mt-1.5 text-xs font-bold uppercase tracking-wider text-muted">
           or{' '}
-          <span className="font-medium text-cyan-400">browse your files</span> · up to{' '}
+          <span className="text-lime hover:underline cursor-pointer">browse your files</span> · up to{' '}
           {maxSizeMb} MB
         </p>
         <input
@@ -160,38 +160,38 @@ export function DatasetUploader({
       </div>
 
       {file ? (
-        <div className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+        <div className="flex flex-col gap-4 border-2 border-white bg-ink-card p-5 rounded-md shadow-brutal-sm">
           <div className="flex items-center gap-4">
-            <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-cyan-400/10 text-cyan-400 ring-1 ring-cyan-400/20">
+            <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center border-2 border-lime bg-lime/10 text-lime rounded-sm">
               <FileIcon className="h-5 w-5" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-white">{file.name}</p>
-              <p className="mt-0.5 text-xs text-slate-500">
+              <p className="truncate text-sm font-bold uppercase tracking-wider text-white">{file.name}</p>
+              <p className="mt-1 text-xs font-bold uppercase tracking-wider text-muted">
                 {formatBytes(file.size)} · {file.type || 'text/csv'}
               </p>
             </div>
             {phase === 'success' && uploaded ? (
-              <CheckCircleIcon className="h-6 w-6 shrink-0 text-emerald-400" />
+              <CheckCircleIcon className="h-6 w-6 shrink-0 text-lime" />
             ) : phase === 'error' ? (
-              <XCircleIcon className="h-6 w-6 shrink-0 text-red-400" />
+              <XCircleIcon className="h-6 w-6 shrink-0 text-pink" />
             ) : null}
           </div>
 
           {phase === 'uploading' || phase === 'processing' ? (
             <div>
-              <div className="mb-1.5 flex items-center justify-between text-xs">
-                <span className="font-medium text-slate-300">
+              <div className="mb-2 flex items-center justify-between text-xs font-bold uppercase tracking-wider">
+                <span className="text-white">
                   {phase === 'processing' ? 'Processing dataset with DuckDB…' : 'Uploading…'}
                 </span>
-                <span className="text-slate-500">
+                <span className="text-muted">
                   {phase === 'processing' ? 'Analyzing' : `${progress}%`}
                 </span>
               </div>
-              <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+              <div className="h-3 overflow-hidden border-2 border-white bg-black rounded-sm">
                 <div
                   className={clsx(
-                    'h-full rounded-full bg-cyan-400 transition-all duration-300',
+                    'h-full bg-lime transition-all duration-300',
                     phase === 'processing' && 'animate-pulse',
                   )}
                   style={{ width: phase === 'processing' ? '100%' : `${progress}%` }}
@@ -201,14 +201,13 @@ export function DatasetUploader({
           ) : null}
 
           {phase === 'success' && uploaded ? (
-            <p className="text-sm text-emerald-300">
-              {uploaded.name} is ready with {uploaded.rowCount?.toLocaleString() ?? 0} rows
-              across {uploaded.columnCount ?? 0} columns.
+            <p className="text-xs font-bold uppercase tracking-wider text-lime">
+              {uploaded.name} is ready with {uploaded.rowCount?.toLocaleString() ?? 0} rows across {uploaded.columnCount ?? 0} columns.
             </p>
           ) : null}
 
           {phase === 'error' ? (
-            <p className="rounded-lg border border-red-400/20 bg-red-400/[0.05] px-3 py-2.5 text-sm text-red-300">
+            <p className="border-2 border-pink bg-pink/5 px-3 py-2.5 text-xs font-bold uppercase tracking-wider text-pink rounded-sm">
               {error}
             </p>
           ) : null}
@@ -217,7 +216,7 @@ export function DatasetUploader({
             <div className="flex items-center gap-3">
               {phase === 'idle' ? (
                 <Button onClick={handleUpload} loading={isPending}>
-                  <UploadIcon className="h-4 w-4" />
+                  <UploadIcon className="h-4.5 w-4.5" />
                   Upload dataset
                 </Button>
               ) : null}

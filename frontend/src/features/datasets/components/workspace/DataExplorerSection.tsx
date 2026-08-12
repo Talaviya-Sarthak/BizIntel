@@ -59,14 +59,14 @@ export function DataExplorerSection({ datasetId, columns }: DataExplorerSectionP
   const hasPrev = page > 1;
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5 bg-black">
       <FilterBuilder columns={columns} onChange={setFilters} />
 
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="relative min-w-[220px] flex-1 sm:max-w-xs">
-          <SearchIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="relative min-w-[240px] flex-1 sm:max-w-xs">
+          <SearchIcon className="pointer-events-none absolute left-3.5 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-muted" />
           <input
-            className="h-9 w-full rounded-lg border border-white/10 bg-slate-900 pl-9 pr-3 text-sm text-slate-200 placeholder:text-slate-600 focus:border-cyan-400/50 focus:outline-none"
+            className="w-full border-2 border-white bg-black pl-10 pr-3.5 py-2 text-sm text-white placeholder:text-muted outline-none transition-all rounded-md focus:border-lime focus:shadow-[4px_4px_0px_#C6FF00]"
             placeholder="Search across all columns…"
             value={searchInput}
             onChange={(event) => setSearchInput(event.target.value)}
@@ -75,21 +75,21 @@ export function DataExplorerSection({ datasetId, columns }: DataExplorerSectionP
         </div>
 
         <select
-          className="h-9 rounded-lg border border-white/10 bg-slate-900 px-2.5 text-sm text-slate-200 focus:border-cyan-400/50 focus:outline-none"
+          className="border-2 border-white bg-black px-3 py-2 text-sm text-white outline-none transition-all rounded-md font-bold uppercase tracking-wider focus:border-lime focus:shadow-[4px_4px_0px_#C6FF00]"
           value={sortColumn}
           onChange={(event) => setSortColumn(event.target.value)}
           aria-label="Sort column"
         >
-          <option value="">No sorting</option>
+          <option value="" className="bg-black text-white">No sorting</option>
           {columns.map((column) => (
-            <option key={column.name} value={column.name}>
+            <option key={column.name} value={column.name} className="bg-black text-white">
               Sort by {column.name}
             </option>
           ))}
         </select>
         {sortColumn ? (
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
             onClick={() => setSortDirection((d) => (d === 'asc' ? 'desc' : 'asc'))}
           >
@@ -98,7 +98,7 @@ export function DataExplorerSection({ datasetId, columns }: DataExplorerSectionP
         ) : null}
       </div>
 
-      <div className="text-xs text-slate-500">
+      <div className="text-[10px] font-bold uppercase tracking-wider text-muted">
         {rowsQuery.data
           ? `${formatNumber(rowsQuery.data.total)} matching rows · page ${rowsQuery.data.page} of ${Math.max(1, Math.ceil(rowsQuery.data.total / PAGE_SIZE))}`
           : `${formatNumber(columns.length)} columns available`}
@@ -114,14 +114,14 @@ export function DataExplorerSection({ datasetId, columns }: DataExplorerSectionP
       ) : rowsQuery.data && rowsQuery.data.rows.length > 0 ? (
         <>
           <DataTable columns={resultColumns} rows={rowsQuery.data.rows} highlightSearch={debouncedSearch} />
-          <div className="flex items-center justify-end gap-2">
+          <div className="flex items-center justify-end gap-2.5">
             <Button
               variant="outline"
               size="sm"
               disabled={!hasPrev}
               onClick={() => setPage(page - 1)}
             >
-              <ChevronRightIcon className="h-4 w-4 rotate-180" />
+              <ChevronRightIcon className="h-4.5 w-4.5 rotate-180" />
               Previous
             </Button>
             <Button
@@ -131,7 +131,7 @@ export function DataExplorerSection({ datasetId, columns }: DataExplorerSectionP
               onClick={() => setPage(page + 1)}
             >
               Next
-              <ChevronRightIcon className="h-4 w-4" />
+              <ChevronRightIcon className="h-4.5 w-4.5" />
             </Button>
           </div>
         </>

@@ -16,10 +16,10 @@ interface ComingSoonProps {
  */
 export function ComingSoon({ icon, title, description, moduleName }: ComingSoonProps) {
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-6 bg-black">
       <div>
-        <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3.5 py-1.5 text-xs font-medium uppercase tracking-[0.18em] text-cyan-300/90">
-          <ClockIcon className="h-3.5 w-3.5" />
+        <span className="inline-flex items-center gap-2 border border-yellow bg-yellow/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-yellow rounded-sm">
+          <ClockIcon className="h-4 w-4" />
           Coming soon
         </span>
       </div>
@@ -28,7 +28,7 @@ export function ComingSoon({ icon, title, description, moduleName }: ComingSoonP
         title={title}
         description={description}
         action={
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3.5 py-1.5 text-xs uppercase tracking-wider text-slate-500">
+          <span className="inline-flex items-center gap-2 border border-white bg-black px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-muted rounded-sm">
             {moduleName ?? 'Module'} · planned for a later phase
           </span>
         }

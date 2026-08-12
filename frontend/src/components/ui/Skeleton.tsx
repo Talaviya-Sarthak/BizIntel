@@ -4,7 +4,7 @@ import { clsx } from 'clsx';
 export function Skeleton({ className }: { className?: string }) {
   return (
     <div
-      className={clsx('animate-pulse rounded-lg bg-white/10', className)}
+      className={clsx('animate-pulse bg-ink-raised border border-white/20', className)}
       aria-hidden="true"
     />
   );
@@ -13,9 +13,9 @@ export function Skeleton({ className }: { className?: string }) {
 /** Skeleton for a KPI-style card. */
 export function SkeletonKpiCard() {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-      <Skeleton className="h-10 w-10 rounded-xl" />
-      <Skeleton className="mt-4 h-7 w-24" />
+    <div className="border-2 border-white bg-ink-card p-5 rounded-md shadow-brutal-sm">
+      <Skeleton className="h-10 w-10" />
+      <Skeleton className="mt-4 h-8 w-24" />
       <Skeleton className="mt-2 h-3 w-16" />
     </div>
   );

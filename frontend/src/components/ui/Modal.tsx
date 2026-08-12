@@ -17,23 +17,23 @@ export function Modal({ open, onClose, title, children, footer }: ModalProps) {
       <button
         type="button"
         aria-label="Close dialog"
-        className="absolute inset-0 bg-black/70"
+        className="absolute inset-0 bg-black/80"
         onClick={onClose}
       />
       <div
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="relative w-full max-w-md rounded-2xl border border-white/10 bg-surface-elevated shadow-2xl"
+        className="relative w-full max-w-md border-2 border-white bg-ink-card rounded-md shadow-brutal"
       >
         {title ? (
-          <div className="border-b border-white/10 px-6 py-4">
-            <h2 className="text-base font-semibold text-white">{title}</h2>
+          <div className="border-b-2 border-white px-6 py-4">
+            <h2 className="text-lg font-bold uppercase tracking-wider text-white">{title}</h2>
           </div>
         ) : null}
         <div className={clsx('px-6 py-5', footer && 'pb-4')}>{children}</div>
         {footer ? (
-          <div className="flex items-center justify-end gap-3 border-t border-white/10 px-6 py-4">
+          <div className="flex items-center justify-end gap-3 border-t-2 border-white px-6 py-4">
             {footer}
           </div>
         ) : null}

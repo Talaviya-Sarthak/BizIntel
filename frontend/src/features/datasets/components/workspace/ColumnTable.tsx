@@ -3,15 +3,15 @@ import type { AnalyticsColumn, ColumnCategory } from '../../analytics/types';
 import { ChevronRightIcon } from '../../../../components/ui/icons';
 
 const CATEGORY_BADGE: Record<ColumnCategory, string> = {
-  integer: 'bg-cyan-400/10 text-cyan-300 ring-cyan-400/30',
-  float: 'bg-sky-400/10 text-sky-300 ring-sky-400/30',
-  decimal: 'bg-blue-400/10 text-blue-300 ring-blue-400/30',
-  boolean: 'bg-violet-400/10 text-violet-300 ring-violet-400/30',
-  date: 'bg-emerald-400/10 text-emerald-300 ring-emerald-400/30',
-  time: 'bg-teal-400/10 text-teal-300 ring-teal-400/30',
-  datetime: 'bg-emerald-400/10 text-emerald-300 ring-emerald-400/30',
-  uuid: 'bg-fuchsia-400/10 text-fuchsia-300 ring-fuchsia-400/30',
-  string: 'bg-amber-400/10 text-amber-300 ring-amber-400/30',
+  integer: 'border-2 border-lime text-lime bg-lime/10',
+  float: 'border-2 border-lime text-lime bg-lime/10',
+  decimal: 'border-2 border-lime text-lime bg-lime/10',
+  boolean: 'border-2 border-pink text-pink bg-pink/10',
+  date: 'border-2 border-pink text-pink bg-pink/10',
+  time: 'border-2 border-pink text-pink bg-pink/10',
+  datetime: 'border-2 border-pink text-pink bg-pink/10',
+  uuid: 'border-2 border-pink text-pink bg-pink/10',
+  string: 'border-2 border-yellow text-yellow bg-yellow/10',
 };
 
 interface ColumnTableProps {
@@ -23,50 +23,53 @@ interface ColumnTableProps {
 /** Selectable list of detected columns with type categorization. */
 export function ColumnTable({ columns, selectedColumn, onSelect }: ColumnTableProps) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
+    <div className="overflow-hidden border-2 border-white bg-black shadow-brutal-sm rounded-md">
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm">
+        <table className="w-full text-left text-xs font-bold uppercase tracking-wider">
           <thead>
-            <tr className="border-b border-white/10 text-[11px] uppercase tracking-wider text-slate-500">
-              <th className="px-5 py-3 font-medium">Column</th>
-              <th className="px-5 py-3 font-medium">Category</th>
-              <th className="px-5 py-3 font-medium">Detected type</th>
-              <th className="px-5 py-3 font-medium">Nullable</th>
-              <th className="px-5 py-3" aria-label="Actions" />
+            <tr className="border-b-2 border-white bg-ink-soft text-[10px] text-white">
+              <th className="px-5 py-3.5 font-bold">Column</th>
+              <th className="px-5 py-3.5 font-bold">Category</th>
+              <th className="px-5 py-3.5 font-bold">Detected type</th>
+              <th className="px-5 py-3.5 font-bold">Nullable</th>
+              <th className="px-5 py-3.5" aria-label="Actions" />
             </tr>
           </thead>
-          <tbody>
-            {columns.map((column) => (
-              <tr
-                key={column.name}
-                onClick={() => onSelect(column)}
-                className={clsx(
-                  'cursor-pointer border-b border-white/5 transition last:border-0',
-                  selectedColumn === column.name
-                    ? 'bg-cyan-400/[0.06]'
-                    : 'hover:bg-white/[0.03]',
-                )}
-              >
-                <td className="max-w-[260px] truncate px-5 py-3 font-medium text-white" title={column.name}>
-                  {column.name}
-                </td>
-                <td className="px-5 py-3">
-                  <span
-                    className={clsx(
-                      'inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium capitalize ring-1',
-                      CATEGORY_BADGE[column.category],
-                    )}
-                  >
-                    {column.category}
-                  </span>
-                </td>
-                <td className="px-5 py-3 text-slate-400">{column.type}</td>
-                <td className="px-5 py-3 text-slate-400">{column.nullable ? 'Yes' : 'No'}</td>
-                <td className="px-5 py-3 text-right">
-                  <ChevronRightIcon className="ml-auto h-4 w-4 text-slate-600" />
-                </td>
-              </tr>
-            ))}
+          <tbody className="divide-y border-white/20 bg-black text-white">
+            {columns.map((column) => {
+              const selected = selectedColumn === column.name;
+              return (
+                <tr
+                  key={column.name}
+                  onClick={() => onSelect(column)}
+                  className={clsx(
+                    'cursor-pointer transition-colors',
+                    selected
+                      ? 'bg-lime/10'
+                      : 'hover:bg-ink-card',
+                  )}
+                >
+                  <td className="max-w-[260px] truncate px-5 py-3 font-bold text-white normal-case text-sm" title={column.name}>
+                    {column.name}
+                  </td>
+                  <td className="px-5 py-3">
+                    <span
+                      className={clsx(
+                        'inline-flex px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-sm border-2',
+                        CATEGORY_BADGE[column.category],
+                      )}
+                    >
+                      {column.category}
+                    </span>
+                  </td>
+                  <td className="px-5 py-3 text-muted font-mono">{column.type}</td>
+                  <td className="px-5 py-3 text-muted">{column.nullable ? 'Yes' : 'No'}</td>
+                  <td className="px-5 py-3 text-right">
+                    <ChevronRightIcon className={clsx("ml-auto h-4.5 w-4.5 transition-colors", selected ? "text-lime" : "text-muted")} />
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

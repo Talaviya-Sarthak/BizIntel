@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { DatabaseIcon, BarChartIcon, SparklesIcon, TargetIcon } from './icons';
 
 const STEPS = [
@@ -30,59 +29,48 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="relative py-16 sm:py-24 border-t border-zinc-800/80">
+    <section id="how-it-works" className="relative py-16 sm:py-24 border-t-2 border-white bg-black">
       <div className="container-shell">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto max-w-2xl text-center"
-        >
-          <span className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/80 px-3 py-1 text-[11px] font-medium tracking-wide text-zinc-300">
+        <div className="mx-auto max-w-2xl text-center">
+          <span className="section-label">
             How It Works
           </span>
-          <h2 className="mt-4 text-2xl font-bold tracking-tight text-zinc-100 sm:text-4xl font-display uppercase">
+          <h2 className="mt-4 text-3xl font-black tracking-tight text-white sm:text-4xl uppercase">
             From raw data to confident decisions
           </h2>
-          <p className="mt-3 text-sm leading-relaxed text-zinc-400">
-            A clear, repeatable pipeline designed to fit existing enterprise
-            workflows.
+          <p className="mt-2 text-sm font-bold uppercase tracking-wider text-muted">
+            A clear, repeatable pipeline designed to fit existing enterprise workflows.
           </p>
-        </motion.div>
+        </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {STEPS.map((item, index) => (
-            <motion.div
+            <div
               key={item.step}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.4, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="relative flex flex-col rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-5 hover:border-zinc-700 transition duration-200"
+              className="relative flex flex-col border-2 border-white bg-ink-card p-6 shadow-brutal hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-brutal-press transition-all duration-150 rounded-md"
             >
               <div className="flex items-center justify-between">
-                <div className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-zinc-800 text-zinc-200 border border-zinc-700/60">
-                  <item.icon className="h-4 w-4" />
+                <div className="inline-flex h-10 w-10 items-center justify-center border-2 border-lime bg-lime/10 text-lime">
+                  <item.icon className="h-5 w-5" />
                 </div>
-                <span className="font-mono text-xs text-zinc-500 font-semibold">{item.step}</span>
+                <span className="font-mono text-sm text-pink font-black">{item.step}</span>
               </div>
-              <h3 className="mt-4 text-sm font-semibold text-zinc-100">{item.title}</h3>
-              <p className="mt-1.5 text-xs leading-relaxed text-zinc-400">
+              <h3 className="mt-5 text-base font-black uppercase text-white">{item.title}</h3>
+              <p className="mt-2 text-xs leading-relaxed text-muted font-medium">
                 {item.description}
               </p>
 
               {index < STEPS.length - 1 ? (
                 <svg
-                  className="absolute -right-2.5 top-1/2 -translate-y-1/2 hidden h-4 w-4 text-zinc-700 lg:block z-10"
+                  className="absolute -right-3.5 top-1/2 -translate-y-1/2 hidden h-5 w-5 text-white lg:block z-10"
                   viewBox="0 0 16 16"
                   fill="none"
                   aria-hidden="true"
                 >
-                  <path d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="miter" />
                 </svg>
               ) : null}
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

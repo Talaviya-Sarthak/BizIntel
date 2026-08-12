@@ -42,46 +42,46 @@ export function UserMenu() {
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="flex items-center gap-3 rounded-lg px-2 py-1.5 transition hover:bg-white/5"
+        className="flex items-center gap-3 border-2 border-white bg-black px-3 py-1.5 hover:bg-ink-card transition-all rounded-md"
         aria-haspopup="menu"
         aria-expanded={open}
       >
-        <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-cyan-400/15 text-sm font-semibold text-cyan-300 ring-1 ring-cyan-400/30">
+        <span className="inline-flex h-8 w-8 items-center justify-center rounded-sm border-2 border-lime bg-lime/10 text-xs font-bold text-lime">
           {initialsOf(user?.name)}
         </span>
         <span className="hidden text-left sm:block">
-          <span className="block max-w-[160px] truncate text-sm font-medium text-white">
+          <span className="block max-w-[160px] truncate text-xs font-bold uppercase tracking-wider text-white">
             {user?.name}
           </span>
-          <span className="block max-w-[160px] truncate text-xs text-slate-500">
+          <span className="block max-w-[160px] truncate text-[10px] uppercase font-bold text-muted">
             {user?.email}
           </span>
         </span>
         <ChevronDownIcon
-          className={clsx('hidden h-4 w-4 text-slate-500 transition sm:block', open && 'rotate-180')}
+          className={clsx('hidden h-4 w-4 text-white transition sm:block', open && 'rotate-180')}
         />
       </button>
 
       {open ? (
         <div
           role="menu"
-          className="absolute right-0 top-full z-50 mt-2 w-64 rounded-2xl border border-white/10 bg-surface-elevated p-2 shadow-2xl"
+          className="absolute right-0 top-full z-50 mt-2 w-64 border-2 border-white bg-ink-card p-2 shadow-brutal rounded-md"
         >
-          <div className="border-b border-white/10 px-3 py-3">
-            <p className="truncate text-sm font-medium text-white">{user?.name}</p>
-            <p className="truncate text-xs text-slate-500">{user?.email}</p>
-            <p className="mt-1.5 text-[11px] uppercase tracking-wider text-slate-600">
+          <div className="border-b-2 border-white px-3 py-3">
+            <p className="truncate text-sm font-bold uppercase tracking-wider text-white">{user?.name}</p>
+            <p className="truncate text-xs text-muted font-bold">{user?.email}</p>
+            <p className="mt-1.5 text-[9px] font-bold uppercase tracking-widest text-lime bg-lime/10 border border-lime/20 px-2 py-0.5 w-fit rounded-sm">
               {user?.role}
             </p>
           </div>
           {signOutError ? (
-            <p className="px-3 py-2 text-xs text-red-400">{signOutError}</p>
+            <p className="px-3 py-2 text-xs text-pink font-bold uppercase tracking-wider">{signOutError}</p>
           ) : null}
           <div className="pt-2">
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
-              className="w-full justify-start text-slate-300"
+              className="w-full justify-start text-pink hover:bg-pink/10 border-0"
               onClick={handleSignOut}
               loading={signingOut}
             >

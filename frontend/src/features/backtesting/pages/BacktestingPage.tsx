@@ -28,20 +28,20 @@ export function BacktestingPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 bg-black">
       <PageHeader
         title="Backtesting"
         description="Run historical strategies against your datasets and compare performance against a Buy & Hold benchmark."
         actions={
           <Button onClick={() => navigate('/backtesting/new')}>
-            <PlusIcon className="h-4 w-4" />
+            <PlusIcon className="h-4.5 w-4.5" />
             New Backtest
           </Button>
         }
       />
 
       {backtestsQuery.isLoading ? (
-        <div className="flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.02] py-24">
+        <div className="flex items-center justify-center border-2 border-white bg-ink-card py-24 rounded-md shadow-brutal-sm">
           <Spinner size="md" />
         </div>
       ) : backtestsQuery.isError ? (
@@ -56,82 +56,82 @@ export function BacktestingPage() {
           description="Create your first backtest by picking a strategy and a dataset with OHLCV market data."
           action={
             <Button onClick={() => navigate('/backtesting/new')}>
-              <PlusIcon className="h-4 w-4" />
+              <PlusIcon className="h-4.5 w-4.5" />
               New Backtest
             </Button>
           }
         />
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]">
+        <div className="overflow-hidden border-2 border-white bg-black shadow-brutal-sm rounded-md">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[840px] text-left text-sm">
+            <table className="w-full min-w-[840px] text-left text-xs font-bold uppercase tracking-wider">
               <thead>
-                <tr className="border-b border-white/10 text-[11px] uppercase tracking-wider text-slate-500">
-                  <th className="px-4 py-3 font-medium">Backtest</th>
-                  <th className="px-4 py-3 font-medium">Strategy</th>
-                  <th className="px-4 py-3 font-medium">Status</th>
-                  <th className="px-4 py-3 text-right font-medium">Initial Capital</th>
-                  <th className="px-4 py-3 text-right font-medium">Final Equity</th>
-                  <th className="px-4 py-3 text-right font-medium">Return</th>
-                  <th className="px-4 py-3 text-right font-medium">Max DD</th>
-                  <th className="px-4 py-3 text-right font-medium">Trades</th>
-                  <th className="px-4 py-3 font-medium">Created</th>
-                  <th className="px-4 py-3" />
+                <tr className="border-b-2 border-white bg-ink-soft text-[10px] text-white">
+                  <th className="px-4 py-3.5 font-bold">Backtest</th>
+                  <th className="px-4 py-3.5 font-bold">Strategy</th>
+                  <th className="px-4 py-3.5 font-bold">Status</th>
+                  <th className="px-4 py-3.5 text-right font-bold">Initial Capital</th>
+                  <th className="px-4 py-3.5 text-right font-bold">Final Equity</th>
+                  <th className="px-4 py-3.5 text-right font-bold">Return</th>
+                  <th className="px-4 py-3.5 text-right font-bold">Max DD</th>
+                  <th className="px-4 py-3.5 text-right font-bold">Trades</th>
+                  <th className="px-4 py-3.5 font-bold">Created</th>
+                  <th className="px-4 py-3.5" />
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y border-white/20 bg-black text-white">
                 {backtestsQuery.data?.items.map((backtest) => (
                   <tr
                     key={backtest.id}
-                    className="cursor-pointer border-b border-white/5 transition last:border-0 hover:bg-white/[0.03]"
+                    className="cursor-pointer transition-colors hover:bg-ink-card"
                     onClick={() => navigate(`/backtesting/${backtest.id}`)}
                   >
-                    <td className="px-4 py-3">
-                      <p className="font-medium text-white">{backtest.name}</p>
-                      <p className="mt-0.5 text-xs text-slate-500">
+                    <td className="px-4 py-3.5 normal-case">
+                      <p className="font-bold text-white text-sm">{backtest.name}</p>
+                      <p className="mt-0.5 text-xs text-muted font-bold uppercase tracking-wider">
                         {backtest.datasetName} · {backtest.symbol}
                       </p>
                     </td>
-                    <td className="px-4 py-3 text-slate-300">{backtest.strategyName}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3.5 text-white">{backtest.strategyName}</td>
+                    <td className="px-4 py-3.5">
                       <BacktestStatusBadge status={backtest.status} />
                     </td>
-                    <td className="px-4 py-3 text-right tabular-nums text-slate-300">
+                    <td className="px-4 py-3.5 text-right font-mono text-muted">
                       {formatCurrency(backtest.initialCapital)}
                     </td>
-                    <td className="px-4 py-3 text-right font-medium tabular-nums text-white">
+                    <td className="px-4 py-3.5 text-right font-mono text-white">
                       {formatCurrency(backtest.finalEquity)}
                     </td>
                     <td
-                      className={`px-4 py-3 text-right font-semibold tabular-nums ${
+                      className={`px-4 py-3.5 text-right font-mono font-black ${
                         backtest.totalReturn === null
-                          ? 'text-slate-500'
+                          ? 'text-muted'
                           : backtest.totalReturn >= 0
-                            ? 'text-emerald-300'
-                            : 'text-rose-300'
+                            ? 'text-lime'
+                            : 'text-pink'
                       }`}
                     >
                       {formatPercent(backtest.totalReturn)}
                     </td>
-                    <td className="px-4 py-3 text-right tabular-nums text-rose-300">
+                    <td className="px-4 py-3.5 text-right font-mono text-pink">
                       {backtest.maxDrawdown === null ? '—' : formatPercent(-backtest.maxDrawdown)}
                     </td>
-                    <td className="px-4 py-3 text-right tabular-nums text-slate-300">
+                    <td className="px-4 py-3.5 text-right font-mono text-white">
                       {backtest.totalTrades ?? '—'}
                     </td>
-                    <td className="px-4 py-3 text-slate-400">{formatDate(backtest.createdAt)}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3.5 text-muted font-mono text-[10px]">{formatDate(backtest.createdAt)}</td>
+                    <td className="px-4 py-3.5">
                       <button
                         type="button"
                         aria-label={`Delete ${backtest.name}`}
                         disabled={deleteMutation.isPending}
-                        className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-400/10 hover:text-red-300 disabled:opacity-50"
+                        className="inline-flex h-8 w-8 items-center justify-center text-muted hover:text-pink transition-colors disabled:opacity-50"
                         onClick={(event) => {
                           event.stopPropagation();
                           void handleDelete(backtest);
                         }}
                       >
-                        <TrashIcon className="h-4 w-4" />
+                        <TrashIcon className="h-4.5 w-4.5" />
                       </button>
                     </td>
                   </tr>
@@ -143,15 +143,15 @@ export function BacktestingPage() {
       )}
 
       {deleteError ? (
-        <p className="rounded-lg border border-red-400/20 bg-red-400/[0.05] px-4 py-3 text-sm text-red-300">
+        <p className="border-2 border-pink bg-pink/5 px-4 py-3 text-sm font-bold uppercase tracking-wider text-pink rounded-md">
           {deleteError}
         </p>
       ) : null}
 
       {backtestsQuery.data && backtestsQuery.data.items.length > 0 ? (
-        <p className="text-xs text-slate-600">
+        <p className="text-xs font-bold uppercase tracking-wider text-muted">
           Total: {backtestsQuery.data.total} backtests ·{' '}
-          <Link to="/datasets" className="text-cyan-400 hover:underline">
+          <Link to="/datasets" className="text-lime hover:underline">
             open a dataset
           </Link>{' '}
           to run a new one.

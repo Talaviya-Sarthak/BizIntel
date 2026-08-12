@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../../../components/ui/Button';
 import { Logo } from '../../../components/ui/Logo';
 import { useAuth } from '../../../hooks/useAuth';
@@ -25,13 +24,12 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>('platform');
-  const [hoveredSection, setHoveredSection] = useState<string | null>(null);
 
   const { isAuthenticated } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Scroll detection for background elevation
+  // Scroll detection
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
@@ -39,7 +37,7 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Section observer for scroll tracking
+  // Section observer
   useEffect(() => {
     if (location.pathname !== '/') {
       if (location.pathname === '/contact') {
@@ -73,7 +71,6 @@ export function Navbar() {
     return () => observer.disconnect();
   }, [location.pathname]);
 
-  // Smooth scroll handler
   const handleNavClick = (e: React.MouseEvent, item: NavItem) => {
     if (item.isRoute) {
       setOpen(false);
@@ -103,50 +100,30 @@ export function Navbar() {
   };
 
   return (
-    <motion.header
-      initial={false}
-      animate={{
-        backgroundColor: scrolled || open ? 'rgba(9, 9, 11, 0.88)' : 'rgba(9, 9, 11, 0)',
-        borderColor: scrolled || open ? 'rgba(39, 39, 42, 0.8)' : 'rgba(39, 39, 42, 0)',
-      }}
-      transition={{ duration: 0.2 }}
-      className="fixed inset-x-0 top-0 z-50 border-b backdrop-blur-md"
+    <header
+      className={`fixed inset-x-0 top-0 z-50 border-b-2 transition-all duration-200 ${
+        scrolled || open ? 'border-white bg-black' : 'border-transparent bg-transparent'
+      }`}
     >
-      <nav className="container-shell flex h-14 items-center justify-between" aria-label="Main">
+      <nav className="container-shell flex h-16 items-center justify-between" aria-label="Main">
         <Link to="/" className="flex items-center">
           <Logo />
         </Link>
 
-        {/* Compact Sleek Vercel-Style Desktop Navbar Links */}
-        <div
-          className="hidden items-center gap-1.5 lg:flex relative py-1"
-          onMouseLeave={() => setHoveredSection(null)}
-        >
+        {/* Desktop Navbar Links */}
+        <div className="hidden items-center gap-2 lg:flex">
           {NAV_ITEMS.map((item) => {
             const isActive = activeSection === item.id;
-            const isHovered = hoveredSection === item.id;
-
             return (
-              <div
-                key={item.id}
-                className="relative py-1"
-                onMouseEnter={() => setHoveredSection(item.id)}
-              >
-                {/* Hover Pill Background */}
-                {isHovered && (
-                  <motion.div
-                    layoutId="hover-pill"
-                    className="absolute inset-0 rounded-md bg-zinc-800/60 -z-10"
-                    transition={{ type: 'spring', stiffness: 450, damping: 35 }}
-                  />
-                )}
-
+              <div key={item.id} className="relative">
                 {item.isRoute ? (
                   <Link
                     to={item.href}
                     onClick={(e) => handleNavClick(e, item)}
-                    className={`px-2.5 py-1 text-xs font-medium tracking-tight transition-colors duration-150 block ${
-                      isActive ? 'text-zinc-50 font-semibold' : 'text-zinc-400 hover:text-zinc-100'
+                    className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-all duration-150 rounded-md border-2 border-transparent ${
+                      isActive
+                        ? 'text-lime bg-white/10 border-white/20'
+                        : 'text-muted hover:text-white hover:bg-white/5'
                     }`}
                   >
                     {item.label}
@@ -155,21 +132,14 @@ export function Navbar() {
                   <a
                     href={item.href}
                     onClick={(e) => handleNavClick(e, item)}
-                    className={`px-2.5 py-1 text-xs font-medium tracking-tight transition-colors duration-150 block ${
-                      isActive ? 'text-zinc-50 font-semibold' : 'text-zinc-400 hover:text-zinc-100'
+                    className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-all duration-150 rounded-md border-2 border-transparent ${
+                      isActive
+                        ? 'text-lime bg-white/10 border-white/20'
+                        : 'text-muted hover:text-white hover:bg-white/5'
                     }`}
                   >
                     {item.label}
                   </a>
-                )}
-
-                {/* Active White Bottom Underline */}
-                {isActive && (
-                  <motion.div
-                    layoutId="active-underline"
-                    className="absolute bottom-0 left-2.5 right-2.5 h-[2px] bg-white rounded-full"
-                    transition={{ type: 'spring', stiffness: 450, damping: 35 }}
-                  />
                 )}
               </div>
             );
@@ -177,22 +147,22 @@ export function Navbar() {
         </div>
 
         {/* Right CTA Actions */}
-        <div className="hidden items-center gap-2.5 lg:flex">
+        <div className="flex items-center gap-2 sm:gap-3">
           {isAuthenticated ? (
             <Link to="/dashboard">
-              <Button variant="outline" size="sm" className="h-8 text-xs px-3 border-zinc-800 bg-zinc-900 text-zinc-100 hover:bg-zinc-800">
+              <Button variant="default" size="sm">
                 Open Console
               </Button>
             </Link>
           ) : (
             <>
-              <Link to="/signin">
-                <Button variant="ghost" size="sm" className="h-8 text-xs px-3 text-zinc-300 hover:text-zinc-50 hover:bg-zinc-900">
+              <Link to="/signin" className="hidden min-[400px]:inline-block">
+                <Button variant="ghost" size="sm">
                   Sign In
                 </Button>
               </Link>
               <Link to="/signup">
-                <Button variant="default" size="sm" className="h-8 text-xs px-3.5 bg-zinc-50 text-zinc-950 font-medium hover:bg-zinc-200">
+                <Button variant="default" size="sm">
                   Get Started
                 </Button>
               </Link>
@@ -203,7 +173,7 @@ export function Navbar() {
         {/* Mobile Toggle Button */}
         <button
           type="button"
-          className="inline-flex h-8.5 w-8.5 items-center justify-center rounded-lg text-zinc-300 hover:bg-zinc-900 lg:hidden"
+          className="inline-flex h-10 w-10 items-center justify-center border-2 border-white bg-black text-white rounded-md lg:hidden"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-label={open ? 'Close menu' : 'Open menu'}
@@ -213,71 +183,63 @@ export function Navbar() {
       </nav>
 
       {/* Mobile Menu */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2, ease: 'easeInOut' }}
-            className="overflow-hidden border-t border-zinc-800 bg-zinc-950/95 backdrop-blur-md lg:hidden"
-          >
-            <div className="container-shell flex flex-col gap-1 py-4">
-              {NAV_ITEMS.map((item) =>
-                item.isRoute ? (
-                  <Link
-                    key={item.id}
-                    to={item.href}
-                    onClick={(e) => handleNavClick(e, item)}
-                    className={`rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
-                      activeSection === item.id
-                        ? 'bg-zinc-800 text-zinc-50 font-semibold'
-                        : 'text-zinc-300 hover:bg-zinc-900 hover:text-zinc-50'
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                ) : (
-                  <a
-                    key={item.id}
-                    href={item.href}
-                    onClick={(e) => handleNavClick(e, item)}
-                    className={`rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
-                      activeSection === item.id
-                        ? 'bg-zinc-800 text-zinc-50 font-semibold'
-                        : 'text-zinc-300 hover:bg-zinc-900 hover:text-zinc-50'
-                    }`}
-                  >
-                    {item.label}
-                  </a>
-                )
-              )}
-              <div className="mt-3 flex flex-col gap-2 border-t border-zinc-800/80 pt-3">
-                {isAuthenticated ? (
-                  <Link to="/dashboard" onClick={() => setOpen(false)}>
-                    <Button variant="secondary" className="w-full h-8 text-xs">
-                      Open Console
+      {open && (
+        <div className="border-t-2 border-white bg-ink-soft lg:hidden">
+          <div className="container-shell flex flex-col gap-2 py-4">
+            {NAV_ITEMS.map((item) =>
+              item.isRoute ? (
+                <Link
+                  key={item.id}
+                  to={item.href}
+                  onClick={(e) => handleNavClick(e, item)}
+                  className={`rounded-md border-2 border-transparent px-3 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${
+                    activeSection === item.id
+                      ? 'bg-lime text-black border-white'
+                      : 'text-white hover:bg-white/5'
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <a
+                  key={item.id}
+                  href={item.href}
+                  onClick={(e) => handleNavClick(e, item)}
+                  className={`rounded-md border-2 border-transparent px-3 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${
+                    activeSection === item.id
+                      ? 'bg-lime text-black border-white'
+                      : 'text-white hover:bg-white/5'
+                  }`}
+                >
+                  {item.label}
+                </a>
+              )
+            )}
+            <div className="mt-3 flex flex-col gap-2 border-t-2 border-white pt-4">
+              {isAuthenticated ? (
+                <Link to="/dashboard" onClick={() => setOpen(false)}>
+                  <Button variant="primary" className="w-full">
+                    Open Console
+                  </Button>
+                </Link>
+              ) : (
+                <>
+                  <Link to="/signin" onClick={() => setOpen(false)}>
+                    <Button variant="ghost" className="w-full">
+                      Sign In
                     </Button>
                   </Link>
-                ) : (
-                  <>
-                    <Link to="/signin" onClick={() => setOpen(false)}>
-                      <Button variant="ghost" className="w-full h-8 text-xs text-zinc-300">
-                        Sign In
-                      </Button>
-                    </Link>
-                    <Link to="/signup" onClick={() => setOpen(false)}>
-                      <Button variant="default" className="w-full h-8 text-xs bg-zinc-50 text-zinc-950">
-                        Get Started
-                      </Button>
-                    </Link>
-                  </>
-                )}
-              </div>
+                  <Link to="/signup" onClick={() => setOpen(false)}>
+                    <Button variant="primary" className="w-full">
+                      Get Started
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.header>
+          </div>
+        </div>
+      )}
+    </header>
   );
 }

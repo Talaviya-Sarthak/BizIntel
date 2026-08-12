@@ -88,19 +88,19 @@ export function FilterBuilder({ columns, onChange }: FilterBuilderProps) {
   const hasActive = rows.some((row) => row.column);
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03]">
+    <div className="border-2 border-white bg-ink-card rounded-md shadow-brutal-sm">
       <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
         <div className="flex items-center gap-2">
-          <FilterIcon className="h-4 w-4 text-cyan-400" />
-          <h3 className="text-sm font-semibold text-white">Filters</h3>
+          <FilterIcon className="h-4.5 w-4.5 text-lime" />
+          <h3 className="text-sm font-bold uppercase tracking-wider text-white">Filters</h3>
           {hasActive ? (
-            <span className="rounded-full bg-cyan-400/10 px-2 py-0.5 text-xs font-medium text-cyan-300 ring-1 ring-cyan-400/20">
+            <span className="border border-lime text-lime bg-lime/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider rounded-sm">
               {rows.filter((r) => r.column).length} active
             </span>
           ) : null}
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={() => setOpen((v) => !v)}>
+          <Button variant="outline" size="sm" onClick={() => setOpen((v) => !v)}>
             {open ? 'Hide' : 'Edit filters'}
           </Button>
           <Button
@@ -108,6 +108,7 @@ export function FilterBuilder({ columns, onChange }: FilterBuilderProps) {
             size="sm"
             onClick={() => setRows([blankRow()])}
             disabled={!hasActive}
+            className="border-0"
           >
             Clear
           </Button>
@@ -115,25 +116,25 @@ export function FilterBuilder({ columns, onChange }: FilterBuilderProps) {
       </div>
 
       {open ? (
-        <div className="flex flex-col gap-3 border-t border-white/10 px-5 py-4">
+        <div className="flex flex-col gap-4 border-t-2 border-white px-5 py-4 bg-black">
           {rows.map((row) => (
-            <div key={row.id} className="flex flex-wrap items-center gap-2">
+            <div key={row.id} className="flex flex-wrap items-center gap-3">
               <select
-                className="h-9 rounded-lg border border-white/10 bg-slate-900 px-2.5 text-sm text-slate-200 focus:border-cyan-400/50 focus:outline-none"
+                className="border-2 border-white bg-black px-3 py-1.5 text-xs text-white outline-none transition-all rounded-md font-bold uppercase tracking-wider focus:border-lime focus:shadow-[4px_4px_0px_#C6FF00]"
                 value={row.column}
                 onChange={(event) => updateRow(row.id, { column: event.target.value })}
                 aria-label="Column"
               >
-                <option value="">Select column…</option>
+                <option value="" className="bg-black text-white">Select column…</option>
                 {columns.map((column) => (
-                  <option key={column.name} value={column.name}>
+                  <option key={column.name} value={column.name} className="bg-black text-white">
                     {column.name}
                   </option>
                 ))}
               </select>
 
               <select
-                className="h-9 rounded-lg border border-white/10 bg-slate-900 px-2.5 text-sm text-slate-200 focus:border-cyan-400/50 focus:outline-none"
+                className="border-2 border-white bg-black px-3 py-1.5 text-xs text-white outline-none transition-all rounded-md font-bold uppercase tracking-wider focus:border-lime focus:shadow-[4px_4px_0px_#C6FF00]"
                 value={row.operator}
                 disabled={!row.column}
                 onChange={(event) =>
@@ -142,7 +143,7 @@ export function FilterBuilder({ columns, onChange }: FilterBuilderProps) {
                 aria-label="Operator"
               >
                 {selectedOperators(row.column).map((operator) => (
-                  <option key={operator} value={operator}>
+                  <option key={operator} value={operator} className="bg-black text-white">
                     {operator.replace(/_/g, ' ')}
                   </option>
                 ))}
@@ -151,7 +152,7 @@ export function FilterBuilder({ columns, onChange }: FilterBuilderProps) {
               {!NO_VALUE_OPERATORS.includes(row.operator) ? (
                 <>
                   <input
-                    className="h-9 w-36 rounded-lg border border-white/10 bg-slate-900 px-2.5 text-sm text-slate-200 placeholder:text-slate-600 focus:border-cyan-400/50 focus:outline-none"
+                    className="border-2 border-white bg-black px-3 py-1.5 text-xs text-white outline-none transition-all rounded-md focus:border-lime focus:shadow-[4px_4px_0px_#C6FF00]"
                     placeholder={row.operator === 'between' ? 'From' : 'Value'}
                     value={row.value}
                     disabled={!row.column}
@@ -160,7 +161,7 @@ export function FilterBuilder({ columns, onChange }: FilterBuilderProps) {
                   />
                   {row.operator === 'between' ? (
                     <input
-                      className="h-9 w-36 rounded-lg border border-white/10 bg-slate-900 px-2.5 text-sm text-slate-200 placeholder:text-slate-600 focus:border-cyan-400/50 focus:outline-none"
+                      className="border-2 border-white bg-black px-3 py-1.5 text-xs text-white outline-none transition-all rounded-md focus:border-lime focus:shadow-[4px_4px_0px_#C6FF00]"
                       placeholder="To"
                       value={row.value2}
                       disabled={!row.column}
@@ -174,28 +175,28 @@ export function FilterBuilder({ columns, onChange }: FilterBuilderProps) {
               <button
                 type="button"
                 onClick={() => removeRow(row.id)}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-white/5 hover:text-red-300"
+                className="inline-flex h-9 w-9 items-center justify-center text-muted hover:text-pink transition-colors rounded-sm"
                 aria-label="Remove condition"
               >
-                <CloseIcon className="h-4 w-4" />
+                <CloseIcon className="h-4.5 w-4.5" />
               </button>
             </div>
           ))}
 
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-1.5 text-xs text-slate-500">
-              Combine with
-              <span className="inline-flex overflow-hidden rounded-lg border border-white/10">
+          <div className="flex flex-wrap items-center gap-4 border-t border-white/20 pt-4">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted">
+              Combine with:
+              <span className="inline-flex overflow-hidden border-2 border-white rounded-sm">
                 {(['AND', 'OR'] as const).map((c) => (
                   <button
                     key={c}
                     type="button"
                     onClick={() => setConjunction(c)}
                     className={clsx(
-                      'px-2.5 py-1 text-xs font-medium transition',
+                      'px-3 py-1 text-xs font-bold transition-all duration-150',
                       conjunction === c
-                        ? 'bg-cyan-400/15 text-cyan-300'
-                        : 'text-slate-500 hover:text-slate-300',
+                        ? 'bg-lime text-black font-black'
+                        : 'bg-black text-muted hover:text-white',
                     )}
                   >
                     {c}

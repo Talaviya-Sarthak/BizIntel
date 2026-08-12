@@ -32,7 +32,7 @@ export function DeleteDatasetDialog({
           <Button
             onClick={onConfirm}
             loading={deleting}
-            className="bg-red-500 text-white hover:bg-red-400 shadow-[0_8px_24px_-8px_rgba(239,68,68,0.5)]"
+            variant="danger"
           >
             Delete dataset
           </Button>
@@ -41,15 +41,15 @@ export function DeleteDatasetDialog({
     >
       {dataset ? (
         <div className="flex flex-col gap-4">
-          <p className="text-sm leading-relaxed text-slate-300">
+          <p className="text-xs font-bold uppercase tracking-wider text-muted leading-relaxed">
             This will permanently delete{' '}
-            <span className="font-medium text-white">{dataset.name}</span> and its{' '}
-            <span className="font-medium text-white">{formatNumber(dataset.columnCount)}</span>{' '}
+            <span className="font-black text-white">{dataset.name}</span> and its{' '}
+            <span className="font-black text-white">{formatNumber(dataset.columnCount)}</span>{' '}
             columns ({formatNumber(dataset.rowCount)} rows, {formatBytes(dataset.fileSize)}).
             This action cannot be undone.
           </p>
-          <p className="flex items-start gap-2 rounded-lg border border-amber-400/20 bg-amber-400/[0.05] px-3 py-2.5 text-xs text-amber-300">
-            <AlertIcon className="mt-0.5 h-4 w-4 shrink-0" />
+          <p className="flex items-start gap-2.5 border-2 border-yellow bg-yellow/5 px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider text-yellow rounded-sm">
+            <AlertIcon className="mt-0.5 h-4.5 w-4.5 shrink-0" />
             The stored file will be removed from storage as well, so nothing is left behind.
           </p>
         </div>

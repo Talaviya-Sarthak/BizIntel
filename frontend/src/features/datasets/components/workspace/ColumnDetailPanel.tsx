@@ -33,22 +33,22 @@ export function ColumnDetailPanel({ datasetId, column, onClose }: ColumnDetailPa
   const topValues = topValuesQuery.data;
 
   return (
-    <div className="flex flex-col gap-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="flex flex-col gap-6 bg-black">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b-2 border-white pb-3">
         <div>
-          <h3 className="flex items-center gap-2 text-base font-semibold text-white">
+          <h3 className="flex items-center gap-2 text-lg font-black uppercase tracking-wider text-white">
             {column.name}
-            <span className="rounded-full bg-white/5 px-2 py-0.5 text-xs font-medium text-slate-300 ring-1 ring-white/10">
+            <span className="border-2 border-white bg-black px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-lime rounded-sm">
               {column.type}
             </span>
           </h3>
-          <p className="mt-0.5 text-xs text-slate-500">
+          <p className="mt-1.5 text-xs font-bold uppercase tracking-wider text-muted">
             {column.category} column · {column.nullable ? 'nullable' : 'not nullable'}
           </p>
         </div>
         {onClose ? (
-          <Button variant="ghost" size="sm" onClick={onClose} aria-label="Close column detail">
-            <CloseIcon className="h-4 w-4" />
+          <Button variant="ghost" size="sm" onClick={onClose} aria-label="Close column detail" className="border-0">
+            <CloseIcon className="h-5 w-5" />
           </Button>
         ) : null}
       </div>
@@ -167,9 +167,9 @@ export function ColumnDetailPanel({ datasetId, column, onClose }: ColumnDetailPa
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.02] px-3.5 py-3">
-      <dt className="text-[11px] uppercase tracking-wider text-slate-500">{label}</dt>
-      <dd className="mt-1 truncate text-lg font-semibold text-white" title={value}>
+    <div className="border border-white/20 bg-black p-3.5 rounded-sm">
+      <dt className="text-[9px] font-bold uppercase tracking-widest text-muted">{label}</dt>
+      <dd className="mt-1 truncate text-base font-black text-white" title={value}>
         {value}
       </dd>
     </div>
@@ -183,14 +183,14 @@ function OutlierSummary({ result }: { result: { outlierCount: number; outlierPer
       <Stat label="Share of rows" value={`${result.outlierPercent.toFixed(1)}%`} />
       <Stat label="Q1" value={formatNumber(result.q1)} />
       <Stat label="Q3" value={formatNumber(result.q3)} />
-      <div className="col-span-2 rounded-xl border border-amber-400/20 bg-amber-400/[0.05] px-3.5 py-3 lg:col-span-1">
-        <dt className="text-[11px] uppercase tracking-wider text-amber-300/70">Bounds</dt>
-        <dd className="mt-1 text-sm font-medium text-white">
-          <span className="text-slate-400">[</span>
+      <div className="col-span-2 border-2 border-yellow bg-yellow/5 p-3.5 lg:col-span-1 rounded-sm">
+        <dt className="text-[9px] font-bold uppercase tracking-widest text-yellow">Bounds</dt>
+        <dd className="mt-1 text-sm font-bold text-white">
+          <span className="text-muted">[</span>
           {formatNumber(result.lowerBound)}
-          <span className="text-slate-400">, </span>
+          <span className="text-muted">, </span>
           {formatNumber(result.upperBound)}
-          <span className="text-slate-400">]</span>
+          <span className="text-muted">]</span>
         </dd>
       </div>
     </div>

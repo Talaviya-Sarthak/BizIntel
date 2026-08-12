@@ -83,7 +83,7 @@ export function BarChart({
             />
           </>
         )}
-        <Bar dataKey={yKey} name={name ?? yKey} radius={[4, 4, 0, 0]} fill={color}>
+        <Bar dataKey={yKey} name={name ?? yKey} radius={0} stroke="#FFFFFF" strokeWidth={1.5} fill={color}>
           {data.map((_, index) => (
             <Cell key={index} fill={CHART_COLORS[index % CHART_COLORS.length] ?? color} />
           ))}
