@@ -7,13 +7,14 @@ import { UserMenu } from './UserMenu';
 export function AppShell() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const isFullBleedPage = location.pathname === '/ai-assistant';
 
   return (
-    <div className="flex min-h-screen bg-surface-deep text-slate-100">
+    <div className="flex min-h-screen bg-surface-deep text-slate-100 overflow-hidden">
       <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <div className="flex min-w-0 flex-1 flex-col lg:pl-64">
-        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-white/10 bg-surface-deep/80 px-5 backdrop-blur sm:px-8">
+      <div className="flex min-w-0 flex-1 flex-col lg:pl-64 h-screen">
+        <header className="sticky top-0 z-20 flex h-16 shrink-0 items-center justify-between border-b border-white/10 bg-surface-deep/80 px-5 backdrop-blur sm:px-8">
           <div className="flex items-center gap-3">
             <button
               type="button"
@@ -31,10 +32,14 @@ export function AppShell() {
           <UserMenu />
         </header>
 
-        <main className="flex-1 px-5 py-8 sm:px-8">
-          <div className="mx-auto w-full max-w-6xl">
+        <main className={`flex-1 flex flex-col min-h-0 ${isFullBleedPage ? 'p-0 overflow-hidden' : 'px-5 py-8 sm:px-8 overflow-y-auto'}`}>
+          {isFullBleedPage ? (
             <Outlet />
-          </div>
+          ) : (
+            <div className="mx-auto w-full max-w-6xl">
+              <Outlet />
+            </div>
+          )}
         </main>
       </div>
     </div>
