@@ -7,6 +7,7 @@ export const chatInputSchema = z
       .trim()
       .min(1, 'Message cannot be empty')
       .max(4096, 'Message cannot exceed 4096 characters'),
+    sessionId: z.string().trim().optional(),
   })
   .strict();
 
