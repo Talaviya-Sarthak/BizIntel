@@ -48,13 +48,21 @@ export function AppShell() {
 const PAGE_TITLES: Record<string, string> = {
   '/dashboard': 'Dashboard',
   '/datasets': 'Datasets',
-  '/datamart': 'DataMart Analytics',
+  '/datamart': 'DataMart',
+  '/datamart/query': 'Query builder',
+  '/datamart/analyses': 'Analyses',
+  '/datamart/metrics': 'Metrics',
+  '/datamart/dashboards': 'Dashboards',
+  '/datamart/compare': 'Compare datasets',
   '/backtesting': 'Backtesting',
   '/ai-assistant': 'AI Assistant',
   '/settings': 'Settings',
 };
 
 function pageTitleFromPath(pathname: string): string {
-  if (pathname.startsWith('/datasets')) return 'Datasets';
-  return PAGE_TITLES[pathname] ?? 'Workspace';
+  if (PAGE_TITLES[pathname]) return PAGE_TITLES[pathname];
+  if (pathname.startsWith('/datasets/')) return 'Datasets';
+  if (pathname.startsWith('/datamart/analyses/')) return 'Analysis';
+  if (pathname.startsWith('/datamart/dashboards/')) return 'Dashboard';
+  return 'Workspace';
 }
