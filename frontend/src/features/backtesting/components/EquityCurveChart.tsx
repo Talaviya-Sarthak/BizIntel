@@ -9,10 +9,10 @@ import {
   Legend,
 } from 'recharts';
 import { format } from 'date-fns';
-import type { BacktestEquityPoint } from '../types';
+import type { EquitySeriesPoint } from '../types';
 
 interface EquityCurveChartProps {
-  equity: BacktestEquityPoint[];
+  equity: EquitySeriesPoint[];
   benchmark?: {
     total_return: number;
     final_equity: number;

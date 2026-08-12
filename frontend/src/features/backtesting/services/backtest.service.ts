@@ -1,42 +1,50 @@
 import { api, type ApiSuccess } from '../../../lib/api';
 import type {
-  StrategyConfig,
+  StrategyMetadata,
   BacktestDetail,
-  BacktestListResponse,
-  CreateBacktestInput,
+  BacktestSummary,
+  BacktestCreateInput,
 } from '../types';
 
 interface StrategiesPayload {
-  strategies: StrategyConfig[];
+  strategies: StrategyMetadata[];
+}
+
+interface BacktestListPayload {
+  items: BacktestSummary[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 export const backtestService = {
-  async getStrategies(): Promise<StrategyConfig[]> {
+  async getStrategies(): Promise<StrategyMetadata[]> {
     const { data } = await api.get<ApiSuccess<StrategiesPayload>>('/backtesting/strategies');
     return data.data.strategies;
   },
 
-  async createBacktest(input: CreateBacktestInput): Promise<{ id: string }> {
-    const { data } = await api.post<ApiSuccess<{ id: string }>>('/backtests', input);
+  async createBacktest(input: BacktestCreateInput): Promise<{ id: string }> {
+    const { data } = await api.post<ApiSuccess<{ id: string }>>('/backtesting', input);
     return data.data;
   },
 
   async listBacktests(
     page = 1,
     limit = 10
-  ): Promise<BacktestListResponse> {
-    const { data } = await api.get<ApiSuccess<BacktestListResponse>>('/backtests', {
+  ): Promise<BacktestListPayload> {
+    const { data } = await api.get<ApiSuccess<BacktestListPayload>>('/backtesting', {
       params: { page, limit },
     });
     return data.data;
   },
 
   async getBacktest(id: string): Promise<BacktestDetail> {
-    const { data } = await api.get<ApiSuccess<BacktestDetail>>(`/backtests/${id}`);
+    const { data } = await api.get<ApiSuccess<BacktestDetail>>(`/backtesting/${id}`);
     return data.data;
   },
 
   async deleteBacktest(id: string): Promise<void> {
-    await api.delete<ApiSuccess<null>>(`/backtests/${id}`);
+    await api.delete<ApiSuccess<null>>(`/backtesting/${id}`);
   },
 };

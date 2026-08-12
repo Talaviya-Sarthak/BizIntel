@@ -54,34 +54,32 @@ const FEATURES = [
 
 export function Features() {
   return (
-    <section id="features" className="relative py-20 sm:py-28">
-      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="absolute left-1/2 top-0 h-px w-2/3 -translate-x-1/2 bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent" />
-      </div>
-
+    <section id="features" className="relative py-16 sm:py-24 border-t border-zinc-800/80">
       <div className="container-shell">
         <div className="mx-auto max-w-2xl text-center">
-          <span className="section-label">Capabilities</span>
-          <h2 className="mt-5 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+          <span className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/80 px-3 py-1 text-[11px] font-medium tracking-wide text-zinc-300">
+            Capabilities
+          </span>
+          <h2 className="mt-4 text-2xl font-bold tracking-tight text-zinc-100 sm:text-3xl">
             Built for the demands of enterprise analytics
           </h2>
-          <p className="mt-4 text-base leading-relaxed text-slate-400">
+          <p className="mt-3 text-sm leading-relaxed text-zinc-400">
             Every capability is designed to be modular, auditable, and ready to
             integrate with the rest of the platform.
           </p>
         </div>
 
-        <div className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-10 grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
           {FEATURES.map((feature) => (
             <div
               key={feature.title}
-              className="group rounded-2xl border border-white/10 bg-white/[0.02] p-5 transition duration-300 hover:border-cyan-400/25 hover:bg-white/[0.04]"
+              className="group rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-4.5 transition duration-200 hover:border-zinc-700 hover:bg-zinc-900/60"
             >
-              <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-white/5 text-cyan-400 ring-1 ring-white/10 transition group-hover:bg-cyan-400/10 group-hover:ring-cyan-400/25">
-                <feature.icon className="h-5 w-5" />
+              <div className="inline-flex h-8.5 w-8.5 items-center justify-center rounded-lg bg-zinc-800 text-zinc-300 border border-zinc-700/60 transition group-hover:text-zinc-100">
+                <feature.icon className="h-4 w-4" />
               </div>
-              <h3 className="mt-4 text-sm font-semibold text-white">{feature.title}</h3>
-              <p className="mt-2 text-xs leading-relaxed text-slate-400">
+              <h3 className="mt-3.5 text-xs font-semibold text-zinc-100">{feature.title}</h3>
+              <p className="mt-1.5 text-xs leading-relaxed text-zinc-400">
                 {feature.description}
               </p>
             </div>

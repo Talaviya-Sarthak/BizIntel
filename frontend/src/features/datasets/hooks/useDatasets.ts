@@ -1,65 +1,74 @@
 import {
-  useQuery,
   useMutation,
+  useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
+import { toApiError } from '../../../lib/api';
 import {
-  listDatasets,
-  getDataset,
-  createDataset,
-  deleteDataset,
-  getDatasetData,
+  datasetService,
 } from '../services/dataset.service';
+import type { DatasetUploadInput } from '../types';
 
-export function useDatasets(page: number, limit: number) {
+export const DATASETS_QUERY_KEY = ['datasets'] as const;
+export const DATASET_QUERY_KEY = (id: string) => ['datasets', id] as const;
+
+export function useDatasets() {
   return useQuery({
-    queryKey: ['datasets', { page, limit }],
-    queryFn: () => listDatasets(page, limit),
+    queryKey: DATASETS_QUERY_KEY,
+    queryFn: datasetService.listDatasets,
   });
 }
 
-export function useDataset(id: string) {
+export function useDataset(id: string | undefined) {
   return useQuery({
-    queryKey: ['dataset', id],
-    queryFn: () => getDataset(id),
-    enabled: !!id,
+    queryKey: DATASET_QUERY_KEY(id ?? ''),
+    queryFn: () => datasetService.getDataset(id!),
+    enabled: Boolean(id),
   });
 }
 
-export function useCreateDataset() {
+export function useDatasetSchema(id: string | undefined) {
+  return useQuery({
+    queryKey: [...DATASET_QUERY_KEY(id ?? ''), 'schema'],
+    queryFn: () => datasetService.getDatasetSchema(id!),
+    enabled: Boolean(id),
+  });
+}
+
+export function useDatasetPreview(id: string | undefined, limit = 20) {
+  return useQuery({
+    queryKey: [...DATASET_QUERY_KEY(id ?? ''), 'preview', limit],
+    queryFn: () => datasetService.getDatasetPreview(id!, limit),
+    enabled: Boolean(id),
+  });
+}
+
+/** Upload mutation with query invalidation. Pages own navigation. */
+export function useUploadDataset() {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: ({
-      file,
-      name,
-      description,
-    }: {
-      file: File;
-      name: string;
-      description?: string;
-    }) => createDataset(file, name, description),
+  const mutation = useMutation({
+    mutationFn: (input: DatasetUploadInput) => datasetService.uploadDataset(input),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['datasets'] });
+      queryClient.invalidateQueries({ queryKey: DATASETS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: ['dashboard', 'summary'] });
     },
   });
+
+  return {
+    ...mutation,
+    errorMessage: mutation.error ? toApiError(mutation.error).message : null,
+  };
 }
 
 export function useDeleteDataset() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => deleteDataset(id),
+    mutationFn: (id: string) => datasetService.deleteDataset(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['datasets'] });
+      queryClient.invalidateQueries({ queryKey: DATASETS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: ['dashboard', 'summary'] });
     },
-  });
-}
-
-export function useDatasetData(id: string, page: number, limit: number) {
-  return useQuery({
-    queryKey: ['datasetData', id, { page, limit }],
-    queryFn: () => getDatasetData(id, page, limit),
-    enabled: !!id,
   });
 }

@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { clsx } from 'clsx';
-import { format } from 'date-fns';
 import { Database, Trash2, Eye } from 'lucide-react';
 import { Button } from '../../../components/ui/Button';
 import { useDatasets, useDeleteDataset } from '../hooks/useDatasets';
 import { toApiError } from '../../../lib/api';
-import type { Dataset } from '../types';
+import type { Dataset, DatasetStatus } from '../types';
 
 interface DatasetListProps {
   page: number;
@@ -14,11 +13,13 @@ interface DatasetListProps {
   onView: (dataset: Dataset) => void;
 }
 
-const STATUS_STYLES: Record<Dataset['status'], { badge: string; label: string }> = {
-  ready: { badge: 'bg-emerald-400/10 text-emerald-400 ring-emerald-400/25', label: 'Ready' },
-  processing: { badge: 'bg-yellow-400/10 text-yellow-400 ring-yellow-400/25', label: 'Processing' },
-  pending: { badge: 'bg-slate-400/10 text-slate-400 ring-slate-400/25', label: 'Pending' },
-  failed: { badge: 'bg-red-400/10 text-red-400 ring-red-400/25', label: 'Failed' },
+const STATUS_STYLES: Record<DatasetStatus, { badge: string; label: string }> = {
+  READY: { badge: 'bg-emerald-400/10 text-emerald-400 ring-emerald-400/25', label: 'Ready' },
+  PROCESSING: { badge: 'bg-yellow-400/10 text-yellow-400 ring-yellow-400/25', label: 'Processing' },
+  UPLOADING: { badge: 'bg-slate-400/10 text-slate-400 ring-slate-400/25', label: 'Uploading' },
+  VALIDATING: { badge: 'bg-blue-400/10 text-blue-400 ring-blue-400/25', label: 'Validating' },
+  FAILED: { badge: 'bg-red-400/10 text-red-400 ring-red-400/25', label: 'Failed' },
+  DELETED: { badge: 'bg-slate-400/10 text-slate-500 ring-slate-400/25', label: 'Deleted' },
 };
 
 function formatFileSize(bytes: number): string {
@@ -27,8 +28,12 @@ function formatFileSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
 export function DatasetList({ page, limit, onPageChange, onView }: DatasetListProps) {
-  const { data, isLoading, error } = useDatasets(page, limit);
+  const { data, isLoading, error } = useDatasets();
   const deleteMutation = useDeleteDataset();
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
@@ -65,7 +70,9 @@ export function DatasetList({ page, limit, onPageChange, onView }: DatasetListPr
     );
   }
 
-  const items = data?.items ?? [];
+  const items = data?.datasets ?? [];
+  const totalItems = data?.total ?? 0;
+  const totalPages = Math.max(1, Math.ceil(totalItems / limit));
 
   if (items.length === 0) {
     return (
@@ -98,7 +105,7 @@ export function DatasetList({ page, limit, onPageChange, onView }: DatasetListPr
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
-            {items.map((ds) => {
+            {items.map((ds: Dataset) => {
               const status = STATUS_STYLES[ds.status];
               return (
                 <tr
@@ -110,13 +117,13 @@ export function DatasetList({ page, limit, onPageChange, onView }: DatasetListPr
                     <span className="font-medium text-white">{ds.name}</span>
                   </td>
                   <td className="px-4 py-3 text-slate-400">
-                    {ds.filename}
+                    {ds.originalFilename}
                     <span className="ml-2 text-xs text-slate-500">
-                      ({formatFileSize(ds.file_size)})
+                      ({formatFileSize(ds.fileSize)})
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right text-slate-400">
-                    {ds.row_count?.toLocaleString() ?? '—'}
+                    {ds.rowCount?.toLocaleString() ?? '—'}
                   </td>
                   <td className="px-4 py-3">
                     <span
@@ -129,7 +136,7 @@ export function DatasetList({ page, limit, onPageChange, onView }: DatasetListPr
                     </span>
                   </td>
                   <td className="px-4 py-3 text-slate-400">
-                    {format(new Date(ds.created_at), 'MMM d, yyyy')}
+                    {formatDate(ds.createdAt)}
                   </td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex items-center justify-end gap-1" onClick={(e) => e.stopPropagation()}>
@@ -178,11 +185,11 @@ export function DatasetList({ page, limit, onPageChange, onView }: DatasetListPr
         </table>
       </div>
 
-      {data && data.totalPages > 1 && (
+      {totalPages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-xs text-slate-500">
-            Showing {(page - 1) * limit + 1}–{Math.min(page * limit, data.total)} of{' '}
-            {data.total.toLocaleString()} datasets
+            Showing {(page - 1) * limit + 1}–{Math.min(page * limit, totalItems)} of{' '}
+            {totalItems.toLocaleString()} datasets
           </p>
           <div className="flex items-center gap-2">
             <Button
@@ -194,13 +201,13 @@ export function DatasetList({ page, limit, onPageChange, onView }: DatasetListPr
               Previous
             </Button>
             <span className="text-xs text-slate-400">
-              Page {page} of {data.totalPages}
+              Page {page} of {totalPages}
             </span>
             <Button
               variant="outline"
               size="sm"
               onClick={() => onPageChange(page + 1)}
-              disabled={page >= data.totalPages}
+              disabled={page >= totalPages}
             >
               Next
             </Button>

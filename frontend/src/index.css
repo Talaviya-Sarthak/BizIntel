@@ -12,6 +12,10 @@
     @apply bg-surface-deep text-slate-200 font-sans;
   }
 
+  .font-display {
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
   ::selection {
     @apply bg-cyan-500/30 text-white;
   }

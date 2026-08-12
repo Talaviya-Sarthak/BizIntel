@@ -19,20 +19,49 @@ export const api = axios.create({
   timeout: 15_000,
 });
 
+/**
+ * Response interceptor that extracts the backend's error message from the
+ * response body so that react-query surfaces a meaningful message instead of
+ * the generic axios "Request failed with status code 500".
+ */
+api.interceptors.response.use(
+  (response) => response,
+  (error: unknown) => {
+    if (axios.isAxiosError(error) && error.response?.data) {
+      const body = error.response.data as {
+        error?: { code?: string; message?: string };
+      };
+      if (body?.error?.message) {
+        error.message = body.error.message;
+      }
+    }
+    return Promise.reject(error);
+  },
+);
+
 /** Maps an Axios error to a typed API error body. */
 export function toApiError(error: unknown): {
   code: string;
   message: string;
+  suggestion?: string;
   details?: { field: string; message: string }[];
 } {
   if (axios.isAxiosError(error)) {
     const body = (error as AxiosError).response?.data as
-      | { error?: { code?: string; message?: string; details?: { field: string; message: string }[] } }
+      | {
+          error?: {
+            code?: string;
+            message?: string;
+            suggestion?: string;
+            details?: { field: string; message: string }[];
+          };
+        }
       | undefined;
     if (body?.error) {
       return {
         code: body.error.code ?? 'UNKNOWN_ERROR',
         message: body.error.message ?? 'An unexpected error occurred',
+        suggestion: body.error.suggestion,
         details: body.error.details,
       };
     }

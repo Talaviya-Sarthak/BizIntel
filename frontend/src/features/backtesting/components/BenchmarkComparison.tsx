@@ -1,8 +1,8 @@
 import { clsx } from 'clsx';
-import type { BacktestMetrics } from '../types';
+import type { PerformanceMetrics } from '../types';
 
 interface BenchmarkComparisonProps {
-  metrics: BacktestMetrics;
+  metrics: PerformanceMetrics | null;
   benchmark: {
     total_return: number;
     annualized_return: number;
@@ -30,39 +30,44 @@ interface ComparisonRow {
 }
 
 export function BenchmarkComparison({ metrics, benchmark, initialCapital }: BenchmarkComparisonProps) {
+  const totalReturn = metrics?.totalReturn ?? null;
+  const annualizedReturn = metrics?.annualizedReturn ?? metrics?.cagr ?? null;
+  const maxDrawdown = metrics?.maxDrawdown ?? null;
+  const volatility = metrics?.volatility ?? null;
+
   const rows: ComparisonRow[] = [
     {
       label: 'Total Return',
-      strategy: metrics.total_return,
+      strategy: totalReturn,
       benchmark: benchmark.total_return,
       higherBetter: true,
       format: 'percent',
     },
     {
       label: 'CAGR',
-      strategy: metrics.annualized_return,
+      strategy: annualizedReturn,
       benchmark: benchmark.annualized_return,
       higherBetter: true,
       format: 'percent',
     },
     {
       label: 'Max Drawdown',
-      strategy: metrics.max_drawdown,
+      strategy: maxDrawdown,
       benchmark: benchmark.max_drawdown,
       higherBetter: false,
       format: 'percent',
     },
     {
       label: 'Volatility',
-      strategy: metrics.volatility,
+      strategy: volatility,
       benchmark: benchmark.volatility,
       higherBetter: false,
       format: 'percent',
     },
     {
       label: 'Final Equity',
-      strategy: metrics.total_return !== null
-        ? initialCapital * (1 + metrics.total_return)
+      strategy: totalReturn !== null
+        ? initialCapital * (1 + totalReturn)
         : null,
       benchmark: benchmark.final_equity,
       higherBetter: true,

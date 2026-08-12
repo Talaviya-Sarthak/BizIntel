@@ -34,20 +34,20 @@ const IMPLEMENTED = [
 
 export function Security() {
   return (
-    <section id="security" className="relative py-20 sm:py-28">
+    <section id="security" className="relative py-16 sm:py-24 border-t border-zinc-800/80">
       <div className="container-shell">
-        <div className="grid items-center gap-12 lg:grid-cols-2">
-          <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid items-center gap-10 lg:grid-cols-2">
+          <div className="grid gap-3.5 sm:grid-cols-2">
             {SECURITY_ITEMS.map((item) => (
               <div
                 key={item.title}
-                className="rounded-2xl border border-white/10 bg-white/[0.03] p-5"
+                className="rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-4.5"
               >
-                <div className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-400/10 text-cyan-400 ring-1 ring-cyan-400/20">
-                  <item.icon className="h-5 w-5" />
+                <div className="inline-flex h-8.5 w-8.5 items-center justify-center rounded-lg bg-zinc-800 text-zinc-300 border border-zinc-700/60">
+                  <item.icon className="h-4 w-4" />
                 </div>
-                <h3 className="mt-4 text-sm font-semibold text-white">{item.title}</h3>
-                <p className="mt-2 text-xs leading-relaxed text-slate-400">
+                <h3 className="mt-3 text-xs font-semibold text-zinc-100">{item.title}</h3>
+                <p className="mt-1 text-xs leading-relaxed text-zinc-400">
                   {item.description}
                 </p>
               </div>
@@ -55,20 +55,22 @@ export function Security() {
           </div>
 
           <div>
-            <span className="section-label">Security</span>
-            <h2 className="mt-5 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            <span className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/80 px-3 py-1 text-[11px] font-medium tracking-wide text-zinc-300">
+              Security
+            </span>
+            <h2 className="mt-4 text-2xl font-bold tracking-tight text-zinc-100 sm:text-3xl">
               Security engineered into the foundation
             </h2>
-            <p className="mt-4 text-base leading-relaxed text-slate-400">
+            <p className="mt-3 text-sm leading-relaxed text-zinc-400">
               PS-05 applies production security practices from the first line of
               code. These controls are implemented today — not aspirational.
             </p>
 
-            <ul className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <ul className="mt-6 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
               {IMPLEMENTED.map((item) => (
-                <li key={item} className="flex items-center gap-2.5 text-sm text-slate-300">
-                  <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-400/10 text-emerald-400 ring-1 ring-emerald-400/25">
-                    <CheckIcon className="h-3 w-3" />
+                <li key={item} className="flex items-center gap-2 text-xs text-zinc-300">
+                  <span className="inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <CheckIcon className="h-2.5 w-2.5" />
                   </span>
                   {item}
                 </li>

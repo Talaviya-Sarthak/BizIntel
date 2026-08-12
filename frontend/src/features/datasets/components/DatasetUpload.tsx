@@ -4,7 +4,7 @@ import { clsx } from 'clsx';
 import { Upload, FileText } from 'lucide-react';
 import { Button } from '../../../components/ui/Button';
 import { Input } from '../../../components/ui/Input';
-import { useCreateDataset } from '../hooks/useDatasets';
+import { useUploadDataset } from '../hooks/useDatasets';
 import { toApiError } from '../../../lib/api';
 
 interface DatasetUploadProps {
@@ -19,7 +19,7 @@ function formatFileSize(bytes: number): string {
 }
 
 export function DatasetUpload({ onSuccess, onCancel }: DatasetUploadProps) {
-  const createDataset = useCreateDataset();
+  const uploadDataset = useUploadDataset();
   const [file, setFile] = useState<File | null>(null);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -53,7 +53,7 @@ export function DatasetUpload({ onSuccess, onCancel }: DatasetUploadProps) {
     }
 
     setError(null);
-    createDataset.mutate(
+    uploadDataset.mutate(
       { file, name: name.trim(), description: description.trim() || undefined },
       {
         onSuccess: () => {
@@ -62,7 +62,7 @@ export function DatasetUpload({ onSuccess, onCancel }: DatasetUploadProps) {
           setDescription('');
           onSuccess?.();
         },
-        onError: (err) => {
+        onError: (err: unknown) => {
           const apiError = toApiError(err);
           setError(apiError.message);
         },
@@ -131,7 +131,7 @@ export function DatasetUpload({ onSuccess, onCancel }: DatasetUploadProps) {
           variant="primary"
           size="sm"
           onClick={handleUpload}
-          loading={createDataset.isPending}
+          loading={uploadDataset.isPending}
           disabled={!file}
         >
           Upload Dataset

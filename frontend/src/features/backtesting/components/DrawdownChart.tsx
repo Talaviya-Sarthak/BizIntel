@@ -9,10 +9,10 @@ import {
   ReferenceLine,
 } from 'recharts';
 import { format } from 'date-fns';
-import type { BacktestEquityPoint } from '../types';
+import type { EquitySeriesPoint } from '../types';
 
 interface DrawdownChartProps {
-  equity: BacktestEquityPoint[];
+  equity: EquitySeriesPoint[];
 }
 
 export function DrawdownChart({ equity }: DrawdownChartProps) {

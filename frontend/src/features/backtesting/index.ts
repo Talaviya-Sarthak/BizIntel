@@ -1,13 +1,17 @@
 export type {
-  StrategyConfig,
-  StrategyParameter,
-  Backtest,
-  BacktestMetrics,
-  BacktestEquityPoint,
-  BacktestTrade,
+  StrategyMetadata,
+  ParameterDef,
+  BacktestSummary,
+  PerformanceMetrics,
+  EquitySeriesPoint,
+  TradeRecord,
   BacktestDetail,
-  BacktestListResponse,
-  CreateBacktestInput,
+  BacktestCreateInput,
+  BacktestStatus,
+  BenchmarkMetrics,
+  MarketCompatibility,
+  DatasetDateRange,
+  PaginatedTrades,
 } from './types';
 
 export { backtestService } from './services/backtest.service';

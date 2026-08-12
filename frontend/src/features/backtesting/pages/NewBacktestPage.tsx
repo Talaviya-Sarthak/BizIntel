@@ -1,0 +1,487 @@
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { clsx } from 'clsx';
+import { Button, Spinner } from '../../../components/ui/Button';
+import { ErrorState } from '../../../components/ui/ErrorState';
+import { Input } from '../../../components/ui/Input';
+import { Select } from '../../../components/ui/Select';
+import { useDatasets } from '../../datasets/hooks/useDatasets';
+import { toApiError } from '../../../lib/api';
+import { CheckCircleIcon, ChevronRightIcon, PlayIcon, XCircleIcon } from '../../../components/ui/icons';
+import { useCompatibility, useCreateBacktest, useDatasetDateRange, useStrategies } from '../hooks/useBacktesting';
+import { ParameterFields } from '../components/ParameterFields';
+import { BacktestErrorPanel } from '../components/BacktestErrorPanel';
+import type { StrategyMetadata } from '../types';
+
+const STEPS = ['Dataset', 'Strategy', 'Parameters', 'Execution', 'Date range', 'Review & run'];
+
+export function NewBacktestPage() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const preselectedDataset = searchParams.get('dataset') ?? undefined;
+
+  const datasetsQuery = useDatasets();
+  const strategiesQuery = useStrategies();
+  const createMutation = useCreateBacktest();
+
+  const [step, setStep] = useState(0);
+  const [datasetId, setDatasetId] = useState<string | undefined>(preselectedDataset);
+  const [strategyId, setStrategyId] = useState<string | undefined>();
+  const [parameters, setParameters] = useState<Record<string, number | boolean>>({});
+  const [capital, setCapital] = useState('10000');
+  const [commissionPct, setCommissionPct] = useState('0');
+  const [slippagePct, setSlippagePct] = useState('0');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [name, setName] = useState('');
+
+  const readyDatasets = useMemo(
+    () => (datasetsQuery.data?.datasets ?? []).filter((dataset) => dataset.status === 'READY'),
+    [datasetsQuery.data],
+  );
+  const compatibility = useCompatibility(datasetId);
+  const dateRangeQuery = useDatasetDateRange(datasetId);
+  const strategy = useMemo(
+    () => strategiesQuery.data?.find((entry) => entry.id === strategyId),
+    [strategiesQuery.data, strategyId],
+  );
+
+  useEffect(() => {
+    if (strategy) {
+      setParameters({ ...strategy.defaults });
+    }
+  }, [strategy]);
+
+  useEffect(() => {
+    setStartDate('');
+    setEndDate('');
+  }, [datasetId]);
+
+  function selectStrategy(next: StrategyMetadata) {
+    setStrategyId(next.id);
+    setParameters({ ...next.defaults });
+  }
+
+  const numericCapital = Number(capital || 0);
+  const numericCommission = Number(commissionPct) / 100;
+  const numericSlippage = Number(slippagePct) / 100;
+
+  const availableStart = dateRangeQuery.data?.startDate?.slice(0, 10);
+  const availableEnd = dateRangeQuery.data?.endDate?.slice(0, 10);
+  const startOutOfRange = Boolean(startDate && availableStart && startDate < availableStart);
+  const endOutOfRange = Boolean(endDate && availableEnd && endDate > availableEnd);
+
+  const datasetStepValid = Boolean(datasetId) && compatibility.data?.compatible === true;
+  const executionStepValid =
+    Number.isFinite(numericCapital) &&
+    numericCapital >= 100 &&
+    Number.isFinite(numericCommission) &&
+    numericCommission >= 0 &&
+    numericCommission <= 0.05 &&
+    Number.isFinite(numericSlippage) &&
+    numericSlippage >= 0 &&
+    numericSlippage <= 0.05;
+  const dateStepValid =
+    (!startDate || !endDate || new Date(endDate) >= new Date(startDate)) &&
+    !startOutOfRange &&
+    !endOutOfRange;
+
+  function canContinue(): boolean {
+    if (step === 0) return Boolean(datasetStepValid);
+    if (step === 1) return Boolean(strategyId);
+    if (step === 2) return true;
+    if (step === 3) return executionStepValid;
+    if (step === 4) return dateStepValid;
+    return false;
+  }
+
+  async function handleRun() {
+    if (!datasetId || !strategy) return;
+    try {
+      const summary = await createMutation.mutateAsync({
+        datasetId,
+        strategyId: strategy.id,
+        parameters,
+        initialCapital: numericCapital,
+        commission: numericCommission,
+        slippage: numericSlippage,
+        startDate: startDate || null,
+        endDate: endDate || null,
+        name: name.trim() || undefined,
+      });
+      navigate(`/backtesting/${summary.id}`);
+    } catch {
+      // error surfaced via createMutation.errorMessage
+    }
+  }
+
+  if (datasetsQuery.isLoading || strategiesQuery.isLoading) {
+    return (
+      <div className="flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.02] py-24">
+        <Spinner size="md" />
+      </div>
+    );
+  }
+
+  if (datasetsQuery.isError || strategiesQuery.isError) {
+    return (
+      <ErrorState
+        message={datasetsQuery.error ? toApiError(datasetsQuery.error).message : toApiError(strategiesQuery.error).message}
+        onRetry={() => {
+          void datasetsQuery.refetch();
+          void strategiesQuery.refetch();
+        }}
+      />
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">New backtest</h1>
+        <p className="mt-1.5 text-sm leading-relaxed text-slate-400">
+          Configure a strategy run against a dataset&apos;s OHLCV columns. Signals execute at the
+          next bar&apos;s open with commission and slippage applied.
+        </p>
+      </div>
+
+      {/* Stepper */}
+      <ol className="flex flex-wrap items-center gap-2">
+        {STEPS.map((label, index) => {
+          const active = index === step;
+          const done = index < step;
+          return (
+            <li key={label} className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setStep(index)}
+                className={clsx(
+                  'flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition',
+                  active
+                    ? 'border-cyan-400/40 bg-cyan-400/10 text-cyan-300'
+                    : done
+                      ? 'border-white/10 bg-white/[0.03] text-slate-300 hover:border-white/20'
+                      : 'border-white/10 text-slate-600',
+                )}
+              >
+                {done ? <CheckCircleIcon className="h-3.5 w-3.5 text-emerald-400" /> : null}
+                <span>
+                  <span className="mr-1 text-slate-500">{index + 1}.</span>
+                  {label}
+                </span>
+              </button>
+              {index < STEPS.length - 1 ? <span className="h-px w-3 bg-white/10" /> : null}
+            </li>
+          );
+        })}
+      </ol>
+
+      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+        {step === 0 ? (
+          <section className="flex flex-col gap-5">
+            <div>
+              <h2 className="text-lg font-semibold text-white">Choose a dataset</h2>
+              <p className="mt-1 text-sm text-slate-500">
+                The dataset must contain OHLCV columns (date, open, high, low, close). Only ready
+                datasets can be backtested.
+              </p>
+            </div>
+            {readyDatasets.length === 0 ? (
+              <p className="text-sm text-slate-400">
+                No ready datasets yet. <span className="text-cyan-400">Upload a CSV</span> and wait
+                for it to finish processing first.
+              </p>
+            ) : (
+              <Select
+                label="Dataset"
+                value={datasetId ?? ''}
+                onChange={(event) => setDatasetId(event.target.value || undefined)}
+                options={[
+                  { value: '', label: 'Select a dataset', disabled: true },
+                  ...readyDatasets.map((dataset) => ({
+                    value: dataset.id,
+                    label: `${dataset.name} · ${dataset.rowCount?.toLocaleString() ?? '?'} rows`,
+                  })),
+                ]}
+              />
+            )}
+            {datasetId ? (
+              compatibility.isLoading ? (
+                <p className="text-sm text-slate-400">Checking market-data compatibility…</p>
+              ) : compatibility.isError ? (
+                <ErrorState message={toApiError(compatibility.error).message} onRetry={() => compatibility.refetch()} />
+              ) : compatibility.data && !compatibility.data.compatible ? (
+                <div className="flex items-start gap-3 rounded-xl border border-red-400/20 bg-red-400/[0.05] p-4">
+                  <XCircleIcon className="mt-0.5 h-5 w-5 shrink-0 text-red-400" />
+                  <div>
+                    <p className="text-sm font-medium text-red-300">Dataset is not market data</p>
+                    <ul className="mt-1 list-inside list-disc text-sm text-red-200/70">
+                      {compatibility.data.issues.slice(0, 4).map((issue) => (
+                        <li key={issue}>{issue}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 rounded-xl border border-emerald-400/20 bg-emerald-400/[0.05] p-4 text-sm text-emerald-300">
+                  <CheckCircleIcon className="h-5 w-5 shrink-0" />
+                  OHLCV columns detected
+                  {compatibility.data?.volumeColumn ? ' (with volume)' : ''}.
+                </div>
+              )
+            ) : null}
+          </section>
+        ) : null}
+
+        {step === 1 ? (
+          <section className="flex flex-col gap-4">
+            <div>
+              <h2 className="text-lg font-semibold text-white">Choose a strategy</h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Each strategy is deterministic and long-only. Signals execute at the next bar open.
+              </p>
+            </div>
+            <div className="grid gap-3 md:grid-cols-3">
+              {(strategiesQuery.data ?? []).map((entry) => {
+                const selected = strategyId === entry.id;
+                return (
+                  <button
+                    key={entry.id}
+                    type="button"
+                    onClick={() => selectStrategy(entry)}
+                    className={clsx(
+                      'flex flex-col gap-2 rounded-2xl border p-4 text-left transition',
+                      selected
+                        ? 'border-cyan-400/40 bg-cyan-400/[0.06]'
+                        : 'border-white/10 bg-white/[0.02] hover:border-white/25',
+                    )}
+                  >
+                    <span className="flex items-center justify-between">
+                      <span className="text-sm font-semibold text-white">{entry.name}</span>
+                      {selected ? <CheckCircleIcon className="h-4 w-4 text-cyan-400" /> : null}
+                    </span>
+                    <span className="text-xs leading-relaxed text-slate-500">{entry.description}</span>
+                    <span className="mt-auto text-[11px] uppercase tracking-wider text-slate-600">
+                      {entry.parameters.length} parameter{entry.parameters.length === 1 ? '' : 's'}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        ) : null}
+
+        {step === 2 ? (
+          <section className="flex flex-col gap-5">
+            <div>
+              <h2 className="text-lg font-semibold text-white">Strategy parameters</h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Tune {strategy?.name} for this run. Defaults are pre-filled.
+              </p>
+            </div>
+            {strategy ? (
+              <ParameterFields
+                parameters={strategy.parameters}
+                values={parameters}
+                onChange={(field, value) => setParameters((current) => ({ ...current, [field]: value }))}
+              />
+            ) : null}
+            <p className="rounded-lg border border-white/10 bg-white/[0.02] px-4 py-3 text-xs leading-relaxed text-slate-500">
+              {strategy?.executionModel}
+            </p>
+          </section>
+        ) : null}
+
+        {step === 3 ? (
+          <section className="flex flex-col gap-5">
+            <div>
+              <h2 className="text-lg font-semibold text-white">Execution settings</h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Capital is deployed in whole shares, never on leverage. Commission and slippage are
+                applied on every fill.
+              </p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-3">
+              <Input
+                id="capital"
+                label="Initial capital (USD)"
+                type="number"
+                min={100}
+                step={100}
+                value={capital}
+                onChange={(event) => setCapital(event.target.value)}
+                error={
+                  capital && Number(capital) < 100 ? 'Minimum capital is $100' : undefined
+                }
+              />
+              <Input
+                id="commission"
+                label="Commission (%)"
+                type="number"
+                min={0}
+                max={5}
+                step={0.1}
+                value={commissionPct}
+                onChange={(event) => setCommissionPct(event.target.value)}
+                error={
+                  commissionPct &&
+                  (Number(commissionPct) < 0 || Number(commissionPct) > 5)
+                    ? 'Commission must be 0–5%'
+                    : undefined
+                }
+              />
+              <Input
+                id="slippage"
+                label="Slippage (%)"
+                type="number"
+                min={0}
+                max={5}
+                step={0.1}
+                value={slippagePct}
+                onChange={(event) => setSlippagePct(event.target.value)}
+                error={
+                  slippagePct &&
+                  (Number(slippagePct) < 0 || Number(slippagePct) > 5)
+                    ? 'Slippage must be 0–5%'
+                    : undefined
+                }
+              />
+            </div>
+          </section>
+        ) : null}
+
+        {step === 4 ? (
+          <section className="flex flex-col gap-5">
+            <div>
+              <h2 className="text-lg font-semibold text-white">Date range (optional)</h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Leave both empty to run over the entire dataset history.
+              </p>
+            </div>
+            {dateRangeQuery.isLoading ? (
+              <p className="text-sm text-slate-400">Checking available date range…</p>
+            ) : dateRangeQuery.isError ? (
+              <p className="text-sm text-red-300">{toApiError(dateRangeQuery.error).message}</p>
+            ) : availableStart && availableEnd ? (
+              <p className="text-sm text-slate-400">
+                {dateRangeQuery.data?.dateColumn} spans{' '}
+                <span className="font-medium text-slate-200">{availableStart}</span> →{' '}
+                <span className="font-medium text-slate-200">{availableEnd}</span> (
+                {dateRangeQuery.data?.totalRows.toLocaleString() ?? '?'} rows). Dates are bounded
+                to the data.
+              </p>
+            ) : null}
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Input
+                id="start-date"
+                label="Start date"
+                type="date"
+                value={startDate}
+                min={availableStart || undefined}
+                max={endDate || availableEnd || undefined}
+                onChange={(event) => setStartDate(event.target.value)}
+              />
+              <Input
+                id="end-date"
+                label="End date"
+                type="date"
+                value={endDate}
+                min={startDate || availableStart || undefined}
+                max={availableEnd || undefined}
+                onChange={(event) => setEndDate(event.target.value)}
+              />
+            </div>
+            {!dateStepValid ? (
+              <p className="text-sm text-red-300">
+                {endDate && startDate && new Date(endDate) < new Date(startDate)
+                  ? 'End date must be after the start date.'
+                  : startOutOfRange
+                    ? `Start date must be on or after ${availableStart}.`
+                    : endOutOfRange
+                      ? `End date must be on or before ${availableEnd}.`
+                      : 'The selected date range is outside the dataset.'}
+              </p>
+            ) : null}
+          </section>
+        ) : null}
+
+        {step === 5 ? (
+          <section className="flex flex-col gap-5">
+            <div>
+              <h2 className="text-lg font-semibold text-white">Review & run</h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Verify the configuration before executing. Large datasets may take a few seconds.
+              </p>
+            </div>
+
+            <Input
+              id="name"
+              label="Name (optional)"
+              placeholder={strategy ? `${strategy.name} backtest` : undefined}
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+            />
+
+            <dl className="grid gap-x-6 gap-y-2 rounded-xl border border-white/10 bg-white/[0.02] p-5 text-sm sm:grid-cols-2">
+              <ReviewItem label="Dataset" value={datasetsQuery.data?.datasets.find((d) => d.id === datasetId)?.name ?? '—'} />
+              <ReviewItem label="Strategy" value={strategy?.name ?? '—'} />
+              <ReviewItem label="Initial capital" value={capital || '—'} />
+              <ReviewItem label="Commission" value={`${commissionPct || '0'}%`} />
+              <ReviewItem label="Slippage" value={`${slippagePct || '0'}%`} />
+              <ReviewItem
+                label="Date range"
+                value={startDate || endDate ? `${startDate || 'start'} → ${endDate || 'end'}` : 'Full history'}
+              />
+              {strategy
+                ? strategy.parameters.map((def) => (
+                    <ReviewItem key={def.name} label={def.label} value={String(parameters[def.name] ?? def.default)} />
+                  ))
+                : null}
+            </dl>
+
+            {createMutation.isError ? (
+              <BacktestErrorPanel error={createMutation.error} />
+            ) : null}
+          </section>
+        ) : null}
+
+        {/* Navigation */}
+        <div className="mt-6 flex items-center justify-between border-t border-white/10 pt-5">
+          <Button
+            variant="ghost"
+            disabled={step === 0}
+            onClick={() => setStep((current) => Math.max(0, current - 1))}
+          >
+            <ChevronRightIcon className="h-4 w-4 rotate-180" />
+            Back
+          </Button>
+
+          {step < STEPS.length - 1 ? (
+            <Button variant="primary" disabled={!canContinue()} onClick={() => setStep((current) => current + 1)}>
+              Continue
+            </Button>
+          ) : (
+            <Button
+              variant="primary"
+              loading={createMutation.isPending}
+              disabled={!datasetId || !strategy}
+              onClick={() => void handleRun()}
+            >
+              <PlayIcon className="h-4 w-4" />
+              {createMutation.isPending ? 'Running backtest…' : 'Run backtest'}
+            </Button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ReviewItem({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between gap-4">
+      <dt className="text-xs uppercase tracking-wider text-slate-500">{label}</dt>
+      <dd className="text-right font-medium text-slate-200">{value}</dd>
+    </div>
+  );
+}

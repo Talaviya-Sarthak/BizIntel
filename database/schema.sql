@@ -105,8 +105,12 @@ CREATE INDEX users_is_active_idx ON users (is_active);
 -- 003_datasets.sql
 -- PS-05 Enterprise Intelligence Platform
 --
--- Creates the dataset registry for uploaded user datasets.
--- Backtesting and DataMart modules reference datasets by ID.
+-- Adds the dataset registry and column metadata tables:
+--   datasets         (file metadata, status, profiling summary)
+--   dataset_columns  (per-column schema + profile statistics)
+--
+-- PostgreSQL stores METADATA only; the raw file lives in abstracted
+-- storage (StorageService) and analytical scans run in DuckDB.
 --
 -- NOTE: The migration runner wraps each migration file in a transaction.
 -- Do not add BEGIN/COMMIT to migration files.
@@ -114,35 +118,61 @@ CREATE INDEX users_is_active_idx ON users (is_active);
 
 -- ---------------------------------------------------------------------
 -- datasets
--- Metadata for uploaded user datasets. Actual data is stored in DuckDB.
 -- ---------------------------------------------------------------------
 CREATE TABLE datasets (
-    id              UUID        NOT NULL DEFAULT gen_random_uuid(),
-    user_id         UUID        NOT NULL,
-    name            TEXT        NOT NULL CHECK (char_length(btrim(name)) BETWEEN 1 AND 200),
-    description     TEXT,
-    filename        TEXT        NOT NULL CHECK (char_length(filename) > 0),
-    file_path       TEXT        NOT NULL,
-    file_size       BIGINT      NOT NULL CHECK (file_size > 0),
-    mime_type       TEXT        NOT NULL DEFAULT 'text/csv',
-    row_count       BIGINT,
-    column_schema   JSONB       NOT NULL DEFAULT '[]'::jsonb,
-    status          TEXT        NOT NULL DEFAULT 'pending',
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    id                UUID        NOT NULL DEFAULT gen_random_uuid(),
+    user_id           UUID        NOT NULL,
+    name              TEXT        NOT NULL CHECK (char_length(btrim(name)) BETWEEN 1 AND 120),
+    description       TEXT        CHECK (description IS NULL OR char_length(description) <= 500),
+    original_filename TEXT        NOT NULL CHECK (char_length(original_filename) BETWEEN 1 AND 255),
+    storage_path      TEXT        CHECK (storage_path IS NULL OR char_length(storage_path) BETWEEN 1 AND 500),
+    file_type         TEXT        NOT NULL DEFAULT 'csv' CHECK (file_type IN ('csv', 'parquet', 'xlsx', 'json')),
+    file_size         BIGINT      NOT NULL CHECK (file_size >= 0),
+    row_count         BIGINT      CHECK (row_count IS NULL OR row_count >= 0),
+    column_count      INTEGER     CHECK (column_count IS NULL OR column_count >= 0),
+    status            TEXT        NOT NULL DEFAULT 'UPLOADING'
+                        CHECK (status IN ('UPLOADING', 'VALIDATING', 'PROCESSING', 'READY', 'FAILED', 'DELETED')),
+    error_message     TEXT        CHECK (error_message IS NULL OR char_length(error_message) <= 1000),
+    created_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
 
     CONSTRAINT datasets_pkey PRIMARY KEY (id),
     CONSTRAINT datasets_user_id_fkey FOREIGN KEY (user_id)
-        REFERENCES users (id) ON DELETE CASCADE,
-    CONSTRAINT datasets_status_check
-        CHECK (status IN ('pending', 'processing', 'ready', 'failed'))
+        REFERENCES users (id) ON DELETE CASCADE
 );
 
+-- Every dataset lookup is scoped by owner.
 CREATE INDEX datasets_user_id_idx ON datasets (user_id);
+CREATE INDEX datasets_user_created_at_idx ON datasets (user_id, created_at DESC);
 CREATE INDEX datasets_status_idx ON datasets (status);
-CREATE INDEX datasets_created_at_idx ON datasets (created_at DESC);
 
--- Auto-update updated_at
+-- ---------------------------------------------------------------------
+-- dataset_columns
+-- Describes each detected column so the platform understands a dataset
+-- without repeatedly scanning the original file.
+-- ---------------------------------------------------------------------
+CREATE TABLE dataset_columns (
+    id               UUID        NOT NULL DEFAULT gen_random_uuid(),
+    dataset_id       UUID        NOT NULL,
+    column_name      TEXT        NOT NULL,
+    data_type        TEXT        NOT NULL,
+    nullable         BOOLEAN     NOT NULL DEFAULT TRUE,
+    ordinal_position INTEGER     NOT NULL CHECK (ordinal_position >= 1),
+    unique_count     BIGINT      CHECK (unique_count IS NULL OR unique_count >= 0),
+    null_count       BIGINT      CHECK (null_count IS NULL OR null_count >= 0),
+    created_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+    CONSTRAINT dataset_columns_pkey PRIMARY KEY (id),
+    CONSTRAINT dataset_columns_dataset_id_fkey FOREIGN KEY (dataset_id)
+        REFERENCES datasets (id) ON DELETE CASCADE,
+    CONSTRAINT dataset_columns_position_unique UNIQUE (dataset_id, ordinal_position)
+);
+
+CREATE INDEX dataset_columns_dataset_id_idx ON dataset_columns (dataset_id);
+
+-- ---------------------------------------------------------------------
+-- updated_at maintenance trigger for datasets
+-- ---------------------------------------------------------------------
 CREATE TRIGGER datasets_set_updated_at
     BEFORE UPDATE ON datasets
     FOR EACH ROW
@@ -152,8 +182,14 @@ CREATE TRIGGER datasets_set_updated_at
 -- 004_backtesting.sql
 -- PS-05 Enterprise Intelligence Platform
 --
--- Creates backtesting tables: backtests, backtest_trades,
--- backtest_metrics, backtest_equity.
+-- Adds the backtesting module metadata tables:
+--   backtests          (a single strategy execution over a dataset)
+--   backtest_trades    (executed orders with costs and realized P&L)
+--   backtest_metrics   (performance + benchmark metrics)
+--   backtest_equity    (portfolio/cash/position/drawdown per timestamp)
+--
+-- PostgreSQL stores RESULTS/METADATA only. The raw market data stays in
+-- the dataset file and is read via DuckDB at execution time.
 --
 -- NOTE: The migration runner wraps each migration file in a transaction.
 -- Do not add BEGIN/COMMIT to migration files.
@@ -161,120 +197,125 @@ CREATE TRIGGER datasets_set_updated_at
 
 -- ---------------------------------------------------------------------
 -- backtests
--- Master record for each backtest execution.
 -- ---------------------------------------------------------------------
 CREATE TABLE backtests (
-    id              UUID        NOT NULL DEFAULT gen_random_uuid(),
-    user_id         UUID        NOT NULL,
-    dataset_id      UUID        NOT NULL,
-    strategy_id     TEXT        NOT NULL,
-    name            TEXT        NOT NULL CHECK (char_length(btrim(name)) BETWEEN 1 AND 200),
-    parameters      JSONB       NOT NULL DEFAULT '{}'::jsonb,
-    initial_capital NUMERIC(18,2) NOT NULL DEFAULT 100000.00,
-    commission      NUMERIC(10,6) NOT NULL DEFAULT 0.001,
-    slippage        NUMERIC(10,6) NOT NULL DEFAULT 0.0005,
-    start_date      TIMESTAMPTZ,
-    end_date        TIMESTAMPTZ,
-    status          TEXT        NOT NULL DEFAULT 'pending',
-    error_message   TEXT,
-    started_at      TIMESTAMPTZ,
-    completed_at    TIMESTAMPTZ,
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
-    updated_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    id               UUID        NOT NULL DEFAULT gen_random_uuid(),
+    user_id          UUID        NOT NULL,
+    dataset_id       UUID        NOT NULL,
+    strategy_id      TEXT        NOT NULL,
+    name             TEXT        NOT NULL CHECK (char_length(btrim(name)) BETWEEN 1 AND 200),
+    symbol           TEXT        NOT NULL DEFAULT 'ASSET'
+                                  CHECK (char_length(symbol) BETWEEN 1 AND 32),
+    initial_capital  NUMERIC     NOT NULL CHECK (initial_capital > 0),
+    commission       NUMERIC     NOT NULL DEFAULT 0 CHECK (commission >= 0 AND commission < 1),
+    slippage         NUMERIC     NOT NULL DEFAULT 0 CHECK (slippage >= 0 AND slippage < 1),
+    parameters       JSONB       NOT NULL DEFAULT '{}'::jsonb,
+    start_date       TIMESTAMPTZ,
+    end_date         TIMESTAMPTZ,
+    status           TEXT        NOT NULL DEFAULT 'PENDING'
+                                  CHECK (status IN ('PENDING', 'RUNNING', 'COMPLETED', 'FAILED')),
+    error_message    TEXT        CHECK (error_message IS NULL OR char_length(error_message) <= 1000),
+    created_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
 
     CONSTRAINT backtests_pkey PRIMARY KEY (id),
     CONSTRAINT backtests_user_id_fkey FOREIGN KEY (user_id)
         REFERENCES users (id) ON DELETE CASCADE,
     CONSTRAINT backtests_dataset_id_fkey FOREIGN KEY (dataset_id)
-        REFERENCES datasets (id) ON DELETE CASCADE,
-    CONSTRAINT backtests_status_check
-        CHECK (status IN ('pending', 'running', 'completed', 'failed'))
+        REFERENCES datasets (id) ON DELETE CASCADE
 );
 
+-- Every backtest lookup is scoped by owner, then listed newest-first.
 CREATE INDEX backtests_user_id_idx ON backtests (user_id);
+CREATE INDEX backtests_user_created_at_idx ON backtests (user_id, created_at DESC);
 CREATE INDEX backtests_dataset_id_idx ON backtests (dataset_id);
 CREATE INDEX backtests_status_idx ON backtests (status);
-CREATE INDEX backtests_created_at_idx ON backtests (created_at DESC);
-
-CREATE TRIGGER backtests_set_updated_at
-    BEFORE UPDATE ON backtests
-    FOR EACH ROW
-    EXECUTE FUNCTION set_updated_at();
 
 -- ---------------------------------------------------------------------
 -- backtest_trades
--- Individual simulated trade records from backtest runs.
+-- Executed orders. `price` is the slippage-adjusted execution price.
+-- For SELL rows `entry_price` is the average cost basis of the units sold
+-- and `pnl` the realized result; BUY rows carry NULL exit/pnl.
 -- ---------------------------------------------------------------------
 CREATE TABLE backtest_trades (
-    id              UUID        NOT NULL DEFAULT gen_random_uuid(),
-    backtest_id     UUID        NOT NULL,
-    timestamp       TIMESTAMPTZ NOT NULL,
-    side            TEXT        NOT NULL,
-    quantity        NUMERIC(18,8) NOT NULL,
-    price           NUMERIC(18,8) NOT NULL,
-    execution_price NUMERIC(18,8) NOT NULL,
-    commission      NUMERIC(18,8) NOT NULL DEFAULT 0,
-    slippage_amount NUMERIC(18,8) NOT NULL DEFAULT 0,
-    pnl             NUMERIC(18,8),
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    id            UUID        NOT NULL DEFAULT gen_random_uuid(),
+    backtest_id   UUID        NOT NULL,
+    timestamp     TIMESTAMPTZ NOT NULL,
+    symbol        TEXT        NOT NULL,
+    side          TEXT        NOT NULL CHECK (side IN ('BUY', 'SELL')),
+    quantity      NUMERIC     NOT NULL CHECK (quantity > 0),
+    price         NUMERIC     NOT NULL CHECK (price > 0),
+    entry_price   NUMERIC     CHECK (entry_price IS NULL OR entry_price > 0),
+    exit_price    NUMERIC     CHECK (exit_price IS NULL OR exit_price > 0),
+    commission    NUMERIC     NOT NULL DEFAULT 0 CHECK (commission >= 0),
+    slippage      NUMERIC     NOT NULL DEFAULT 0 CHECK (slippage >= 0),
+    pnl           NUMERIC     CHECK (pnl IS NULL OR pnl >= -1000000000000),
 
     CONSTRAINT backtest_trades_pkey PRIMARY KEY (id),
     CONSTRAINT backtest_trades_backtest_id_fkey FOREIGN KEY (backtest_id)
-        REFERENCES backtests (id) ON DELETE CASCADE,
-    CONSTRAINT backtest_trades_side_check
-        CHECK (side IN ('BUY', 'SELL'))
+        REFERENCES backtests (id) ON DELETE CASCADE
 );
 
 CREATE INDEX backtest_trades_backtest_id_idx ON backtest_trades (backtest_id);
-CREATE INDEX backtest_trades_timestamp_idx ON backtest_trades (backtest_id, timestamp);
+CREATE INDEX backtest_trades_backtest_id_ts_idx ON backtest_trades (backtest_id, timestamp);
 
 -- ---------------------------------------------------------------------
 -- backtest_metrics
--- Computed performance metrics for a completed backtest.
+-- One row per backtest. All values are decimals (fractions, e.g. 0.1234
+-- means 12.34%) except trade counts which are integers.
 -- ---------------------------------------------------------------------
 CREATE TABLE backtest_metrics (
-    id                  UUID        NOT NULL DEFAULT gen_random_uuid(),
-    backtest_id         UUID        NOT NULL,
-    total_return        NUMERIC(18,8),
-    annualized_return   NUMERIC(18,8),
-    volatility          NUMERIC(18,8),
-    sharpe_ratio        NUMERIC(18,8),
-    sortino_ratio       NUMERIC(18,8),
-    max_drawdown        NUMERIC(18,8),
-    calmar_ratio        NUMERIC(18,8),
-    win_rate            NUMERIC(18,8),
-    profit_factor       NUMERIC(18,8),
-    total_trades        INTEGER,
-    winning_trades      INTEGER,
-    losing_trades       INTEGER,
-    avg_winning_trade   NUMERIC(18,8),
-    avg_losing_trade    NUMERIC(18,8),
-    largest_winning_trade NUMERIC(18,8),
-    largest_losing_trade  NUMERIC(18,8),
-    avg_trade           NUMERIC(18,8),
-    created_at          TIMESTAMPTZ NOT NULL DEFAULT now(),
+    id                     UUID        NOT NULL DEFAULT gen_random_uuid(),
+    backtest_id            UUID        NOT NULL,
+    total_return           NUMERIC,
+    annualized_return      NUMERIC,
+    cagr                   NUMERIC,
+    volatility             NUMERIC,
+    sharpe_ratio           NUMERIC,
+    sortino_ratio          NUMERIC,
+    calmar_ratio           NUMERIC,
+    max_drawdown           NUMERIC,
+    win_rate               NUMERIC,
+    profit_factor          NUMERIC,
+    total_trades           INTEGER     NOT NULL DEFAULT 0 CHECK (total_trades >= 0),
+    winning_trades         INTEGER     NOT NULL DEFAULT 0 CHECK (winning_trades >= 0),
+    losing_trades          INTEGER     NOT NULL DEFAULT 0 CHECK (losing_trades >= 0),
+    avg_win                NUMERIC,
+    avg_loss               NUMERIC,
+    avg_trade              NUMERIC,
+    largest_win            NUMERIC,
+    largest_loss           NUMERIC,
+    final_equity           NUMERIC CHECK (final_equity IS NULL OR final_equity >= 0),
+    benchmark_return       NUMERIC,
+    benchmark_cagr         NUMERIC,
+    benchmark_volatility   NUMERIC,
+    benchmark_max_drawdown NUMERIC,
+    created_at             TIMESTAMPTZ NOT NULL DEFAULT now(),
 
     CONSTRAINT backtest_metrics_pkey PRIMARY KEY (id),
+    CONSTRAINT backtest_metrics_backtest_id_unique UNIQUE (backtest_id),
     CONSTRAINT backtest_metrics_backtest_id_fkey FOREIGN KEY (backtest_id)
         REFERENCES backtests (id) ON DELETE CASCADE
 );
 
-CREATE INDEX backtest_metrics_backtest_id_idx ON backtest_metrics (backtest_id);
-
 -- ---------------------------------------------------------------------
 -- backtest_equity
--- Equity curve data points recorded at each processed timestamp.
+-- Portfolio snapshot per processed timestamp. `kind` distinguishes the
+-- strategy equity from the Buy & Hold benchmark so both can be charted
+-- side by side. `drawdown` is the negative percentage (0 to -100) below
+-- the running equity peak.
 -- ---------------------------------------------------------------------
 CREATE TABLE backtest_equity (
-    id              UUID        NOT NULL DEFAULT gen_random_uuid(),
-    backtest_id     UUID        NOT NULL,
-    timestamp       TIMESTAMPTZ NOT NULL,
-    equity          NUMERIC(18,8) NOT NULL,
-    cash            NUMERIC(18,8) NOT NULL,
-    position_value  NUMERIC(18,8) NOT NULL,
-    daily_return    NUMERIC(18,8),
-    drawdown        NUMERIC(18,8),
-    created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    id             UUID        NOT NULL DEFAULT gen_random_uuid(),
+    backtest_id    UUID        NOT NULL,
+    kind           TEXT        NOT NULL DEFAULT 'strategy'
+                                  CHECK (kind IN ('strategy', 'benchmark')),
+    timestamp      TIMESTAMPTZ NOT NULL,
+    equity         NUMERIC     NOT NULL CHECK (equity >= 0),
+    cash           NUMERIC     NOT NULL CHECK (cash >= 0),
+    position_value NUMERIC     NOT NULL CHECK (position_value >= 0),
+    daily_return   NUMERIC,
+    drawdown       NUMERIC,
 
     CONSTRAINT backtest_equity_pkey PRIMARY KEY (id),
     CONSTRAINT backtest_equity_backtest_id_fkey FOREIGN KEY (backtest_id)
@@ -282,15 +323,23 @@ CREATE TABLE backtest_equity (
 );
 
 CREATE INDEX backtest_equity_backtest_id_idx ON backtest_equity (backtest_id);
-CREATE INDEX backtest_equity_timestamp_idx ON backtest_equity (backtest_id, timestamp);
+CREATE INDEX backtest_equity_backtest_id_ts_idx ON backtest_equity (backtest_id, timestamp);
+
+-- ---------------------------------------------------------------------
+-- updated_at maintenance trigger for backtests
+-- ---------------------------------------------------------------------
+CREATE TRIGGER backtests_set_updated_at
+    BEFORE UPDATE ON backtests
+    FOR EACH ROW
+    EXECUTE FUNCTION set_updated_at();
 
 -- Record that all migrations are applied so npm run db:status reports
 -- the database as fully migrated.
 INSERT INTO schema_migrations (version, name, checksum) VALUES
   (1, '001_initial_schema.sql', '37cb0d307380f3b2d324ed81bfb7cde4258449fc4dd930abae39bb4387e884be'),
   (2, '002_add_authentication.sql', '8ee25c28b4e880e96ae816f2b7d085453016b3fee43f40dedd89ab902e987bba'),
-  (3, '003_datasets.sql', 'placeholder_checksum_003'),
-  (4, '004_backtesting.sql', 'placeholder_checksum_004')
+  (3, '003_datasets.sql', '9d61cfd0d3fb0d8dcbda9c0362302612e84ee75599a35780d6898383fdae6f37'),
+  (4, '004_backtesting.sql', '9bf76b78ec30387d4e980b90961b007f01f505d385050e29843dab8fbd53bc37')
 ON CONFLICT (version) DO NOTHING;
 
 COMMIT;

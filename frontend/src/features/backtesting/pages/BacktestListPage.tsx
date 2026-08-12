@@ -1,27 +1,22 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
-import { format } from 'date-fns';
 import { Button } from '../../../components/ui/Button';
-import { DashboardLayout } from '../../dashboard/components/DashboardLayout';
 import { useBacktests, useDeleteBacktest } from '../hooks/useBacktest';
+import type { BacktestSummary } from '../types';
 
 const STATUS_STYLES: Record<string, string> = {
-  pending: 'bg-yellow-400/10 text-yellow-400 ring-yellow-400/20',
-  running: 'bg-blue-400/10 text-blue-400 ring-blue-400/20',
-  completed: 'bg-emerald-400/10 text-emerald-400 ring-emerald-400/20',
-  failed: 'bg-red-400/10 text-red-400 ring-red-400/20',
+  PENDING: 'bg-yellow-400/10 text-yellow-400 ring-yellow-400/20',
+  RUNNING: 'bg-blue-400/10 text-blue-400 ring-blue-400/20',
+  COMPLETED: 'bg-emerald-400/10 text-emerald-400 ring-emerald-400/20',
+  FAILED: 'bg-red-400/10 text-red-400 ring-red-400/20',
 };
 
-export function BacktestListPage() {
-  return (
-    <DashboardLayout activeNav="Backtesting">
-      <BacktestListContent />
-    </DashboardLayout>
-  );
+function formatDate(iso: string): string {
+  return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
-function BacktestListContent() {
+export function BacktestListPage() {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const { data, isLoading, error } = useBacktests(page, 10);
@@ -87,14 +82,14 @@ function BacktestListContent() {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.items.map((bt) => (
+                  {data.items.map((bt: BacktestSummary) => (
                     <tr
                       key={bt.id}
                       className="border-b border-white/5 transition-colors hover:bg-white/[0.02] cursor-pointer"
                       onClick={() => navigate(`/backtesting/${bt.id}`)}
                     >
                       <td className="px-5 py-3.5 font-medium text-white">{bt.name}</td>
-                      <td className="px-5 py-3.5 text-slate-300">{bt.strategy_id}</td>
+                      <td className="px-5 py-3.5 text-slate-300">{bt.strategyId}</td>
                       <td className="px-5 py-3.5">
                         <span
                           className={clsx(
@@ -106,7 +101,7 @@ function BacktestListContent() {
                         </span>
                       </td>
                       <td className="px-5 py-3.5 text-slate-400">
-                        {format(new Date(bt.created_at), 'MMM dd, yyyy')}
+                        {formatDate(bt.createdAt)}
                       </td>
                       <td className="px-5 py-3.5 text-right">
                         <button

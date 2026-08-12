@@ -1,6 +1,6 @@
 import { TrendingUp, Activity, Layers } from 'lucide-react';
 import { clsx } from 'clsx';
-import type { StrategyConfig } from '../types';
+import type { StrategyMetadata } from '../types';
 
 const STRATEGY_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   sma_crossover: TrendingUp,
@@ -9,7 +9,7 @@ const STRATEGY_ICONS: Record<string, React.ComponentType<{ className?: string }>
 };
 
 interface StrategyCardProps {
-  strategy: StrategyConfig;
+  strategy: StrategyMetadata;
   selected: boolean;
   onSelect: (id: string) => void;
 }

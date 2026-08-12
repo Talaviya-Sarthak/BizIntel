@@ -1,27 +1,26 @@
 import { Architecture } from '../components/Architecture';
 import { CTA } from '../components/CTA';
-import { Features } from '../components/Features';
+import { FAQ } from '../components/FAQ';
 import { Footer } from '../components/Footer';
 import { Hero } from '../components/Hero';
 import { HowItWorks } from '../components/HowItWorks';
 import { Navbar } from '../components/Navbar';
+import { PlatformBackground } from '../components/PlatformBackground';
 import { PlatformOverview } from '../components/PlatformOverview';
-import { Security } from '../components/Security';
 
 export function LandingPage() {
   return (
-    <div className="min-h-screen bg-surface-deep text-slate-200">
+    <PlatformBackground>
       <Navbar />
       <main>
         <Hero />
         <PlatformOverview />
-        <Features />
         <HowItWorks />
         <Architecture />
-        <Security />
+        <FAQ />
         <CTA />
       </main>
       <Footer />
-    </div>
+    </PlatformBackground>
   );
 }

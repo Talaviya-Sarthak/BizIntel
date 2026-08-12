@@ -1,22 +1,9 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useBacktest } from '../hooks/useBacktest';
 import { BacktestResultDashboard } from '../components/BacktestResultDashboard';
-import { EquityCurveChart } from '../components/EquityCurveChart';
-import { DrawdownChart } from '../components/DrawdownChart';
-import { BenchmarkComparison } from '../components/BenchmarkComparison';
-import { TradeTable } from '../components/TradeTable';
 import { Button } from '../../../components/ui/Button';
-import { DashboardLayout } from '../../dashboard/components/DashboardLayout';
 
 export function BacktestDetailPage() {
-  return (
-    <DashboardLayout activeNav="Backtesting">
-      <BacktestDetailContent />
-    </DashboardLayout>
-  );
-}
-
-function BacktestDetailContent() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data, isLoading, error } = useBacktest(id ?? null);
@@ -63,28 +50,6 @@ function BacktestDetailContent() {
       </div>
 
       <BacktestResultDashboard backtest={data.backtest} metrics={data.metrics} />
-
-      {data.backtest.status === 'completed' && (
-        <>
-          <EquityCurveChart
-            equity={data.equity}
-            benchmark={data.benchmark}
-            initialCapital={data.backtest.initial_capital}
-          />
-
-          <DrawdownChart equity={data.equity} />
-
-          {data.benchmark && (
-            <BenchmarkComparison
-              metrics={data.metrics}
-              benchmark={data.benchmark}
-              initialCapital={data.backtest.initial_capital}
-            />
-          )}
-
-          <TradeTable trades={data.trades} />
-        </>
-      )}
     </div>
   );
 }

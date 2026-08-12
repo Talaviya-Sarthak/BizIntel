@@ -1,43 +1,43 @@
 import { clsx } from 'clsx';
-import type { Backtest, BacktestMetrics } from '../types';
+import type { BacktestSummary, PerformanceMetrics } from '../types';
 
 interface BacktestResultDashboardProps {
-  backtest: Backtest;
-  metrics: BacktestMetrics;
+  backtest: BacktestSummary;
+  metrics: PerformanceMetrics | null;
 }
 
-function formatPercent(value: number | null): string {
+function formatPercent(value: number | null | undefined): string {
   if (value === null || value === undefined) return '—';
   return `${(value * 100).toFixed(2)}%`;
 }
 
-function formatNumber(value: number | null, decimals = 2): string {
+function formatNumber(value: number | null | undefined, decimals = 2): string {
   if (value === null || value === undefined) return '—';
   return value.toFixed(decimals);
 }
 
-function formatCurrency(value: number | null): string {
+function formatCurrency(value: number | null | undefined): string {
   if (value === null || value === undefined) return '—';
   return `$${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  pending: 'bg-yellow-400/10 text-yellow-400 ring-yellow-400/20',
-  running: 'bg-blue-400/10 text-blue-400 ring-blue-400/20',
-  completed: 'bg-emerald-400/10 text-emerald-400 ring-emerald-400/20',
-  failed: 'bg-red-400/10 text-red-400 ring-red-400/20',
+  PENDING: 'bg-yellow-400/10 text-yellow-400 ring-yellow-400/20',
+  RUNNING: 'bg-blue-400/10 text-blue-400 ring-blue-400/20',
+  COMPLETED: 'bg-emerald-400/10 text-emerald-400 ring-emerald-400/20',
+  FAILED: 'bg-red-400/10 text-red-400 ring-red-400/20',
 };
 
 export function BacktestResultDashboard({ backtest, metrics }: BacktestResultDashboardProps) {
   const kpis: { label: string; value: string; positive?: boolean }[] = [
-    { label: 'Total Return', value: formatPercent(metrics.total_return), positive: (metrics.total_return ?? 0) > 0 },
-    { label: 'CAGR', value: formatPercent(metrics.annualized_return), positive: (metrics.annualized_return ?? 0) > 0 },
-    { label: 'Sharpe Ratio', value: formatNumber(metrics.sharpe_ratio), positive: (metrics.sharpe_ratio ?? 0) > 1 },
-    { label: 'Sortino Ratio', value: formatNumber(metrics.sortino_ratio), positive: (metrics.sortino_ratio ?? 0) > 1 },
-    { label: 'Max Drawdown', value: formatPercent(metrics.max_drawdown), positive: false },
-    { label: 'Win Rate', value: formatPercent(metrics.win_rate), positive: (metrics.win_rate ?? 0) > 0.5 },
-    { label: 'Profit Factor', value: formatNumber(metrics.profit_factor), positive: (metrics.profit_factor ?? 0) > 1 },
-    { label: 'Total Trades', value: String(metrics.total_trades ?? '—') },
+    { label: 'Total Return', value: formatPercent(metrics?.totalReturn), positive: (metrics?.totalReturn ?? 0) > 0 },
+    { label: 'CAGR', value: formatPercent(metrics?.annualizedReturn ?? metrics?.cagr), positive: ((metrics?.annualizedReturn ?? metrics?.cagr) ?? 0) > 0 },
+    { label: 'Sharpe Ratio', value: formatNumber(metrics?.sharpeRatio), positive: (metrics?.sharpeRatio ?? 0) > 1 },
+    { label: 'Sortino Ratio', value: formatNumber(metrics?.sortinoRatio), positive: (metrics?.sortinoRatio ?? 0) > 1 },
+    { label: 'Max Drawdown', value: formatPercent(metrics?.maxDrawdown), positive: false },
+    { label: 'Win Rate', value: formatPercent(metrics?.winRate), positive: (metrics?.winRate ?? 0) > 0.5 },
+    { label: 'Profit Factor', value: formatNumber(metrics?.profitFactor), positive: (metrics?.profitFactor ?? 0) > 1 },
+    { label: 'Total Trades', value: String(metrics?.totalTrades ?? '—') },
   ];
 
   return (
@@ -47,7 +47,7 @@ export function BacktestResultDashboard({ backtest, metrics }: BacktestResultDas
         <div>
           <h2 className="text-lg font-bold text-white">{backtest.name}</h2>
           <p className="mt-1 text-xs text-slate-400">
-            {backtest.strategy_id} · Created {new Date(backtest.created_at).toLocaleDateString()}
+            {backtest.strategyId} · Created {new Date(backtest.createdAt).toLocaleDateString()}
           </p>
         </div>
         <span
@@ -60,10 +60,10 @@ export function BacktestResultDashboard({ backtest, metrics }: BacktestResultDas
         </span>
       </div>
 
-      {backtest.error_message && (
+      {backtest.errorMessage && (
         <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4">
           <p className="text-xs font-medium text-red-400">Error</p>
-          <p className="mt-1 text-xs text-red-300">{backtest.error_message}</p>
+          <p className="mt-1 text-xs text-red-300">{backtest.errorMessage}</p>
         </div>
       )}
 
@@ -99,13 +99,13 @@ export function BacktestResultDashboard({ backtest, metrics }: BacktestResultDas
           Strategy Configuration
         </h3>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <DetailRow label="Strategy" value={backtest.strategy_id} />
-          <DetailRow label="Initial Capital" value={formatCurrency(backtest.initial_capital)} />
+          <DetailRow label="Strategy" value={backtest.strategyId} />
+          <DetailRow label="Initial Capital" value={formatCurrency(backtest.initialCapital)} />
           <DetailRow label="Commission" value={`${(backtest.commission * 100).toFixed(2)}%`} />
           <DetailRow label="Slippage" value={`${(backtest.slippage * 100).toFixed(2)}%`} />
-          {backtest.start_date && <DetailRow label="Start" value={backtest.start_date} />}
-          {backtest.end_date && <DetailRow label="End" value={backtest.end_date} />}
-          {Object.entries(backtest.parameters).map(([key, val]) => (
+          {backtest.startDate && <DetailRow label="Start" value={backtest.startDate} />}
+          {backtest.endDate && <DetailRow label="End" value={backtest.endDate} />}
+          {backtest.parameters && Object.entries(backtest.parameters).map(([key, val]) => (
             <DetailRow key={key} label={key} value={String(val)} />
           ))}
         </div>
@@ -117,15 +117,15 @@ export function BacktestResultDashboard({ backtest, metrics }: BacktestResultDas
           Trade Statistics
         </h3>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <DetailRow label="Volatility" value={formatPercent(metrics.volatility)} />
-          <DetailRow label="Calmar Ratio" value={formatNumber(metrics.calmar_ratio)} />
-          <DetailRow label="Winning Trades" value={String(metrics.winning_trades ?? '—')} />
-          <DetailRow label="Losing Trades" value={String(metrics.losing_trades ?? '—')} />
-          <DetailRow label="Avg Winning Trade" value={formatPercent(metrics.avg_winning_trade)} />
-          <DetailRow label="Avg Losing Trade" value={formatPercent(metrics.avg_losing_trade)} />
-          <DetailRow label="Largest Win" value={formatPercent(metrics.largest_winning_trade)} />
-          <DetailRow label="Largest Loss" value={formatPercent(metrics.largest_losing_trade)} />
-          <DetailRow label="Avg Trade" value={formatPercent(metrics.avg_trade)} />
+          <DetailRow label="Volatility" value={formatPercent(metrics?.volatility)} />
+          <DetailRow label="Calmar Ratio" value={formatNumber(metrics?.calmarRatio)} />
+          <DetailRow label="Winning Trades" value={String(metrics?.winningTrades ?? '—')} />
+          <DetailRow label="Losing Trades" value={String(metrics?.losingTrades ?? '—')} />
+          <DetailRow label="Avg Winning Trade" value={formatPercent(metrics?.avgWin)} />
+          <DetailRow label="Avg Losing Trade" value={formatPercent(metrics?.avgLoss)} />
+          <DetailRow label="Largest Win" value={formatPercent(metrics?.largestWin)} />
+          <DetailRow label="Largest Loss" value={formatPercent(metrics?.largestLoss)} />
+          <DetailRow label="Avg Trade" value={formatPercent(metrics?.avgTrade)} />
         </div>
       </div>
     </div>

@@ -1,11 +1,20 @@
 import { createBrowserRouter } from 'react-router-dom';
 import AuthContainer from '../features/auth/components/AuthContainer';
+import { BacktestingPage } from '../features/backtesting/pages/BacktestingPage';
+import { BacktestResultPage } from '../features/backtesting/pages/BacktestResultPage';
+import { NewBacktestPage } from '../features/backtesting/pages/NewBacktestPage';
+import { ContactPage } from '../features/contact/pages/ContactPage';
 import { DashboardPage } from '../features/dashboard/pages/DashboardPage';
 import { DatasetsPage } from '../features/datasets/pages/DatasetsPage';
-import { BacktestListPage } from '../features/backtesting/pages/BacktestListPage';
-import { BacktestCreatePage } from '../features/backtesting/pages/BacktestCreatePage';
-import { BacktestDetailPage } from '../features/backtesting/pages/BacktestDetailPage';
+import { DatasetWorkspacePage } from '../features/datasets/pages/DatasetWorkspacePage';
+import { DatasetUploadPage } from '../features/datasets/pages/DatasetUploadPage';
 import { LandingPage } from '../features/landing/pages/LandingPage';
+import { AppShell } from '../features/workspace/components/AppShell';
+import {
+  AiAssistantPage,
+  DataMartPage,
+  SettingsPage,
+} from '../features/workspace/pages/PlaceholderPages';
 import { NotFoundPage } from '../pages/NotFoundPage';
 import { GuestRoute, ProtectedRoute } from './guards';
 
@@ -13,6 +22,10 @@ export const router = createBrowserRouter([
   {
     path: '/',
     element: <LandingPage />,
+  },
+  {
+    path: '/contact',
+    element: <ContactPage />,
   },
   {
     path: '/signin',
@@ -39,44 +52,23 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: '/dashboard',
     element: (
       <ProtectedRoute>
-        <DashboardPage />
+        <AppShell />
       </ProtectedRoute>
     ),
-  },
-  {
-    path: '/datasets',
-    element: (
-      <ProtectedRoute>
-        <DatasetsPage />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/backtesting',
-    element: (
-      <ProtectedRoute>
-        <BacktestListPage />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/backtesting/new',
-    element: (
-      <ProtectedRoute>
-        <BacktestCreatePage />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: '/backtesting/:id',
-    element: (
-      <ProtectedRoute>
-        <BacktestDetailPage />
-      </ProtectedRoute>
-    ),
+    children: [
+      { path: '/dashboard', element: <DashboardPage /> },
+      { path: '/datasets', element: <DatasetsPage /> },
+      { path: '/datasets/upload', element: <DatasetUploadPage /> },
+      { path: '/datasets/:id', element: <DatasetWorkspacePage /> },
+      { path: '/datamart', element: <DataMartPage /> },
+      { path: '/backtesting', element: <BacktestingPage /> },
+      { path: '/backtesting/new', element: <NewBacktestPage /> },
+      { path: '/backtesting/:id', element: <BacktestResultPage /> },
+      { path: '/ai-assistant', element: <AiAssistantPage /> },
+      { path: '/settings', element: <SettingsPage /> },
+    ],
   },
   {
     path: '*',

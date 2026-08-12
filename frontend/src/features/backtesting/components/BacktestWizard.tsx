@@ -6,7 +6,7 @@ import { StrategyCard } from './StrategyCard';
 import { ParameterForm } from './ParameterForm';
 import { useStrategies, useCreateBacktest } from '../hooks/useBacktest';
 import { toApiError } from '../../../lib/api';
-import type { CreateBacktestInput } from '../types';
+import type { BacktestCreateInput } from '../types';
 
 const STEPS = [
   'Select Dataset',
@@ -21,7 +21,7 @@ interface WizardData {
   dataset_id: string;
   strategy_id: string;
   name: string;
-  parameters: Record<string, number>;
+  parameters: Record<string, number | boolean>;
   initial_capital: number;
   commission: number;
   slippage: number;

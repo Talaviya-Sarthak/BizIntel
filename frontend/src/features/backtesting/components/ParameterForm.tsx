@@ -1,8 +1,8 @@
 import { Input } from '../../../components/ui/Input';
-import type { StrategyParameter } from '../types';
+import type { ParameterDef } from '../types';
 
 interface ParameterFormProps {
-  parameters: StrategyParameter[];
+  parameters: ParameterDef[];
   values: Record<string, number>;
   onChange: (name: string, value: number) => void;
   errors?: Record<string, string>;

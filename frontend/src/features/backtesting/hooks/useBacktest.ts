@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { backtestService } from '../services/backtest.service';
-import type { CreateBacktestInput } from '../types';
+import type { BacktestCreateInput } from '../types';
 
 export function useStrategies() {
   return useQuery({
@@ -13,7 +13,7 @@ export function useStrategies() {
 export function useCreateBacktest() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (input: CreateBacktestInput) => backtestService.createBacktest(input),
+    mutationFn: (input: BacktestCreateInput) => backtestService.createBacktest(input),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['backtesting', 'backtests'] });
     },

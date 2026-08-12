@@ -36,6 +36,13 @@ const envSchema = z.object({
   AUTH_COOKIE_NAME: z.string().min(1).default('ps05_token'),
 
   CORS_ORIGIN: z.string().default('http://localhost:5173'),
+
+  // --- Dataset configuration ---
+  MAX_DATASET_SIZE_MB: z.coerce.number().int().positive().default(100),
+
+  // Resolved relative to the backend working directory. Abstracted behind
+  // StorageService so this can later point at S3/R2/Azure storage.
+  DATASET_STORAGE_PATH: z.string().min(1).default('./storage/datasets'),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -47,6 +54,9 @@ if (!parsed.success) {
 }
 
 export const env = parsed.data;
+
+/** Maximum accepted dataset upload size in bytes. */
+export const MAX_DATASET_SIZE_BYTES = env.MAX_DATASET_SIZE_MB * 1024 * 1024;
 
 /** Parsed list of allowed CORS origins. */
 export const corsOrigins = env.CORS_ORIGIN.split(',')
