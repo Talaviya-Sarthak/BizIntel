@@ -16,9 +16,16 @@ export interface NavItem {
   soon?: boolean;
 }
 
+export interface NavSubItem {
+  label: string;
+  path: string;
+}
+
 export interface NavGroup {
   label?: string;
   items: NavItem[];
+  /** Optional secondary links shown under the group's primary items. */
+  subItems?: NavSubItem[];
 }
 
 /**
@@ -32,12 +39,20 @@ export const NAV_GROUPS: NavGroup[] = [
   {
     label: 'Analytics',
     items: [
-      { label: 'DataMart', path: '/datamart', icon: DatabaseZapIcon, soon: true },
+      { label: 'DataMart', path: '/datamart', icon: DatabaseZapIcon },
+    ],
+    subItems: [
+      { label: 'Overview', path: '/datamart' },
+      { label: 'Query builder', path: '/datamart/query' },
+      { label: 'Analyses', path: '/datamart/analyses' },
+      { label: 'Metrics', path: '/datamart/metrics' },
+      { label: 'Dashboards', path: '/datamart/dashboards' },
+      { label: 'Compare datasets', path: '/datamart/compare' },
     ],
   },
   {
     items: [
-      { label: 'Backtesting', path: '/backtesting', icon: TrendingUpIcon, soon: true },
+      { label: 'Backtesting', path: '/backtesting', icon: TrendingUpIcon },
       { label: 'AI Assistant', path: '/ai-assistant', icon: SparklesIcon, soon: true },
       { label: 'Datasets', path: '/datasets', icon: FolderIcon },
       { label: 'Settings', path: '/settings', icon: SettingsIcon, soon: true },
@@ -47,16 +62,6 @@ export const NAV_GROUPS: NavGroup[] = [
 
 /** Workspace pages that are placeholder-only until their module ships. */
 export const SOON_PAGES: Record<string, { title: string; description: string }> = {
-  '/datamart': {
-    title: 'DataMart Analytics',
-    description:
-      'SQL analytics and visual exploration over your datasets. Coming in the DataMart phase.',
-  },
-  '/backtesting': {
-    title: 'Backtesting',
-    description:
-      'Historical strategy execution and performance analysis over your datasets. Coming in the Backtesting phase.',
-  },
   '/ai-assistant': {
     title: 'AI Assistant',
     description:

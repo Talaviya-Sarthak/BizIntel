@@ -1,6 +1,5 @@
 import { ComingSoon } from '../components/ComingSoon';
 import {
-  DatabaseZapIcon,
   SettingsIcon,
   SparklesIcon,
   TrendingUpIcon,
@@ -24,17 +23,6 @@ export function AiAssistantPage() {
       moduleName="AI Assistant"
       title="AI Assistant coming soon"
       description="Ask natural-language questions about your datasets and get instant, sourced answers. This module lands in a later development phase."
-    />
-  );
-}
-
-export function DataMartPage() {
-  return (
-    <ComingSoon
-      icon={DatabaseZapIcon}
-      moduleName="DataMart Analytics"
-      title="DataMart analytics coming soon"
-      description="SQL analytics and visual exploration over your datasets. This module lands in a later development phase."
     />
   );
 }

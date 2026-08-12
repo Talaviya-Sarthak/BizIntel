@@ -5,6 +5,14 @@ import { BacktestResultPage } from '../features/backtesting/pages/BacktestResult
 import { NewBacktestPage } from '../features/backtesting/pages/NewBacktestPage';
 import { ContactPage } from '../features/contact/pages/ContactPage';
 import { DashboardPage } from '../features/dashboard/pages/DashboardPage';
+import { DataMartOverviewPage } from '../features/datamart/pages/DataMartOverviewPage';
+import { QueryBuilderPage } from '../features/datamart/pages/QueryBuilderPage';
+import { AnalysesPage } from '../features/datamart/pages/AnalysesPage';
+import { AnalysisDetailPage } from '../features/datamart/pages/AnalysisDetailPage';
+import { MetricsPage } from '../features/datamart/pages/MetricsPage';
+import { DashboardsPage } from '../features/datamart/pages/DashboardsPage';
+import { DashboardDetailPage } from '../features/datamart/pages/DashboardDetailPage';
+import { ComparisonPage } from '../features/datamart/pages/ComparisonPage';
 import { DatasetsPage } from '../features/datasets/pages/DatasetsPage';
 import { DatasetWorkspacePage } from '../features/datasets/pages/DatasetWorkspacePage';
 import { DatasetUploadPage } from '../features/datasets/pages/DatasetUploadPage';
@@ -12,7 +20,6 @@ import { LandingPage } from '../features/landing/pages/LandingPage';
 import { AppShell } from '../features/workspace/components/AppShell';
 import {
   AiAssistantPage,
-  DataMartPage,
   SettingsPage,
 } from '../features/workspace/pages/PlaceholderPages';
 import { NotFoundPage } from '../pages/NotFoundPage';
@@ -62,7 +69,14 @@ export const router = createBrowserRouter([
       { path: '/datasets', element: <DatasetsPage /> },
       { path: '/datasets/upload', element: <DatasetUploadPage /> },
       { path: '/datasets/:id', element: <DatasetWorkspacePage /> },
-      { path: '/datamart', element: <DataMartPage /> },
+      { path: '/datamart', element: <DataMartOverviewPage /> },
+      { path: '/datamart/query', element: <QueryBuilderPage /> },
+      { path: '/datamart/analyses', element: <AnalysesPage /> },
+      { path: '/datamart/analyses/:id', element: <AnalysisDetailPage /> },
+      { path: '/datamart/metrics', element: <MetricsPage /> },
+      { path: '/datamart/dashboards', element: <DashboardsPage /> },
+      { path: '/datamart/dashboards/:id', element: <DashboardDetailPage /> },
+      { path: '/datamart/compare', element: <ComparisonPage /> },
       { path: '/backtesting', element: <BacktestingPage /> },
       { path: '/backtesting/new', element: <NewBacktestPage /> },
       { path: '/backtesting/:id', element: <BacktestResultPage /> },

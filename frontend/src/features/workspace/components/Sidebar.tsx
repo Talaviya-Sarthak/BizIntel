@@ -76,6 +76,29 @@ export function Sidebar({ open, onClose }: SidebarProps) {
                   </li>
                 ))}
               </ul>
+              {group.subItems && group.subItems.length > 0 ? (
+                <ul className="mt-1 flex flex-col gap-0.5 border-l border-white/10 pl-3 ml-3">
+                  {group.subItems.map((subItem) => (
+                    <li key={subItem.path}>
+                      <NavLink
+                        to={subItem.path}
+                        end={subItem.path === '/datamart'}
+                        onClick={onClose}
+                        className={({ isActive }) =>
+                          clsx(
+                            'block rounded-md py-1.5 pl-3 text-xs font-medium transition',
+                            isActive
+                              ? 'text-cyan-300'
+                              : 'text-slate-500 hover:text-white',
+                          )
+                        }
+                      >
+                        {subItem.label}
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
             </div>
           ))}
         </nav>
