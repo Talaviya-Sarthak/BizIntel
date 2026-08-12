@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { aiRoutes } from '../../ai';
 import analyticsRoutes from './analytics.routes';
 import authRoutes from './auth.routes';
 import backtestingRoutes from './backtesting.routes';
@@ -11,6 +12,7 @@ const router = Router();
 
 router.use('/auth', authRoutes);
 router.use('/health', healthRoutes);
+router.use('/ai', aiRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/datasets', datasetRoutes);
 router.use('/datasets', analyticsRoutes);

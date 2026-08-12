@@ -43,6 +43,9 @@ const envSchema = z.object({
   // Resolved relative to the backend working directory. Abstracted behind
   // StorageService so this can later point at S3/R2/Azure storage.
   DATASET_STORAGE_PATH: z.string().min(1).default('./storage/datasets'),
+
+  // --- AI configuration ---
+  GROQ_API_KEY: z.string().optional().default(''),
 });
 
 const parsed = envSchema.safeParse(process.env);

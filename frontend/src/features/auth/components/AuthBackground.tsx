@@ -5,6 +5,8 @@ import Button from "@/components/ui/Button";
 
 interface AuthBackgroundProps {
   children: React.ReactNode;
+  activeTab?: string;
+  onTabChange?: (tab: "login" | "signup" | "forgot-password") => void;
 }
 
 export default function AuthBackground({ children }: AuthBackgroundProps) {
