@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "description": "PS-05 Enterprise Intelligence Platform — Unified Analytics & AI Assistant",
-  "workspaces": [],
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
   "scripts": {
     "setup": "npm install --prefix backend && npm install --prefix frontend",
     "dev": "concurrently -n backend,frontend -c blue,green \"npm run dev:backend\" \"npm run dev:frontend\"",
