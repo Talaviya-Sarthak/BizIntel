@@ -1,128 +1,198 @@
 import { Link } from 'react-router-dom';
 import { Logo } from '../../../components/ui/Logo';
-import { DocumentIcon, GithubIcon } from './icons';
-
-const FOOTER_COLUMNS = [
-  {
-    title: 'Product',
-    links: [
-      { label: 'Backtesting Engine', href: '#capabilities' },
-      { label: 'DataMart Analytics', href: '#capabilities' },
-      { label: 'Retail AI Assistant', href: '#capabilities' },
-      { label: 'Workspace Console', to: '/dashboard' },
-    ],
-  },
-  {
-    title: 'Platform',
-    links: [
-      { label: 'Overview', href: '#platform' },
-      { label: 'Capabilities', href: '#capabilities' },
-      { label: 'How It Works', href: '#how-it-works' },
-      { label: 'Architecture', href: '#architecture' },
-    ],
-  },
-  {
-    title: 'Resources',
-    links: [
-      { label: 'Documentation', href: '#resources' },
-      { label: 'API Reference', href: '#resources' },
-      { label: 'System Status', href: '#resources' },
-    ],
-  },
-  {
-    title: 'Account',
-    links: [
-      { label: 'Sign In', to: '/signin' },
-      { label: 'Create Account', to: '/signup' },
-      { label: 'Console', to: '/dashboard' },
-    ],
-  },
-] as const;
+import { GithubIcon, LinkedinIcon, MailIcon } from './icons';
 
 interface FooterLink {
   label: string;
   href?: string;
   to?: string;
+  isExternal?: boolean;
 }
+
+const PRODUCT_LINKS: FooterLink[] = [
+  { label: 'Dashboard', to: '/dashboard' },
+  { label: 'Analytics', to: '/datamart' },
+  { label: 'Knowledge Center', to: '/knowledge-base' },
+  { label: 'DataMart', to: '/datamart' },
+  { label: 'Forecasting', to: '/backtesting' },
+  { label: 'AI Assistant', to: '/ai-assistant' },
+  { label: 'Backtesting', to: '/backtesting' },
+];
+
+const RESOURCE_LINKS: FooterLink[] = [
+  { label: 'Documentation', href: '#documentation' },
+  { label: 'API Reference', href: '#api' },
+  { label: 'Release Notes', href: '#releases' },
+  { label: 'Roadmap', href: '#roadmap' },
+  { label: 'Support', to: '/contact' },
+  { label: 'Status', href: '#status' },
+];
+
+const COMPANY_LINKS: FooterLink[] = [
+  { label: 'About', href: '#about' },
+  { label: 'Privacy', href: '#privacy' },
+  { label: 'Terms', href: '#terms' },
+  { label: 'Contact', to: '/contact' },
+  { label: 'GitHub', href: 'https://github.com', isExternal: true },
+];
 
 export function Footer() {
   return (
-    <footer id="resources" className="border-t border-zinc-800/80 pt-14 pb-10 bg-zinc-950/60 backdrop-blur-sm">
-      <div className="container-shell">
-        <div className="grid gap-10 lg:grid-cols-[1.3fr_1fr_1fr_1fr_1fr]">
+    <footer id="resources" className="w-full bg-[#0A0A0A] text-zinc-400 border-t border-white/[0.08] pt-20 pb-12 font-sans select-none">
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-8">
+        {/* 4-Column Responsive Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
+          {/* Left Column: Brand & Description */}
           <div className="flex flex-col justify-between">
             <div>
-              <Logo />
-              <p className="mt-3.5 max-w-xs text-xs leading-relaxed text-zinc-400">
-                Unified analytics, strategy backtesting, and AI intelligence for enterprise decisions.
+              <div className="flex items-center gap-2">
+                <Logo />
+              </div>
+              <h3 className="mt-3.5 text-sm font-semibold text-white tracking-tight">
+                Enterprise Intelligence Platform
+              </h3>
+              <p className="mt-2.5 text-sm leading-relaxed text-zinc-400 max-w-sm">
+                AI-powered enterprise analytics, business intelligence, forecasting, and knowledge management built for modern organizations.
               </p>
             </div>
 
-            <div className="mt-6 flex flex-col gap-3">
-              <div className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/80 px-3 py-1 text-[11px] font-medium text-zinc-400 w-fit">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                All Systems Operational
-              </div>
-              <div className="flex items-center gap-2">
-                <a
-                  href="https://github.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/60 text-zinc-400 transition hover:border-zinc-700 hover:text-zinc-100 hover:bg-zinc-800"
-                  aria-label="GitHub"
-                >
-                  <GithubIcon className="h-3.5 w-3.5" />
-                </a>
-                <a
-                  href="#resources"
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/60 text-zinc-400 transition hover:border-zinc-700 hover:text-zinc-100 hover:bg-zinc-800"
-                  aria-label="Documentation"
-                >
-                  <DocumentIcon className="h-3.5 w-3.5" />
-                </a>
-              </div>
+            <div className="mt-8 text-xs text-zinc-500 leading-relaxed">
+              <p>© 2026 Enterprise Intelligence Platform</p>
+              <p className="text-zinc-500 mt-0.5">Built with AI.</p>
             </div>
           </div>
 
-          {FOOTER_COLUMNS.map((column) => (
-            <div key={column.title}>
-              <h3 className="text-xs font-semibold text-zinc-200 uppercase tracking-wider">{column.title}</h3>
-              <ul className="mt-4 flex flex-col gap-2.5">
-                {column.links.map((link: FooterLink) => (
-                  <li key={link.label}>
-                    {link.to ? (
-                      <Link
-                        to={link.to}
-                        className="text-xs text-zinc-400 transition hover:text-zinc-100"
-                      >
-                        {link.label}
-                      </Link>
-                    ) : (
-                      <a
-                        href={link.href}
-                        className="text-xs text-zinc-400 transition hover:text-zinc-100"
-                      >
-                        {link.label}
-                      </a>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {/* Column 2: Product */}
+          <div>
+            <h4 className="text-sm font-semibold text-white tracking-[0.04em] uppercase mb-4">
+              Product
+            </h4>
+            <ul className="space-y-3">
+              {PRODUCT_LINKS.map((link) => (
+                <li key={link.label}>
+                  {link.to ? (
+                    <Link
+                      to={link.to}
+                      className="text-sm text-zinc-400 opacity-70 hover:opacity-100 hover:text-white transition-all duration-200 hover:-translate-y-[1px] inline-block"
+                    >
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      className="text-sm text-zinc-400 opacity-70 hover:opacity-100 hover:text-white transition-all duration-200 hover:-translate-y-[1px] inline-block"
+                    >
+                      {link.label}
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Column 3: Resources */}
+          <div>
+            <h4 className="text-sm font-semibold text-white tracking-[0.04em] uppercase mb-4">
+              Resources
+            </h4>
+            <ul className="space-y-3">
+              {RESOURCE_LINKS.map((link) => (
+                <li key={link.label}>
+                  {link.to ? (
+                    <Link
+                      to={link.to}
+                      className="text-sm text-zinc-400 opacity-70 hover:opacity-100 hover:text-white transition-all duration-200 hover:-translate-y-[1px] inline-block"
+                    >
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      className="text-sm text-zinc-400 opacity-70 hover:opacity-100 hover:text-white transition-all duration-200 hover:-translate-y-[1px] inline-block"
+                    >
+                      {link.label}
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Column 4: Company */}
+          <div>
+            <h4 className="text-sm font-semibold text-white tracking-[0.04em] uppercase mb-4">
+              Company
+            </h4>
+            <ul className="space-y-3">
+              {COMPANY_LINKS.map((link) => (
+                <li key={link.label}>
+                  {link.to ? (
+                    <Link
+                      to={link.to}
+                      className="text-sm text-zinc-400 opacity-70 hover:opacity-100 hover:text-white transition-all duration-200 hover:-translate-y-[1px] inline-block"
+                    >
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      target={link.isExternal ? '_blank' : undefined}
+                      rel={link.isExternal ? 'noreferrer' : undefined}
+                      className="text-sm text-zinc-400 opacity-70 hover:opacity-100 hover:text-white transition-all duration-200 hover:-translate-y-[1px] inline-block"
+                    >
+                      {link.label}
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-zinc-800/80 pt-6 sm:flex-row">
-          <p className="text-[11px] text-zinc-500">
-            © {new Date().getFullYear()} BizIntel-Enterprise Intelligence Platform. All rights reserved.
-          </p>
-          <div className="flex items-center gap-5 text-[11px] text-zinc-500">
-            <a href="#resources" className="transition hover:text-zinc-300">Privacy Policy</a>
-            <a href="#resources" className="transition hover:text-zinc-300">Terms of Service</a>
-            <a href="#top" className="transition hover:text-zinc-300">Back to top ↑</a>
+        {/* Bottom Bar with Thin Divider */}
+        <div className="mt-16 pt-8 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
+          {/* Left: Version */}
+          <div className="font-mono text-zinc-500">
+            Version 1.0.0
+          </div>
+
+          {/* Center: Tagline */}
+          <div className="text-zinc-400 font-normal">
+            Made for modern enterprises.
+          </div>
+
+          {/* Right: Small Monochrome Icons */}
+          <div className="flex items-center gap-4">
+            <a
+              href="https://github.com"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="GitHub"
+              className="text-zinc-400 opacity-60 hover:opacity-100 hover:text-white transition-opacity duration-200"
+            >
+              <GithubIcon className="w-[18px] h-[18px]" />
+            </a>
+            <a
+              href="https://linkedin.com"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="LinkedIn"
+              className="text-zinc-400 opacity-60 hover:opacity-100 hover:text-white transition-opacity duration-200"
+            >
+              <LinkedinIcon className="w-[18px] h-[18px]" />
+            </a>
+            <a
+              href="mailto:contact@bizintel.com"
+              aria-label="Email"
+              className="text-zinc-400 opacity-60 hover:opacity-100 hover:text-white transition-opacity duration-200"
+            >
+              <MailIcon className="w-[18px] h-[18px]" />
+            </a>
           </div>
         </div>
       </div>
     </footer>
   );
 }
+
+export default Footer;

@@ -1,91 +1,201 @@
 import { motion } from 'framer-motion';
-import { DatabaseIcon, BarChartIcon, SparklesIcon, TargetIcon } from './icons';
+import { Database, LineChart, Cpu, CheckCircle2 } from 'lucide-react';
 
-const STEPS = [
+interface StepItem {
+  step: string;
+  title: string;
+  description: string;
+  icon: typeof Database;
+  bgClass: string;
+  borderClass: string;
+}
+
+const STEPS: StepItem[] = [
   {
-    icon: DatabaseIcon,
     step: '01',
     title: 'Connect Data',
-    description: 'Bring enterprise datasets into a validated, governed workspace.',
+    description: 'Ingest enterprise data sources into a secure, schema-validated analytics pipeline.',
+    icon: Database,
+    bgClass: 'bg-[#111111]',
+    borderClass: 'border-white/[0.08]',
   },
   {
-    icon: BarChartIcon,
     step: '02',
-    title: 'Analyze',
-    description: 'Run SQL analytics, dashboards, and strategy backtests on clean data.',
+    title: 'Run Analytics',
+    description: 'Execute high-performance SQL queries, strategy backtests, and custom data models.',
+    icon: LineChart,
+    bgClass: 'bg-[#121212]',
+    borderClass: 'border-white/[0.09]',
   },
   {
-    icon: SparklesIcon,
     step: '03',
-    title: 'Generate Insights',
-    description: 'Surface AI-powered explanations, recommendations, and anomalies.',
+    title: 'AI Synthesis',
+    description: 'Surface automated explanations, anomaly flags, and actionable predictive metrics.',
+    icon: Cpu,
+    bgClass: 'bg-[#141414]',
+    borderClass: 'border-white/[0.11]',
   },
   {
-    icon: TargetIcon,
     step: '04',
-    title: 'Make Decisions',
-    description: 'Act with confidence on evidence-backed intelligence.',
+    title: 'Decide & Act',
+    description: 'Convert verified intelligence into operational strategies and executive decisions.',
+    icon: CheckCircle2,
+    bgClass: 'bg-[#161616]',
+    borderClass: 'border-white/[0.14]',
   },
-] as const;
+];
+
+const EASE_CURVE = [0.22, 1, 0.36, 1] as const;
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="relative py-16 sm:py-24 border-t border-zinc-800/80">
-      <div className="container-shell">
+    <section
+      id="how-it-works"
+      className="relative w-full py-20 sm:py-28 lg:py-32 border-t border-white/[0.08] bg-transparent text-zinc-50 font-sans select-none overflow-hidden"
+    >
+      {/* Slow Floating Grid Background */}
+      <motion.div
+        animate={{ y: [0, -6, 0] }}
+        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute inset-0 -z-10 opacity-30 bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:5rem_5rem] [mask-image:radial-gradient(ellipse_75%_50%_at_50%_50%,#000_60%,transparent_100%)] pointer-events-none"
+      />
+
+      <div className="max-w-6xl mx-auto px-6 sm:px-8">
+        {/* Header Block with Staggered Entrance */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto max-w-2xl text-center"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={{
+            hidden: { opacity: 0 },
+            show: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.08,
+              },
+            },
+          }}
+          className="flex flex-col items-center text-center"
         >
-          <span className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/80 px-3 py-1 text-[11px] font-medium tracking-wide text-zinc-300">
-            How It Works
-          </span>
-          <h2 className="mt-4 text-2xl font-bold tracking-tight text-zinc-100 sm:text-4xl font-display uppercase">
-            From raw data to confident decisions
-          </h2>
-          <p className="mt-3 text-sm leading-relaxed text-zinc-400">
-            A clear, repeatable pipeline designed to fit existing enterprise
-            workflows.
-          </p>
+          {/* Badge Pill */}
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 24 },
+              show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE_CURVE } },
+            }}
+          >
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-1 text-xs font-medium text-zinc-300">
+              How it Works
+            </span>
+          </motion.div>
+
+          {/* Headline */}
+          <motion.h2
+            variants={{
+              hidden: { opacity: 0, y: 24 },
+              show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE_CURVE } },
+            }}
+            className="mt-5 text-3xl sm:text-5xl lg:text-[52px] font-bold text-white tracking-tight leading-[1.08] font-display max-w-3xl"
+          >
+            From Raw Data
+            <br />
+            to Trusted Decisions
+          </motion.h2>
+
+          {/* Subtitle */}
+          <motion.p
+            variants={{
+              hidden: { opacity: 0, y: 24 },
+              show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE_CURVE } },
+            }}
+            className="mt-4 text-sm sm:text-base text-zinc-400 max-w-[580px] leading-relaxed"
+          >
+            Transform fragmented enterprise data into reliable insights through a transparent, AI-assisted workflow.
+          </motion.p>
         </motion.div>
 
-        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {STEPS.map((item, index) => (
-            <motion.div
-              key={item.step}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.4, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="relative flex flex-col rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-5 hover:border-zinc-700 transition duration-200"
-            >
-              <div className="flex items-center justify-between">
-                <div className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-zinc-800 text-zinc-200 border border-zinc-700/60">
-                  <item.icon className="h-4 w-4" />
-                </div>
-                <span className="font-mono text-xs text-zinc-500 font-semibold">{item.step}</span>
-              </div>
-              <h3 className="mt-4 text-sm font-semibold text-zinc-100">{item.title}</h3>
-              <p className="mt-1.5 text-xs leading-relaxed text-zinc-400">
-                {item.description}
-              </p>
+        {/* 4-Card Grid with Staggered Entrance & Connected Workflow */}
+        <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 relative">
+          {/* Connecting Progress Line (Desktop) */}
+          <motion.div
+            initial={{ opacity: 0, scaleX: 0 }}
+            whileInView={{ opacity: 1, scaleX: 1 }}
+            viewport={{ once: true, amount: 0.3 }}
+            style={{ transformOrigin: 'left' }}
+            transition={{ duration: 0.4, delay: 0.4, ease: EASE_CURVE }}
+            className="hidden lg:block absolute top-[40px] left-[10%] right-[10%] h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent z-0 pointer-events-none"
+          />
 
-              {index < STEPS.length - 1 ? (
-                <svg
-                  className="absolute -right-2.5 top-1/2 -translate-y-1/2 hidden h-4 w-4 text-zinc-700 lg:block z-10"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <path d="M3 8h10m0 0-3.5-3.5M13 8l-3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              ) : null}
-            </motion.div>
-          ))}
+          {STEPS.map((item, index) => {
+            const Icon = item.icon;
+
+            return (
+              <motion.div
+                key={item.step}
+                initial={{ opacity: 0, y: 32, scale: 0.98, filter: 'blur(8px)' }}
+                whileInView={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+                whileHover={{ scale: 1.015, y: -4 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{
+                  duration: 0.6,
+                  delay: index * 0.12,
+                  ease: EASE_CURVE,
+                  scale: { duration: 0.25, ease: EASE_CURVE },
+                  y: { duration: 0.25, ease: EASE_CURVE },
+                }}
+                className={`group relative z-10 flex flex-col justify-between rounded-xl border ${item.borderClass} ${item.bgClass} p-5 sm:p-6 min-h-[220px] shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:border-white/25 hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)] transition-colors duration-250`}
+              >
+                <div>
+                  <div className="flex items-center justify-between">
+                    {/* Icon Container */}
+                    <motion.div
+                      variants={{
+                        rest: { rotate: 0, scale: 1 },
+                        hover: { rotate: 5, scale: 1.05 },
+                      }}
+                      initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
+                      whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+                      viewport={{ once: true }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 120,
+                        damping: 20,
+                        delay: index * 0.12 + 0.1,
+                      }}
+                      className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-zinc-300 group-hover:bg-white/[0.08] group-hover:text-white group-hover:border-white/20 transition-all duration-250"
+                    >
+                      <Icon className="w-5 h-5 stroke-[1.8]" />
+                    </motion.div>
+
+                    {/* Step Number */}
+                    <motion.span
+                      initial={{ opacity: 0, x: 20 }}
+                      whileInView={{ opacity: 0.35, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: index * 0.12 + 0.15, ease: EASE_CURVE }}
+                      className="font-mono text-xs font-semibold text-white tracking-widest group-hover:opacity-100 transition-opacity duration-250"
+                    >
+                      {item.step}
+                    </motion.span>
+                  </div>
+
+                  {/* Card Title */}
+                  <h3 className="text-lg sm:text-xl font-semibold text-zinc-100 tracking-tight mt-4 group-hover:text-white group-hover:tracking-normal transition-all duration-250 font-display">
+                    {item.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-xs sm:text-sm text-zinc-400 mt-2 leading-relaxed group-hover:text-zinc-300 transition-colors duration-250">
+                    {item.description}
+                  </p>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>
   );
 }
+
+export default HowItWorks;

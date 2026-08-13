@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '../../../components/ui/Button';
-import { Logo } from '../../../components/ui/Logo';
+import { Button } from '@/components/ui/Button';
+import { Logo } from '@/components/ui/Logo';
 import { useAuth } from '../../../hooks/useAuth';
 import { CloseIcon, MenuIcon } from './icons';
 
@@ -112,14 +112,14 @@ export function Navbar() {
       transition={{ duration: 0.2 }}
       className="fixed inset-x-0 top-0 z-50 border-b backdrop-blur-md"
     >
-      <nav className="container-shell flex h-14 items-center justify-between" aria-label="Main">
-        <Link to="/" className="flex items-center">
+      <nav className="container-shell relative flex h-14 items-center justify-between" aria-label="Main">
+        <Link to="/" className="flex items-center z-10">
           <Logo />
         </Link>
 
-        {/* Compact Sleek Vercel-Style Desktop Navbar Links */}
+        {/* Desktop Navbar Links - Horizontally Centered in Header Bar */}
         <div
-          className="hidden items-center gap-1.5 lg:flex relative py-1"
+          className="absolute left-1/2 -translate-x-1/2 hidden items-center gap-1.5 lg:flex py-1 z-10"
           onMouseLeave={() => setHoveredSection(null)}
         >
           {NAV_ITEMS.map((item) => {

@@ -159,7 +159,7 @@ export function DataMartOverviewPage() {
                       size="icon"
                       aria-label="Run analysis"
                       className="text-zinc-400 hover:text-white hover:bg-white/[0.05]"
-                      onClick={(event) => {
+                      onClick={(event: React.MouseEvent) => {
                         event.stopPropagation();
                         void executeAnalysis.mutateAsync(analysis.id);
                       }}
