@@ -40,9 +40,24 @@ const envSchema = z.object({
   // --- Dataset configuration ---
   MAX_DATASET_SIZE_MB: z.coerce.number().int().positive().default(100),
 
-  // Resolved relative to the backend working directory. Abstracted behind
-  // StorageService so this can later point at S3/R2/Azure storage.
+  // Local working directory used for upload temp files and the scratch cache
+  // that DuckDB reads from. The canonical CSV lives in Supabase Storage.
   DATASET_STORAGE_PATH: z.string().min(1).default('./storage/datasets'),
+<<<<<<< Updated upstream
+=======
+
+  // --- DataMart Supabase Storage configuration ---
+  // The DataMart CSV files are stored as single objects in the dedicated
+  // `datamart-datasets` bucket. The service-role key is backend-only and must
+  // NEVER be exposed to the frontend. RAG keeps its own Supabase configuration
+  // (SUPABASE_DB_URL, pgvector tables) and is unaffected by these variables.
+  SUPABASE_URL: z.string().optional().default(''),
+  SUPABASE_SERVICE_ROLE_KEY: z.string().optional().default(''),
+  SUPABASE_DATAMART_BUCKET: z.string().min(1).default('datamart-datasets'),
+
+  // --- AI configuration ---
+  GROQ_API_KEY: z.string().optional().default(''),
+>>>>>>> Stashed changes
 });
 
 const parsed = envSchema.safeParse(process.env);

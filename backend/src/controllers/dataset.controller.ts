@@ -94,12 +94,9 @@ export const getDatasetPreview = asyncHandler(async (req: Request, res: Response
     );
   }
 
-  const storagePath = dataset.storagePath;
+  const storagePath = await storageService.acquireLocalPath(dataset.storagePath);
 
-  const rows = await duckdbService.previewCsv(
-    storageService.absolutePath(storagePath),
-    limit,
-  );
+  const rows = await duckdbService.previewCsv(storagePath, limit);
 
   res.status(200).json({
     success: true,
@@ -121,7 +118,7 @@ export const downloadDataset = asyncHandler(async (req: Request, res: Response) 
     );
   }
 
-  const stream = storageService.createReadStream(dataset.storagePath);
+  const stream = await storageService.createReadStream(dataset.storagePath);
   const filename = sanitizeFilename(dataset.originalFilename);
 
   res.setHeader('Content-Type', 'text/csv');

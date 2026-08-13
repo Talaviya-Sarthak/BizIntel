@@ -32,7 +32,7 @@ const EXPLORER_MAX_PAGE_SIZE = 500;
 export const analyticsService = {
   async getOverview(dataset: Dataset, columns: DatasetColumn[]) {
     this.assertReady(dataset);
-    const filePath = this.filePath(dataset);
+    const filePath = await this.filePath(dataset);
     const { totalRows, duplicateRows, duplicatePercent } = await duplicateAnalysis(filePath);
 
     const byCategory = new Map<ColumnCategory, number>();
@@ -63,7 +63,7 @@ export const analyticsService = {
 
   async getQuality(dataset: Dataset, columns: DatasetColumn[]) {
     this.assertReady(dataset);
-    const filePath = this.filePath(dataset);
+    const filePath = await this.filePath(dataset);
     const { totalRows, duplicateRows, duplicatePercent } = await duplicateAnalysis(filePath);
 
     const rows = columns.map((column) => {
@@ -136,7 +136,7 @@ export const analyticsService = {
 
   async getColumnStatistics(dataset: Dataset, columns: DatasetColumn[], columnName: string) {
     this.assertReady(dataset);
-    const filePath = this.filePath(dataset);
+    const filePath = await this.filePath(dataset);
     const column = resolveColumn(columns, columnName);
     const category = classifyColumnCategory(column.dataType);
     const q = quoteIdent(column.columnName);
@@ -268,7 +268,7 @@ export const analyticsService = {
     bucketCount = 30,
   ) {
     this.assertReady(dataset);
-    const filePath = this.filePath(dataset);
+    const filePath = await this.filePath(dataset);
     const column = resolveColumn(columns, columnName);
     const category = classifyColumnCategory(column.dataType);
 
@@ -350,7 +350,7 @@ export const analyticsService = {
     top = 10,
   ) {
     this.assertReady(dataset);
-    const filePath = this.filePath(dataset);
+    const filePath = await this.filePath(dataset);
     const column = resolveColumn(columns, columnName);
     const category = classifyColumnCategory(column.dataType);
 
@@ -374,7 +374,7 @@ export const analyticsService = {
 
   async getColumnOutliers(dataset: Dataset, columns: DatasetColumn[], columnName: string) {
     this.assertReady(dataset);
-    const filePath = this.filePath(dataset);
+    const filePath = await this.filePath(dataset);
     const column = resolveColumn(columns, columnName);
     const category = classifyColumnCategory(column.dataType);
     if (!isNumericCategory(category)) {
@@ -427,7 +427,7 @@ export const analyticsService = {
 
   async getCorrelation(dataset: Dataset, columns: DatasetColumn[], requestedColumns?: string[]) {
     this.assertReady(dataset);
-    const filePath = this.filePath(dataset);
+    const filePath = await this.filePath(dataset);
 
     const numeric = columns.filter((column) =>
       isNumericCategory(classifyColumnCategory(column.dataType)),
@@ -491,7 +491,7 @@ export const analyticsService = {
 
   async getGroupBy(dataset: Dataset, columns: DatasetColumn[], input: GroupByRequest) {
     this.assertReady(dataset);
-    const filePath = this.filePath(dataset);
+    const filePath = await this.filePath(dataset);
     const groupColumn = resolveColumn(columns, input.groupBy);
     const aggregation = input.aggregation;
 
@@ -541,7 +541,7 @@ export const analyticsService = {
 
   async getScatter(dataset: Dataset, columns: DatasetColumn[], input: ScatterRequest) {
     this.assertReady(dataset);
-    const filePath = this.filePath(dataset);
+    const filePath = await this.filePath(dataset);
     const xColumn = resolveColumn(columns, input.x);
     const yColumn = resolveColumn(columns, input.y);
 
@@ -585,7 +585,7 @@ export const analyticsService = {
 
   async getTimeSeries(dataset: Dataset, columns: DatasetColumn[], input: TimeSeriesRequest) {
     this.assertReady(dataset);
-    const filePath = this.filePath(dataset);
+    const filePath = await this.filePath(dataset);
     const dateColumn = resolveColumn(columns, input.dateColumn);
     const category = classifyColumnCategory(dateColumn.dataType);
     if (!isDateCategory(category)) {
@@ -650,7 +650,7 @@ export const analyticsService = {
 
   async getFilteredRows(dataset: Dataset, columns: DatasetColumn[], request: ExplorerRequest) {
     this.assertReady(dataset);
-    const filePath = this.filePath(dataset);
+    const filePath = await this.filePath(dataset);
 
     const page = clampInt(request.page ?? 1, 1, 1_000_000);
     const pageSize = clampInt(request.pageSize ?? EXPLORER_DEFAULT_PAGE_SIZE, 1, EXPLORER_MAX_PAGE_SIZE);
@@ -865,8 +865,10 @@ export const analyticsService = {
     }
   },
 
-  filePath(dataset: Dataset): string {
-    return storageService.absolutePath(dataset.storagePath!);
+  async filePath(dataset: Dataset): Promise<string> {
+    // Fetches the CSV from Supabase Storage into a local scratch cache that
+    // DuckDB reads from. The Supabase object remains the source of truth.
+    return storageService.acquireLocalPath(dataset.storagePath!);
   },
 
   async topValuesForColumn(

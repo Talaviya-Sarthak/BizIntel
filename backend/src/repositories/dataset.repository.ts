@@ -1,5 +1,5 @@
 import { pool } from '../config/database';
-import type { Dataset } from '../models/dataset.model';
+import type { Dataset, DatasetSchema } from '../models/dataset.model';
 import type { DatasetFileType, DatasetStatus } from '../types/dataset';
 
 const DATASET_COLUMNS = `
@@ -9,6 +9,10 @@ const DATASET_COLUMNS = `
   description,
   original_filename,
   storage_path,
+  storage_bucket,
+  schema,
+  content_type,
+  checksum,
   file_type,
   file_size,
   row_count,
@@ -26,6 +30,10 @@ interface DatasetRow {
   description: string | null;
   original_filename: string;
   storage_path: string | null;
+  storage_bucket: string | null;
+  schema: DatasetSchema | null;
+  content_type: string | null;
+  checksum: string | null;
   file_type: DatasetFileType;
   file_size: number;
   row_count: number | null;
@@ -44,6 +52,10 @@ function mapRow(row: DatasetRow): Dataset {
     description: row.description,
     originalFilename: row.original_filename,
     storagePath: row.storage_path,
+    storageBucket: row.storage_bucket,
+    schema: row.schema,
+    contentType: row.content_type,
+    checksum: row.checksum,
     fileType: row.file_type,
     fileSize: row.file_size,
     rowCount: row.row_count,
@@ -64,6 +76,8 @@ export interface CreateDatasetInput {
   originalFilename: string;
   fileType: DatasetFileType;
   fileSize: number;
+  storageBucket: string;
+  contentType: string;
 }
 
 export interface ListOptions {
@@ -73,8 +87,9 @@ export interface ListOptions {
 
 export async function create(input: CreateDatasetInput): Promise<Dataset> {
   const result = await pool.query<DatasetRow>(
-    `INSERT INTO datasets (user_id, name, description, original_filename, file_type, file_size, status)
-     VALUES ($1, $2, $3, $4, $5, $6, 'UPLOADING')
+    `INSERT INTO datasets
+       (user_id, name, description, original_filename, file_type, file_size, status, storage_bucket, content_type)
+     VALUES ($1, $2, $3, $4, $5, $6, 'UPLOADING', $7, $8)
      RETURNING ${DATASET_COLUMNS}`,
     [
       input.userId,
@@ -83,6 +98,8 @@ export async function create(input: CreateDatasetInput): Promise<Dataset> {
       input.originalFilename,
       input.fileType,
       input.fileSize,
+      input.storageBucket,
+      input.contentType,
     ],
   );
   return mapRow(result.rows[0]!);
@@ -180,13 +197,24 @@ export async function updateStorage(
   );
 }
 
-export async function updateMetadata(
+/** Stores the computed SHA-256 checksum right after the upload succeeds. */
+export async function updateChecksum(
   id: string,
-  metadata: { rowCount: number; columnCount: number },
+  checksum: string,
 ): Promise<void> {
   await pool.query(
-    `UPDATE datasets SET row_count = $2, column_count = $3 WHERE id = $1`,
-    [id, metadata.rowCount, metadata.columnCount],
+    `UPDATE datasets SET checksum = $2 WHERE id = $1`,
+    [id, checksum],
+  );
+}
+
+export async function updateMetadata(
+  id: string,
+  metadata: { rowCount: number; columnCount: number; schema: DatasetSchema },
+): Promise<void> {
+  await pool.query(
+    `UPDATE datasets SET row_count = $2, column_count = $3, schema = $4::jsonb WHERE id = $1`,
+    [id, metadata.rowCount, metadata.columnCount, JSON.stringify(metadata.schema)],
   );
 }
 

@@ -1,6 +1,7 @@
 import { toPublicDataset, type PublicDataset } from '../models/dataset.model';
 import * as datasetRepository from '../repositories/dataset.repository';
 import * as datasetColumnRepository from '../repositories/datasetColumn.repository';
+import { DATAMART_BUCKET } from '../config/supabase';
 import { ApiError } from '../utils/httpError';
 import { duckdbService } from './duckdb.service';
 import { storageService } from './storage.service';
@@ -17,8 +18,9 @@ export interface CreateUploadInput {
 
 /**
  * Orchestrates the dataset lifecycle. The HTTP layer stays thin; all
- * processing (validation → DuckDB → storage → metadata) happens here and is
- * structured so a job queue can be introduced later without touching routes.
+ * processing (validation → Supabase Storage → DuckDB → metadata) happens
+ * here and is structured so a job queue can be introduced later without
+ * touching routes.
  */
 export const datasetService = {
   /**
@@ -36,6 +38,8 @@ export const datasetService = {
       originalFilename: input.originalFilename,
       fileType: 'csv',
       fileSize: input.fileSize,
+      storageBucket: DATAMART_BUCKET,
+      contentType: 'text/csv',
     });
 
     await this.runPipeline({
@@ -50,7 +54,12 @@ export const datasetService = {
 
   /**
    * Runs the upload pipeline for an existing (UPLOADING) dataset row.
-   * All failures are captured into the dataset's `error_message` and the row
+   * 1. The complete CSV is uploaded as ONE object to Supabase Storage.
+   * 2. The object is read back (scratch cache) and DuckDB detects the schema,
+   *    types and row count.
+   * 3. Metadata + JSONB schema are stored in PostgreSQL. CSV rows are never
+   *    copied into PostgreSQL.
+   * All failures are captured into the dataset's error_message and the row
    * transitions to FAILED — never to an unhandled 500.
    */
   async runPipeline(input: { datasetId: string; userId: string; tmpPath: string }): Promise<void> {
@@ -58,11 +67,13 @@ export const datasetService = {
     try {
       await datasetRepository.updateStatus(input.datasetId, 'VALIDATING');
 
-      // Move the file into permanent storage BEFORE DuckDB opens it. On Windows
-      // DuckDB keeps the file handle alive for seconds after `db.close()`,
-      // which would make a later rename fail with EBUSY.
-      storageKey = await storageService.persist(input.tmpPath, input.userId, input.datasetId);
-      const storagePath = storageService.absolutePath(storageKey);
+      // Upload the full CSV to Supabase Storage at datamart-datasets/{userId}/{datasetId}.csv.
+      const persisted = await storageService.persist(input.tmpPath, input.userId, input.datasetId);
+      storageKey = persisted.key;
+      await datasetRepository.updateChecksum(input.datasetId, persisted.checksum);
+
+      // Read the CSV from Supabase (fetched into a local scratch cache for DuckDB).
+      const storagePath = await storageService.acquireLocalPath(storageKey);
 
       await validationService.readHeader(storagePath);
 
@@ -93,11 +104,21 @@ export const datasetService = {
       await datasetRepository.updateMetadata(input.datasetId, {
         rowCount: analysis.rowCount,
         columnCount: analysis.columns.length,
+        schema: {
+          columns: analysis.columns.map((column) => ({
+            name: column.name,
+            type: column.category,
+            dataType: column.type,
+            nullable: column.nullCount > 0,
+            nullCount: column.nullCount,
+            uniqueCount: column.uniqueCount,
+          })),
+        },
       });
       await datasetRepository.updateStatus(input.datasetId, 'READY');
     } catch (error) {
-      // The file may already have been moved into storage; remove it wherever
-      // it lives so a FAILED dataset never leaves an orphaned file behind.
+      // The file may already have been uploaded; remove it wherever it lives
+      // so a FAILED dataset never leaves an orphaned object behind.
       if (storageKey) {
         await storageService.delete(storageKey);
       }
@@ -111,8 +132,9 @@ export const datasetService = {
   },
 
   /**
-   * Deletes a dataset owned by the user: removes the PostgreSQL row (columns
-   * cascade) and then best-effort deletes the stored file to avoid orphans.
+   * Deletes a dataset owned by the user: removes the CSV object from Supabase
+   * Storage first, then the PostgreSQL metadata row (columns cascade), so no
+   * orphaned object is ever left behind.
    */
   async deleteForUser(datasetId: string, userId: string): Promise<void> {
     const dataset = await datasetRepository.findByIdAndUser(datasetId, userId);
@@ -120,11 +142,11 @@ export const datasetService = {
       throw ApiError.notFound('DATASET_NOT_FOUND', 'Dataset not found');
     }
 
-    await datasetRepository.deleteById(datasetId);
-
     if (dataset.storagePath) {
       await storageService.delete(dataset.storagePath);
     }
+
+    await datasetRepository.deleteById(datasetId);
   },
 };
 
