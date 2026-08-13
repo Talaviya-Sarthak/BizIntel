@@ -3,6 +3,7 @@ import { toPublicUser } from '../models/user.model';
 import * as authService from '../services/auth.service';
 import { asyncHandler } from '../utils/asyncHandler';
 import { clearAuthCookie, setAuthCookie } from '../utils/cookies';
+import { signAccessToken } from '../utils/jwt';
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
   const { user } = await authService.register(req.body);
@@ -11,7 +12,7 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 
   res.status(201).json({
     success: true,
-    data: { user: toPublicUser(user) },
+    data: { user: toPublicUser(user), token: signAccessToken(user.id) },
     message: 'Account created successfully',
   });
 });
@@ -23,7 +24,7 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
 
   res.status(200).json({
     success: true,
-    data: { user: toPublicUser(user) },
+    data: { user: toPublicUser(user), token: signAccessToken(user.id) },
     message: 'Signed in successfully',
   });
 });

@@ -1,12 +1,13 @@
 import axios, { AxiosError } from 'axios';
 import type { ApiSuccess } from '../types/auth';
+import { getAccessToken } from './authToken';
 
 export type { ApiSuccess };
 export type { ApiErrorBody, ValidationDetail } from '../types/auth';
 
 /**
  * Centralized API client. All requests go through this instance so error
- * normalization and auth (cookies) are handled in one place.
+ * normalization and auth (cookies + Bearer header) are handled in one place.
  *
  * Uses a relative base URL by default so the Vite dev proxy forwards to
  * the backend and httpOnly auth cookies flow same-origin. Override with
@@ -17,6 +18,16 @@ export const api = axios.create({
   withCredentials: true,
   headers: { 'Content-Type': 'application/json' },
   timeout: 15_000,
+});
+
+// Attach the in-memory JWT as a Bearer header on every request.
+// This ensures cross-origin auth works even when browsers block third-party cookies.
+api.interceptors.request.use((config) => {
+  const token = getAccessToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 /** Maps an Axios error to a typed API error body. */
