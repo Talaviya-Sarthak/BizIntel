@@ -1,3 +1,4 @@
+import '../../utils/pdf-polyfill';
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { logger } from '../../config/logger';
 import { knowledgeChunker, KnowledgeChunker, type PageContent } from './knowledge.chunker';
