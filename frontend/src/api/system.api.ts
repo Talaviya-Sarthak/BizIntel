@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { SystemHealth, SystemMetrics } from '../types/ai.types';
 
-const API_BASE = '/api/v1';
+const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) || '/api/v1';
 
 export async function fetchSystemHealth(): Promise<SystemHealth> {
   const response = await axios.get<SystemHealth>(`${API_BASE}/system/health`, {

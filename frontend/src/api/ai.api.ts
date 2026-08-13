@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { ChatResponse, SSEEventPayload } from '../types/ai.types';
 
-const API_BASE = '/api/v1';
+const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) || '/api/v1';
 
 export async function sendChatMessage(message: string, sessionId?: string): Promise<ChatResponse> {
   const response = await axios.post<ChatResponse>(

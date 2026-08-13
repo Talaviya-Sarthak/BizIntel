@@ -84,7 +84,8 @@ export function ExportPanel({
   }
 
   async function exportCSV() {
-    const response = await fetch(`/api/v1/datasets/${datasetId}/download`, {
+    const apiBase = (import.meta.env.VITE_API_URL as string | undefined) || '/api/v1';
+    const response = await fetch(`${apiBase}/datasets/${datasetId}/download`, {
       credentials: 'include',
     });
     const blob = await response.blob();
