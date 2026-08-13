@@ -18,6 +18,11 @@ import type {
   TimeSeriesRequest,
   TimeSeriesResult,
   TopValuesResult,
+  FullColumnStatistics,
+  MissingValueAnalysis,
+  OutlierAnalysis,
+  BusinessInsight,
+  AISummary,
 } from '../analytics/types';
 import type { AnalyticsColumn } from '../analytics/types';
 
@@ -119,6 +124,42 @@ export const datasetAnalyticsService = {
     const { data } = await api.post<ApiSuccess<ExplorerResult>>(
       `/datasets/${id}/analytics/filter`,
       body,
+    );
+    return data.data;
+  },
+
+  // Extended analytics for Analysis Dashboard
+  async getFullStatistics(id: string): Promise<{ statistics: FullColumnStatistics[] }> {
+    const { data } = await api.get<ApiSuccess<{ statistics: FullColumnStatistics[] }>>(
+      `/datasets/${id}/analytics/full-statistics`,
+    );
+    return data.data;
+  },
+
+  async getMissingValueAnalysis(id: string): Promise<MissingValueAnalysis> {
+    const { data } = await api.get<ApiSuccess<MissingValueAnalysis>>(
+      `/datasets/${id}/analytics/missing-values`,
+    );
+    return data.data;
+  },
+
+  async getOutlierAnalysis(id: string): Promise<OutlierAnalysis> {
+    const { data } = await api.get<ApiSuccess<OutlierAnalysis>>(
+      `/datasets/${id}/analytics/outliers`,
+    );
+    return data.data;
+  },
+
+  async getBusinessInsights(id: string): Promise<{ insights: BusinessInsight[] }> {
+    const { data } = await api.get<ApiSuccess<{ insights: BusinessInsight[] }>>(
+      `/datasets/${id}/analytics/business-insights`,
+    );
+    return data.data;
+  },
+
+  async getAISummary(id: string): Promise<AISummary> {
+    const { data } = await api.get<ApiSuccess<AISummary>>(
+      `/datasets/${id}/analytics/ai-summary`,
     );
     return data.data;
   },

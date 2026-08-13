@@ -19,6 +19,7 @@ import { ChartBuilder } from '../components/workspace/ChartBuilder';
 import { InsightsSection } from '../components/workspace/InsightsSection';
 import { DataQualitySection } from '../components/workspace/DataQualitySection';
 import type { AnalyticsColumn } from '../analytics/types';
+import { BrainIcon } from '../../../components/ui/icons';
 
 /** Dataset Intelligence Workspace: overview, columns, explore, charts, insights, quality. */
 export function DatasetWorkspacePage() {
@@ -98,6 +99,25 @@ export function DatasetWorkspacePage() {
           setShowDelete(true);
         }}
       />
+
+      {/* Analysis Dashboard CTA */}
+      {isReady && (
+        <button
+          onClick={() => navigate(`/datasets/${dataset.id}/analysis`)}
+          className="flex items-center gap-3 rounded-2xl border border-violet-400/20 bg-violet-400/5 p-4 transition hover:bg-violet-400/10 hover:border-violet-400/30"
+        >
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-violet-400/10 text-violet-400 ring-1 ring-violet-400/20">
+            <BrainIcon className="h-5 w-5" />
+          </span>
+          <div className="text-left">
+            <p className="text-sm font-semibold text-white">Open Analysis Dashboard</p>
+            <p className="text-xs text-slate-400">
+              Comprehensive statistical analysis, charts, correlations, and AI-powered insights
+            </p>
+          </div>
+          <span className="ml-auto text-violet-400">&rarr;</span>
+        </button>
+      )}
 
       {isFailed && dataset.errorMessage ? (
         <div className="flex items-start gap-3 rounded-2xl border border-red-400/20 bg-red-400/[0.05] p-5">

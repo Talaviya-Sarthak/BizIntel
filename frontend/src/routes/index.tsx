@@ -16,6 +16,7 @@ import { ComparisonPage } from '../features/datamart/pages/ComparisonPage';
 import { DatasetsPage } from '../features/datasets/pages/DatasetsPage';
 import { DatasetWorkspacePage } from '../features/datasets/pages/DatasetWorkspacePage';
 import { DatasetUploadPage } from '../features/datasets/pages/DatasetUploadPage';
+import { AnalysisDashboardPage } from '../features/datasets/pages/AnalysisDashboardPage';
 import { LandingPage } from '../features/landing/pages/LandingPage';
 import { AppShell } from '../features/workspace/components/AppShell';
 
@@ -71,6 +72,7 @@ export const router = createBrowserRouter([
       { path: '/datasets', element: <DatasetsPage /> },
       { path: '/datasets/upload', element: <DatasetUploadPage /> },
       { path: '/datasets/:id', element: <DatasetWorkspacePage /> },
+      { path: '/datasets/:id/analysis', element: <AnalysisDashboardPage /> },
       { path: '/datamart', element: <DataMartOverviewPage /> },
       { path: '/datamart/query', element: <QueryBuilderPage /> },
       { path: '/datamart/analyses', element: <AnalysesPage /> },

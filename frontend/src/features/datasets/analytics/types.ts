@@ -312,3 +312,102 @@ export function isDateCategory(category: ColumnCategory): boolean {
 export function isCategoricalCategory(category: ColumnCategory): boolean {
   return category === 'string' || category === 'uuid' || category === 'boolean';
 }
+
+// --- Extended types for Analysis Dashboard ---
+
+export interface FullColumnStatistics {
+  column: string;
+  type: string;
+  category: ColumnCategory;
+  count: number;
+  nullCount: number;
+  nullPercent: number;
+  uniqueCount: number;
+  uniquePercent: number;
+  numeric?: {
+    min: number;
+    max: number;
+    mean: number;
+    median: number;
+    mode: number;
+    stddev: number;
+    variance: number;
+    skewness: number;
+    kurtosis: number;
+    range: number;
+    iqr: number;
+    q1: number;
+    q3: number;
+    p10: number;
+    p25: number;
+    p50: number;
+    p75: number;
+    p90: number;
+    p95: number;
+    p99: number;
+  };
+  categorical?: {
+    distinctCount: number;
+    topValues: TopValue[];
+    rareCategories: TopValue[];
+    cardinality: number;
+  };
+  date?: { min: string | null; max: string | null; rangeDays: number | null };
+  boolean?: { trueCount: number; falseCount: number };
+}
+
+export interface MissingValueAnalysis {
+  totalCells: number;
+  totalMissing: number;
+  totalMissingPercent: number;
+  columns: {
+    column: string;
+    missing: number;
+    missingPercent: number;
+    rank: number;
+  }[];
+  recommendations: {
+    column: string;
+    action: string;
+    reason: string;
+  }[];
+}
+
+export interface OutlierAnalysis {
+  columns: {
+    column: string;
+    method: 'IQR' | 'ZSCORE';
+    q1: number;
+    q3: number;
+    iqr: number;
+    lowerBound: number;
+    upperBound: number;
+    outlierCount: number;
+    outlierPercent: number;
+    totalRows: number;
+    zScoreOutliers?: number;
+  }[];
+  summary: {
+    totalOutliers: number;
+    columnsWithOutliers: number;
+    worstColumn: string | null;
+  };
+}
+
+export interface BusinessInsight {
+  type: string;
+  title: string;
+  description: string;
+  metric?: string;
+  value?: unknown;
+  impact: 'high' | 'medium' | 'low';
+}
+
+export interface AISummary {
+  executiveSummary: string;
+  keyInsights: string[];
+  recommendations: string[];
+  risks: string[];
+  suggestedAnalysis: string[];
+  generatedAt: string;
+}

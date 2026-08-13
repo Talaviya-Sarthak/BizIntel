@@ -80,4 +80,11 @@ router.post(
   analyticsController.getFilteredRows,
 );
 
+// Extended analytics for Analysis Dashboard
+router.get('/:id/analytics/full-statistics', requireDatasetOwner, analyticsController.getFullStatistics);
+router.get('/:id/analytics/missing-values', requireDatasetOwner, analyticsController.getMissingValueAnalysis);
+router.get('/:id/analytics/outliers', requireDatasetOwner, analyticsController.getOutlierAnalysis);
+router.get('/:id/analytics/business-insights', requireDatasetOwner, analyticsController.getBusinessInsights);
+router.get('/:id/analytics/ai-summary', requireDatasetOwner, analyticsController.getAISummary);
+
 export default router;
