@@ -16,7 +16,7 @@ export default defineConfig({
       // Forward API calls to the backend during development so cookies
       // (httpOnly auth token) work same-origin with no CORS friction.
       '/api': {
-        target: 'http://localhost:5000',
+        target: 'https://bizintel-2.onrender.com',
         changeOrigin: true,
       },
     },
