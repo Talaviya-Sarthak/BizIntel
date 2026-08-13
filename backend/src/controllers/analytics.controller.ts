@@ -133,3 +133,48 @@ export const getInsights = asyncHandler(async (req: Request, res: Response) => {
     data: await analyticsService.getInsights(dataset, columns),
   });
 });
+
+export const getFullStatistics = asyncHandler(async (req: Request, res: Response) => {
+  const dataset = req.dataset!;
+  const columns = await datasetColumnRepository.listByDatasetId(dataset.id);
+  res.status(200).json({
+    success: true,
+    data: await analyticsService.getFullStatistics(dataset, columns),
+  });
+});
+
+export const getMissingValueAnalysis = asyncHandler(async (req: Request, res: Response) => {
+  const dataset = req.dataset!;
+  const columns = await datasetColumnRepository.listByDatasetId(dataset.id);
+  res.status(200).json({
+    success: true,
+    data: await analyticsService.getMissingValueAnalysis(dataset, columns),
+  });
+});
+
+export const getOutlierAnalysis = asyncHandler(async (req: Request, res: Response) => {
+  const dataset = req.dataset!;
+  const columns = await datasetColumnRepository.listByDatasetId(dataset.id);
+  res.status(200).json({
+    success: true,
+    data: await analyticsService.getOutlierAnalysis(dataset, columns),
+  });
+});
+
+export const getBusinessInsights = asyncHandler(async (req: Request, res: Response) => {
+  const dataset = req.dataset!;
+  const columns = await datasetColumnRepository.listByDatasetId(dataset.id);
+  res.status(200).json({
+    success: true,
+    data: await analyticsService.getBusinessInsights(dataset, columns),
+  });
+});
+
+export const getAISummary = asyncHandler(async (req: Request, res: Response) => {
+  const dataset = req.dataset!;
+  const columns = await datasetColumnRepository.listByDatasetId(dataset.id);
+  res.status(200).json({
+    success: true,
+    data: await analyticsService.getAISummary(dataset, columns),
+  });
+});

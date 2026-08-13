@@ -136,6 +136,48 @@ export function useFilteredRows(id: string | undefined, body: ExplorerRequest | 
   });
 }
 
+// --- Extended hooks for Analysis Dashboard ---
+
+export function useFullStatistics(id: string | undefined) {
+  return useQuery({
+    queryKey: analyticsKey(id ?? '', 'full-statistics'),
+    queryFn: () => datasetAnalyticsService.getFullStatistics(id!),
+    enabled: Boolean(id),
+  });
+}
+
+export function useMissingValueAnalysis(id: string | undefined) {
+  return useQuery({
+    queryKey: analyticsKey(id ?? '', 'missing-values'),
+    queryFn: () => datasetAnalyticsService.getMissingValueAnalysis(id!),
+    enabled: Boolean(id),
+  });
+}
+
+export function useOutlierAnalysis(id: string | undefined) {
+  return useQuery({
+    queryKey: analyticsKey(id ?? '', 'outliers'),
+    queryFn: () => datasetAnalyticsService.getOutlierAnalysis(id!),
+    enabled: Boolean(id),
+  });
+}
+
+export function useBusinessInsights(id: string | undefined) {
+  return useQuery({
+    queryKey: analyticsKey(id ?? '', 'business-insights'),
+    queryFn: () => datasetAnalyticsService.getBusinessInsights(id!),
+    enabled: Boolean(id),
+  });
+}
+
+export function useAISummary(id: string | undefined) {
+  return useQuery({
+    queryKey: analyticsKey(id ?? '', 'ai-summary'),
+    queryFn: () => datasetAnalyticsService.getAISummary(id!),
+    enabled: Boolean(id),
+  });
+}
+
 /** Triggers a browser download of the dataset file through the authenticated API. */
 export function useDownloadDataset() {
   const queryClient = useQueryClient();

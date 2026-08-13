@@ -266,3 +266,35 @@ export const RefreshIcon = createIcon(
     <path d="M21 3v5h-5" />
   </>,
 );
+
+export const BrainIcon = createIcon(
+  <>
+    <path d="M12 2a5 5 0 0 1 5 5c0 1.1-.4 2.1-1 2.9.6.8 1 1.8 1 2.9a4 4 0 0 1-2 3.5V17a3 3 0 0 1-6 0v-1.2A4 4 0 0 1 7 12.8c0-1.1.4-2.1 1-2.9A5 5 0 0 1 7 7a5 5 0 0 1 5-5z" />
+    <path d="M12 2v4M9 6h6" />
+  </>,
+);
+
+export const BarChartIcon = createIcon(
+  <>
+    <rect x="4" y="14" width="4" height="8" rx="1" />
+    <rect x="10" y="8" width="4" height="14" rx="1" />
+    <rect x="16" y="4" width="4" height="18" rx="1" />
+  </>,
+);
+
+export const PieChartIcon = createIcon(
+  <>
+    <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+    <path d="M22 12A10 10 0 0 0 12 2v10z" />
+  </>,
+);
+
+export const ScatterChartIcon = createIcon(
+  <>
+    <circle cx="7" cy="14" r="2" />
+    <circle cx="12" cy="8" r="2" />
+    <circle cx="17" cy="12" r="2" />
+    <circle cx="8" cy="7" r="1.5" />
+    <circle cx="15" cy="16" r="1.5" />
+  </>,
+);

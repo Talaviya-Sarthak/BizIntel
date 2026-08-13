@@ -43,7 +43,7 @@ export function DatasetUploadPage() {
       <DatasetUploader
         name={name.trim() || undefined}
         description={description.trim() || undefined}
-        onUploaded={(dataset: Dataset) => navigate(`/datasets/${dataset.id}`)}
+        onUploaded={(dataset: Dataset) => navigate(`/datasets/${dataset.id}/analysis`)}
       />
     </div>
   );

@@ -854,6 +854,499 @@ export const analyticsService = {
     return { insights };
   },
 
+  // --- Extended Analytics for Analysis Dashboard ---
+
+  async getFullStatistics(dataset: Dataset, columns: DatasetColumn[]) {
+    this.assertReady(dataset);
+    const filePath = this.filePath(dataset);
+    const results = [];
+
+    for (const column of columns) {
+      const category = classifyColumnCategory(column.dataType);
+      const q = quoteIdent(column.columnName);
+      const ref = csvTableRef(filePath);
+
+      const summaryRow = firstRow(
+        await duckdbService.runQuery(
+          filePath,
+          `SELECT count(*) AS n, count(${q}) AS non_null, count(DISTINCT ${q}) AS distinct_count FROM ${ref}`,
+        ),
+      );
+      const total = toFiniteNumber(summaryRow.n);
+      const nonNull = toFiniteNumber(summaryRow.non_null);
+      const nullCount = Math.max(total - nonNull, 0);
+      const uniqueCount = toFiniteNumber(summaryRow.distinct_count);
+
+      const base = {
+        column: column.columnName,
+        type: column.dataType,
+        category,
+        count: total,
+        nullCount,
+        nullPercent: percent(nullCount, total),
+        uniqueCount,
+        uniquePercent: percent(uniqueCount, total),
+      };
+
+      if (isNumericCategory(category)) {
+        const statsRow = firstRow(
+          await duckdbService.runQuery(
+            filePath,
+            `SELECT
+               min(${q}) AS min_value, max(${q}) AS max_value, avg(${q}) AS mean,
+               stddev_pop(${q}) AS stddev, variance_pop(${q}) AS variance,
+               quantile_cont(${q}, 0.1) AS p10, quantile_cont(${q}, 0.25) AS p25,
+               quantile_cont(${q}, 0.5) AS p50, quantile_cont(${q}, 0.75) AS p75,
+               quantile_cont(${q}, 0.9) AS p90, quantile_cont(${q}, 0.95) AS p95,
+               quantile_cont(${q}, 0.99) AS p99,
+               -- Skewness using Pearson's formula
+               CASE WHEN stddev_pop(${q}) > 0 THEN
+                 avg(POW(${q} - avg(${q}), 3)) / POW(stddev_pop(${q}), 3)
+               ELSE 0 END AS skewness,
+               -- Kurtosis (excess)
+               CASE WHEN stddev_pop(${q}) > 0 THEN
+                 avg(POW(${q} - avg(${q}), 4)) / POW(stddev_pop(${q}), 4) - 3
+               ELSE 0 END AS kurtosis
+             FROM ${ref}`,
+          ),
+        );
+        const stddev = toFiniteNumber(statsRow.stddev);
+        const minVal = toFiniteNumber(statsRow.min_value);
+        const maxVal = toFiniteNumber(statsRow.max_value);
+        const q1 = toFiniteNumber(statsRow.p25);
+        const q3 = toFiniteNumber(statsRow.p75);
+
+        // Mode calculation
+        const modeRow = firstRow(
+          await duckdbService.runQuery(
+            filePath,
+            `SELECT ${q} AS mode_val FROM ${ref}
+             WHERE ${q} IS NOT NULL
+             GROUP BY ${q} ORDER BY count(*) DESC, ${q} ASC LIMIT 1`,
+          ),
+        );
+
+        results.push({
+          ...base,
+          numeric: {
+            min: minVal,
+            max: maxVal,
+            mean: toFiniteNumber(statsRow.mean),
+            median: toFiniteNumber(statsRow.p50),
+            mode: toFiniteNumber(modeRow.mode_val),
+            stddev,
+            variance: toFiniteNumber(statsRow.variance),
+            skewness: toFiniteNumber(statsRow.skewness),
+            kurtosis: toFiniteNumber(statsRow.kurtosis),
+            range: maxVal - minVal,
+            iqr: q3 - q1,
+            q1,
+            q3,
+            p10: toFiniteNumber(statsRow.p10),
+            p25: toFiniteNumber(statsRow.p25),
+            p50: toFiniteNumber(statsRow.p50),
+            p75: toFiniteNumber(statsRow.p75),
+            p90: toFiniteNumber(statsRow.p90),
+            p95: toFiniteNumber(statsRow.p95),
+            p99: toFiniteNumber(statsRow.p99),
+          },
+        });
+      } else if (category === 'boolean') {
+        const boolRow = firstRow(
+          await duckdbService.runQuery(
+            filePath,
+            `SELECT count(*) FILTER (WHERE ${q} = true) AS true_count,
+                    count(*) FILTER (WHERE ${q} = false) AS false_count
+             FROM ${ref}`,
+          ),
+        );
+        results.push({
+          ...base,
+          boolean: {
+            trueCount: toFiniteNumber(boolRow.true_count),
+            falseCount: toFiniteNumber(boolRow.false_count),
+          },
+        });
+      } else if (isDateCategory(category)) {
+        const dateRow = firstRow(
+          await duckdbService.runQuery(
+            filePath,
+            `SELECT min(${q}) AS min_value, max(${q}) AS max_value FROM ${ref}`,
+          ),
+        );
+        const minValue = dateRow.min_value as string | Date | null | undefined;
+        const maxValue = dateRow.max_value as string | Date | null | undefined;
+        results.push({
+          ...base,
+          date: {
+            min: minValue ? new Date(String(minValue)).toISOString() : null,
+            max: maxValue ? new Date(String(maxValue)).toISOString() : null,
+            rangeDays: computeDateRangeDays(minValue, maxValue),
+          },
+        });
+      } else {
+        // Categorical
+        const topValues = await this.topValuesForColumn(filePath, column.columnName, 10, total);
+        const rareThreshold = total * 0.01;
+        const rareValues = topValues.filter((v) => v.count <= rareThreshold);
+        results.push({
+          ...base,
+          categorical: {
+            distinctCount: uniqueCount,
+            topValues,
+            rareCategories: rareValues,
+            cardinality: uniqueCount,
+          },
+        });
+      }
+    }
+
+    return { statistics: results };
+  },
+
+  async getMissingValueAnalysis(dataset: Dataset, columns: DatasetColumn[]) {
+    this.assertReady(dataset);
+    const filePath = this.filePath(dataset);
+    const ref = csvTableRef(filePath);
+
+    const totalRow = firstRow(
+      await duckdbService.runQuery(filePath, `SELECT count(*) AS n FROM ${ref}`),
+    );
+    const totalRows = toFiniteNumber(totalRow.n);
+
+    const columnAnalysis = columns.map((column) => {
+      const missing = column.nullCount ?? 0;
+      const missingPercent = totalRows > 0 ? (missing / totalRows) * 100 : 0;
+      return {
+        column: column.columnName,
+        missing,
+        missingPercent,
+        rank: 0,
+      };
+    });
+
+    // Sort by missing count descending and assign ranks
+    columnAnalysis.sort((a, b) => b.missing - a.missing);
+    columnAnalysis.forEach((col, idx) => {
+      col.rank = idx + 1;
+    });
+
+    const totalCells = totalRows * Math.max(columns.length, 1);
+    const totalMissing = columnAnalysis.reduce((sum, col) => sum + col.missing, 0);
+
+    // Generate recommendations
+    const recommendations = columnAnalysis
+      .filter((col) => col.missing > 0)
+      .map((col) => {
+        let action = 'Keep as is';
+        let reason = 'Minimal missing values';
+
+        if (col.missingPercent > 50) {
+          action = 'Consider removing column';
+          reason = `More than 50% missing (${col.missingPercent.toFixed(1)}%)`;
+        } else if (col.missingPercent > 20) {
+          action = 'Investigate missing pattern';
+          reason = `${col.missingPercent.toFixed(1)}% missing - may indicate data collection issues`;
+        } else if (col.missingPercent > 5) {
+          action = 'Fill with median or mode';
+          reason = `${col.missingPercent.toFixed(1)}% missing - imputation recommended`;
+        } else {
+          action = 'Fill with mean/median or remove rows';
+          reason = `Only ${col.missingPercent.toFixed(1)}% missing - minimal impact`;
+        }
+
+        return { column: col.column, action, reason };
+      });
+
+    return {
+      totalCells,
+      totalMissing,
+      totalMissingPercent: totalCells > 0 ? (totalMissing / totalCells) * 100 : 0,
+      columns: columnAnalysis,
+      recommendations,
+    };
+  },
+
+  async getOutlierAnalysis(dataset: Dataset, columns: DatasetColumn[]) {
+    this.assertReady(dataset);
+    const filePath = this.filePath(dataset);
+    const numericColumns = columns.filter((col) =>
+      isNumericCategory(classifyColumnCategory(col.dataType)),
+    );
+
+    const results = [];
+    for (const column of numericColumns) {
+      const q = quoteIdent(column.columnName);
+      const ref = csvTableRef(filePath);
+
+      const quartiles = firstRow(
+        await duckdbService.runQuery(
+          filePath,
+          `SELECT quantile_cont(${q}, 0.25) AS q1, quantile_cont(${q}, 0.75) AS q3,
+                  avg(${q}) AS mean_val, stddev_pop(${q}) AS stddev_val
+           FROM ${ref}`,
+        ),
+      );
+      const q1 = toFiniteNumber(quartiles.q1);
+      const q3 = toFiniteNumber(quartiles.q3);
+      const iqr = q3 - q1;
+      const lowerBound = q1 - 1.5 * iqr;
+      const upperBound = q3 + 1.5 * iqr;
+
+      // IQR outliers
+      const iqrCountRow = firstRow(
+        await duckdbService.runQuery(
+          filePath,
+          `SELECT count(*) AS n FROM ${ref} WHERE ${q} < ? OR ${q} > ?`,
+          [lowerBound, upperBound],
+        ),
+      );
+
+      // Z-score outliers (|z| > 3)
+      const meanVal = toFiniteNumber(quartiles.mean_val);
+      const stdVal = toFiniteNumber(quartiles.stddev_val);
+      let zScoreOutliers = 0;
+      if (stdVal > 0) {
+        const zCountRow = firstRow(
+          await duckdbService.runQuery(
+            filePath,
+            `SELECT count(*) AS n FROM ${ref}
+             WHERE ABS((${q} - ?) / ?) > 3`,
+            [meanVal, stdVal],
+          ),
+        );
+        zScoreOutliers = toFiniteNumber(zCountRow.n);
+      }
+
+      const totalRow = firstRow(
+        await duckdbService.runQuery(filePath, `SELECT count(*) AS n FROM ${ref}`),
+      );
+      const total = toFiniteNumber(totalRow.n);
+      const outlierCount = toFiniteNumber(iqrCountRow.n);
+
+      results.push({
+        column: column.columnName,
+        method: 'IQR' as const,
+        q1,
+        q3,
+        iqr,
+        lowerBound,
+        upperBound,
+        outlierCount,
+        outlierPercent: percent(outlierCount, total),
+        totalRows: total,
+        zScoreOutliers,
+      });
+    }
+
+    // Summary
+    const totalOutliers = results.reduce((sum, r) => sum + r.outlierCount, 0);
+    const columnsWithOutliers = results.filter((r) => r.outlierCount > 0).length;
+    const worstColumn = results.length > 0
+      ? results.reduce((worst, r) => r.outlierPercent > (worst?.outlierPercent ?? 0) ? r : worst, results[0]!)?.column ?? null
+      : null;
+
+    return {
+      columns: results,
+      summary: { totalOutliers, columnsWithOutliers, worstColumn },
+    };
+  },
+
+  async getBusinessInsights(dataset: Dataset, columns: DatasetColumn[]) {
+    this.assertReady(dataset);
+    const filePath = this.filePath(dataset);
+    const insights: Array<{
+      type: string;
+      title: string;
+      description: string;
+      metric?: string;
+      value?: unknown;
+      impact: 'high' | 'medium' | 'low';
+    }> = [];
+
+    // Dataset size insight
+    const totalRow = firstRow(
+      await duckdbService.runQuery(filePath, `SELECT count(*) AS n FROM ${csvTableRef(filePath)}`),
+    );
+    const totalRows = toFiniteNumber(totalRow.n);
+    insights.push({
+      type: 'DATA_OVERVIEW',
+      title: 'Dataset contains records',
+      description: `The dataset has ${formatNumber(totalRows)} rows across ${columns.length} columns.`,
+      metric: 'Total Records',
+      value: totalRows,
+      impact: 'medium',
+    });
+
+    // Numeric column insights
+    const numericCols = columns.filter((col) =>
+      isNumericCategory(classifyColumnCategory(col.dataType)),
+    );
+    for (const col of numericCols.slice(0, 5)) {
+      const stats = await this.getColumnStatistics(dataset, columns, col.columnName);
+      if ('numeric' in stats) {
+        const { mean, median, min, max, stddev } = stats.numeric;
+        const cv = mean !== 0 ? (Math.abs(stddev) / Math.abs(mean)) * 100 : 0;
+
+        insights.push({
+          type: 'NUMERIC_SUMMARY',
+          title: `${col.columnName} overview`,
+          description: `Ranges from ${formatNumber(min)} to ${formatNumber(max)} with mean ${formatNumber(mean)}. Coefficient of variation: ${cv.toFixed(1)}%.`,
+          metric: col.columnName,
+          value: { min, max, mean, median, stddev, cv },
+          impact: cv > 50 ? 'high' : cv > 20 ? 'medium' : 'low',
+        });
+      }
+    }
+
+    // Categorical insights
+    const catCols = columns.filter((col) =>
+      isCategoricalCategory(classifyColumnCategory(col.dataType)),
+    );
+    for (const col of catCols.slice(0, 3)) {
+      const top = await this.getColumnTopValues(dataset, columns, col.columnName, 5);
+      if (top.topValues.length > 0) {
+        const dominant = top.topValues[0]!;
+        insights.push({
+          type: 'CATEGORY_DOMINANCE',
+          title: `${col.columnName} distribution`,
+          description: `"${displayValue(dominant.value)}" is the most common value with ${formatPercent(dominant.percent)} of records.`,
+          metric: col.columnName,
+          value: top.topValues,
+          impact: dominant.percent > 50 ? 'high' : 'medium',
+        });
+      }
+    }
+
+    // Correlation insights
+    if (numericCols.length >= 2) {
+      const corr = await this.getCorrelation(dataset, columns);
+      const strongPairs = corr.pairs
+        .filter((p) => p.correlation !== null && Math.abs(p.correlation) > 0.5)
+        .sort((a, b) => Math.abs(b.correlation!) - Math.abs(a.correlation!))
+        .slice(0, 3);
+
+      for (const pair of strongPairs) {
+        insights.push({
+          type: 'CORRELATION',
+          title: `Strong relationship between ${pair.columnA} and ${pair.columnB}`,
+          description: `${pair.columnA} and ${pair.columnB} have a ${pair.correlation! > 0 ? 'positive' : 'negative'} correlation of ${pair.correlation!.toFixed(3)}.`,
+          metric: `${pair.columnA} vs ${pair.columnB}`,
+          value: pair.correlation,
+          impact: Math.abs(pair.correlation!) > 0.7 ? 'high' : 'medium',
+        });
+      }
+    }
+
+    return { insights };
+  },
+
+  async getAISummary(dataset: Dataset, columns: DatasetColumn[]) {
+    this.assertReady(dataset);
+
+    // Gather all data for summary
+    const overview = await this.getOverview(dataset, columns);
+    const quality = await this.getQuality(dataset, columns);
+    const insights = await this.getInsights(dataset, columns);
+
+    const numericCols = columns.filter((col) =>
+      isNumericCategory(classifyColumnCategory(col.dataType)),
+    );
+    const catCols = columns.filter((col) =>
+      isCategoricalCategory(classifyColumnCategory(col.dataType)),
+    );
+    const dateCols = columns.filter((col) =>
+      isDateCategory(classifyColumnCategory(col.dataType)),
+    );
+
+    // Build executive summary
+    const parts: string[] = [];
+    parts.push(`This dataset contains ${formatNumber(overview.rowCount)} rows and ${overview.columnCount} columns.`);
+    if (overview.numericColumns > 0) parts.push(`${overview.numericColumns} numeric columns.`);
+    if (overview.categoricalColumns > 0) parts.push(`${overview.categoricalColumns} categorical columns.`);
+    if (dateCols.length > 0) parts.push(`${dateCols.length} date/time columns.`);
+    if (overview.missingPercent > 0) {
+      parts.push(`Data quality score is ${quality.healthScore}/100 with ${formatPercent(overview.missingPercent)} missing values.`);
+    } else {
+      parts.push('Data quality score is 100/100 with no missing values.');
+    }
+    const executiveSummary = parts.join(' ');
+
+    // Key insights
+    const keyInsights = insights.insights.slice(0, 5).map((i) => i.description);
+
+    // Recommendations
+    const recommendations: string[] = [];
+    if (overview.missingPercent > 5) {
+      recommendations.push('Address missing values through imputation or removal before analysis.');
+    }
+    if (overview.duplicatePercent > 1) {
+      recommendations.push('Remove duplicate rows to improve data quality.');
+    }
+    if (numericCols.length >= 2) {
+      recommendations.push('Explore correlations between numeric variables for feature engineering.');
+    }
+    if (dateCols.length > 0 && numericCols.length > 0) {
+      recommendations.push('Analyze time-series trends to identify patterns and seasonality.');
+    }
+    if (catCols.length > 0) {
+      recommendations.push('Examine categorical distributions for potential segmentation.');
+    }
+    if (recommendations.length === 0) {
+      recommendations.push('Dataset appears well-structured. Consider advanced statistical analysis.');
+    }
+
+    // Risks
+    const risks: string[] = [];
+    if (overview.missingPercent > 10) {
+      risks.push('High missing value rate may bias analysis results.');
+    }
+    if (overview.duplicatePercent > 5) {
+      risks.push('Significant duplicates could skew statistical measures.');
+    }
+    if (numericCols.length > 0) {
+      // Check for extreme skewness
+      for (const col of numericCols.slice(0, 3)) {
+        const stats = await this.getColumnStatistics(dataset, columns, col.columnName);
+        if ('numeric' in stats && Math.abs(stats.numeric.stddev) > 0) {
+          const mean = stats.numeric.mean;
+          const median = stats.numeric.median;
+          const spread = Math.abs(mean - median) / stats.numeric.stddev;
+          if (spread > 0.5) {
+            risks.push(`${col.columnName} shows significant skewness - consider transformation.`);
+            break;
+          }
+        }
+      }
+    }
+    if (risks.length === 0) {
+      risks.push('No major data quality risks detected.');
+    }
+
+    // Suggested analysis
+    const suggestedAnalysis: string[] = [];
+    if (numericCols.length >= 2) {
+      suggestedAnalysis.push('Run correlation analysis to identify feature relationships.');
+    }
+    if (dateCols.length > 0) {
+      suggestedAnalysis.push('Perform time-series decomposition for trend analysis.');
+    }
+    if (catCols.length > 0 && numericCols.length > 0) {
+      suggestedAnalysis.push('Create grouped aggregations by categorical variables.');
+    }
+    suggestedAnalysis.push('Generate distribution plots for all numeric columns.');
+    suggestedAnalysis.push('Perform outlier detection using IQR and Z-score methods.');
+
+    return {
+      executiveSummary,
+      keyInsights,
+      recommendations,
+      risks,
+      suggestedAnalysis,
+      generatedAt: new Date().toISOString(),
+    };
+  },
+
   // --- Internal helpers -----------------------------------------------------
   assertReady(dataset: Dataset): void {
     if (dataset.status !== 'READY' || !dataset.storagePath) {

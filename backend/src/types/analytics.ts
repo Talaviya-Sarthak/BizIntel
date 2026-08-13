@@ -143,3 +143,103 @@ export function isTimeGranularity(value: unknown): value is TimeGranularity {
     typeof value === 'string' && (TIME_GRANULARITIES as readonly string[]).includes(value)
   );
 }
+
+// ---------------------------------------------------------------------------
+// Extended analytics types for Analysis Dashboard
+// ---------------------------------------------------------------------------
+
+export interface FullColumnStatistics {
+  column: string;
+  type: string;
+  category: ColumnCategory;
+  count: number;
+  nullCount: number;
+  nullPercent: number;
+  uniqueCount: number;
+  uniquePercent: number;
+  numeric?: {
+    min: number;
+    max: number;
+    mean: number;
+    median: number;
+    mode: number;
+    stddev: number;
+    variance: number;
+    skewness: number;
+    kurtosis: number;
+    range: number;
+    iqr: number;
+    q1: number;
+    q3: number;
+    p10: number;
+    p25: number;
+    p50: number;
+    p75: number;
+    p90: number;
+    p95: number;
+    p99: number;
+  };
+  categorical?: {
+    distinctCount: number;
+    topValues: { value: unknown; count: number; percent: number }[];
+    rareCategories: { value: unknown; count: number; percent: number }[];
+    cardinality: number;
+  };
+  date?: { min: string | null; max: string | null; rangeDays: number | null };
+}
+
+export interface MissingValueAnalysis {
+  totalCells: number;
+  totalMissing: number;
+  totalMissingPercent: number;
+  columns: {
+    column: string;
+    missing: number;
+    missingPercent: number;
+    rank: number;
+  }[];
+  recommendations: {
+    column: string;
+    action: string;
+    reason: string;
+  }[];
+}
+
+export interface OutlierAnalysis {
+  columns: {
+    column: string;
+    method: 'IQR' | 'ZSCORE';
+    q1: number;
+    q3: number;
+    iqr: number;
+    lowerBound: number;
+    upperBound: number;
+    outlierCount: number;
+    outlierPercent: number;
+    totalRows: number;
+    zScoreOutliers?: number;
+  }[];
+  summary: {
+    totalOutliers: number;
+    columnsWithOutliers: number;
+    worstColumn: string | null;
+  };
+}
+
+export interface BusinessInsight {
+  type: string;
+  title: string;
+  description: string;
+  metric?: string;
+  value?: unknown;
+  impact: 'high' | 'medium' | 'low';
+}
+
+export interface AISummary {
+  executiveSummary: string;
+  keyInsights: string[];
+  recommendations: string[];
+  risks: string[];
+  suggestedAnalysis: string[];
+  generatedAt: string;
+}
