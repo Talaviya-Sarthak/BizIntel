@@ -42,37 +42,37 @@ export function UserMenu() {
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="flex items-center gap-3 rounded-lg px-2 py-1.5 transition hover:bg-white/5"
+        className="flex items-center gap-3 rounded-xl px-2.5 py-1.5 transition hover:bg-white/[0.05]"
         aria-haspopup="menu"
         aria-expanded={open}
       >
-        <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-cyan-400/15 text-sm font-semibold text-cyan-300 ring-1 ring-cyan-400/30">
-          {initialsOf(user?.name)}
+        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-800 text-xs font-semibold text-zinc-100 border border-zinc-700/80 shadow-sm">
+          {initialsOf(user?.name) || 'U'}
         </span>
         <span className="hidden text-left sm:block">
-          <span className="block max-w-[160px] truncate text-sm font-medium text-white">
-            {user?.name}
+          <span className="block max-w-[140px] truncate text-xs font-medium text-zinc-100 leading-tight">
+            {user?.name || 'Enterprise User'}
           </span>
-          <span className="block max-w-[160px] truncate text-xs text-slate-500">
-            {user?.email}
+          <span className="block max-w-[140px] truncate text-[11px] text-zinc-400 leading-tight">
+            {user?.email || 'user@enterprise.ai'}
           </span>
         </span>
         <ChevronDownIcon
-          className={clsx('hidden h-4 w-4 text-slate-500 transition sm:block', open && 'rotate-180')}
+          className={clsx('hidden h-3.5 w-3.5 text-zinc-400 transition sm:block', open && 'rotate-180')}
         />
       </button>
 
       {open ? (
         <div
           role="menu"
-          className="absolute right-0 top-full z-50 mt-2 w-64 rounded-2xl border border-white/10 bg-surface-elevated p-2 shadow-2xl"
+          className="absolute right-0 top-full z-50 mt-2 w-64 rounded-xl border border-white/[0.08] bg-[#181818] p-2 shadow-2xl animate-in fade-in zoom-in-95 duration-100"
         >
-          <div className="border-b border-white/10 px-3 py-3">
-            <p className="truncate text-sm font-medium text-white">{user?.name}</p>
-            <p className="truncate text-xs text-slate-500">{user?.email}</p>
-            <p className="mt-1.5 text-[11px] uppercase tracking-wider text-slate-600">
-              {user?.role}
-            </p>
+          <div className="border-b border-white/[0.06] px-3 py-2.5">
+            <p className="truncate text-xs font-semibold text-zinc-100">{user?.name || 'Enterprise User'}</p>
+            <p className="truncate text-[11px] text-zinc-400">{user?.email || 'user@enterprise.ai'}</p>
+            <span className="mt-2 inline-block rounded-full bg-white/[0.06] border border-white/[0.08] px-2 py-0.5 text-[10px] font-medium text-zinc-300">
+              {user?.role || 'PRO PLAN'}
+            </span>
           </div>
           {signOutError ? (
             <p className="px-3 py-2 text-xs text-red-400">{signOutError}</p>
@@ -81,7 +81,7 @@ export function UserMenu() {
             <Button
               variant="ghost"
               size="sm"
-              className="w-full justify-start text-slate-300"
+              className="w-full justify-start text-zinc-300 hover:text-white hover:bg-white/[0.05]"
               onClick={handleSignOut}
               loading={signingOut}
             >

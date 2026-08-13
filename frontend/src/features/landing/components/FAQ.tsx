@@ -11,9 +11,9 @@ interface FAQItem {
 const FAQS: FAQItem[] = [
   {
     id: '1',
-    question: 'What is the PS-05 Enterprise Intelligence Platform?',
+    question: 'What is the BizIntel-Enterprise Intelligence Platform?',
     answer:
-      'PS-05 is a unified enterprise intelligence platform that converges quantitative strategy backtesting, DataMart SQL analytics, and dataset-aware AI assistants into a single governed workspace.',
+      'BizIntel is a unified enterprise intelligence platform that converges quantitative strategy backtesting, DataMart SQL analytics, and dataset-aware AI assistants into a single governed workspace.',
   },
   {
     id: '2',
@@ -23,7 +23,7 @@ const FAQS: FAQItem[] = [
   },
   {
     id: '3',
-    question: 'How does PS-05 prevent look-ahead bias in backtests?',
+    question: 'How does BizIntel prevent look-ahead bias in backtests?',
     answer:
       'The backtesting engine strictly sequences dataset snapshots point-in-time. Strategy signals generated at timestamp T can only evaluate data available on or before timestamp T.',
   },

@@ -200,7 +200,7 @@ export function ContactPage() {
 
         {/* Minimal Footer Bar */}
         <footer className="w-full border-t border-zinc-800/80 py-3 px-6 bg-zinc-950/80 backdrop-blur-sm z-10 flex items-center justify-between text-[11px] text-zinc-500">
-          <span>© {new Date().getFullYear()} PS-05 Enterprise Intelligence. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} BizIntel-Enterprise Intelligence. All rights reserved.</span>
           <span className="inline-flex items-center gap-1.5">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
             All Systems Operational

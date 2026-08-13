@@ -178,14 +178,6 @@ CREATE TRIGGER datasets_set_updated_at
     FOR EACH ROW
     EXECUTE FUNCTION set_updated_at();
 
-<<<<<<< Updated upstream
--- Record that all migrations are applied so npm run db:status reports
--- the database as fully migrated.
-INSERT INTO schema_migrations (version, name, checksum) VALUES
-  (1, '001_initial_schema.sql', '37cb0d307380f3b2d324ed81bfb7cde4258449fc4dd930abae39bb4387e884be'),
-  (2, '002_add_authentication.sql', '8ee25c28b4e880e96ae816f2b7d085453016b3fee43f40dedd89ab902e987bba'),
-  (3, '003_datasets.sql', 'e4c84b5feb6eb5e9417bdee014bb46df73f8dc18cb642dcfffcd178247a3f2e3')
-=======
 -- =====================================================================
 -- 004_backtesting.sql
 -- PS-05 Enterprise Intelligence Platform
@@ -519,93 +511,14 @@ CREATE TRIGGER datamart_dashboards_set_updated_at
     FOR EACH ROW
     EXECUTE FUNCTION set_updated_at();
 
--- =====================================================================
--- 006_rag_pgvector.sql
--- PS-05 Enterprise Intelligence Platform
---
--- Enables pgvector extension and creates Supabase RAG storage tables:
---   documents
---   document_chunks
---   embeddings
--- =====================================================================
-
-CREATE EXTENSION IF NOT EXISTS vector;
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
-
--- 1. documents table
-CREATE TABLE IF NOT EXISTS documents (
-    id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-    name        TEXT        NOT NULL,
-    file_path   TEXT,
-    uploaded_by TEXT        DEFAULT 'system',
-    page_count  INTEGER     DEFAULT 1,
-    status      TEXT        NOT NULL DEFAULT 'Complete',
-    created_at  TIMESTAMPTZ DEFAULT now()
-);
-
--- 2. document_chunks table
-CREATE TABLE IF NOT EXISTS document_chunks (
-    id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-    document_id UUID        REFERENCES documents(id) ON DELETE CASCADE,
-    page_number INTEGER     DEFAULT 1,
-    chunk_index INTEGER     NOT NULL,
-    heading     TEXT,
-    content     TEXT        NOT NULL,
-    token_count INTEGER     DEFAULT 0,
-    metadata    JSONB       DEFAULT '{}'::jsonb,
-    created_at  TIMESTAMPTZ DEFAULT now()
-);
-
--- 3. embeddings table
-CREATE TABLE IF NOT EXISTS embeddings (
-    id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-    chunk_id    UUID        REFERENCES document_chunks(id) ON DELETE CASCADE,
-    embedding   VECTOR(384),
-    model       TEXT        NOT NULL DEFAULT 'all-MiniLM-L6-v2',
-    created_at  TIMESTAMPTZ DEFAULT now()
-);
-
--- 4. Indexes for vector search & keyword FTS
-CREATE INDEX IF NOT EXISTS document_chunks_doc_id_idx ON document_chunks(document_id);
-CREATE INDEX IF NOT EXISTS document_chunks_fts_idx ON document_chunks USING gin(to_tsvector('english', content));
-CREATE INDEX IF NOT EXISTS embeddings_chunk_id_idx ON embeddings(chunk_id);
-
--- =====================================================================
--- 007_datamart_supabase_storage.sql
--- PS-05 Enterprise Intelligence Platform
---
--- DataMart dataset metadata now reflects Supabase Storage:
---   storage_bucket  the dedicated `datamart-datasets` bucket
---   schema          detected column schema (JSONB) — METADATA ONLY,
---                   never the CSV rows themselves
---   content_type    stored object content type
---   checksum        SHA-256 of the uploaded CSV (integrity check)
---
--- The complete CSV stays as ONE object in Supabase Storage; PostgreSQL
--- still stores only metadata/schema. Error reporting keeps the existing
--- `error_message` column as `processing_error`.
---
--- NOTE: The migration runner wraps each migration file in a transaction.
--- Do not add BEGIN/COMMIT to migration files.
--- =====================================================================
-
-ALTER TABLE datasets
-    ADD COLUMN storage_bucket TEXT,
-    ADD COLUMN schema         JSONB,
-    ADD COLUMN content_type   TEXT,
-    ADD COLUMN checksum       TEXT;
-
 -- Record that all migrations are applied so npm run db:status reports
 -- the database as fully migrated.
 INSERT INTO schema_migrations (version, name, checksum) VALUES
-  (1, '001_initial_schema.sql', '7ea71d4b2b43709e785da1134117227ccbfa490502c9985ab72f277fa8a5a6e5'),
-  (2, '002_add_authentication.sql', '6155bb5e42e33f824030f242f2847a5df360d21c265bf37dbada22c6840cdb91'),
+  (1, '001_initial_schema.sql', '37cb0d307380f3b2d324ed81bfb7cde4258449fc4dd930abae39bb4387e884be'),
+  (2, '002_add_authentication.sql', '8ee25c28b4e880e96ae816f2b7d085453016b3fee43f40dedd89ab902e987bba'),
   (3, '003_datasets.sql', '9d61cfd0d3fb0d8dcbda9c0362302612e84ee75599a35780d6898383fdae6f37'),
-  (4, '004_backtesting.sql', 'f0fa25d72966c7016052bd250907a6875aac3409427396e36109b7b85c2c90e3'),
-  (5, '005_datamart.sql', '3311fe0899a5b55aec19eb360d1462f038569e92eadfd45f016ff25b43951651'),
-  (6, '006_rag_pgvector.sql', '4c480e09b88b823c790685ecbddf6a8b1bb42e66606c99c15e521f0b97dc8c76'),
-  (7, '007_datamart_supabase_storage.sql', 'e62b3fed405bfed56a3cbfc6a3966de705841028c49b713738e0a19ad0c95aad')
->>>>>>> Stashed changes
+  (4, '004_backtesting.sql', '9bf76b78ec30387d4e980b90961b007f01f505d385050e29843dab8fbd53bc37'),
+  (5, '005_datamart.sql', '6a0445154b49bf7e8b26f52cf18739fae4a045d1641ae922c01a3bdd96670a6c')
 ON CONFLICT (version) DO NOTHING;
 
 COMMIT;

@@ -13,7 +13,6 @@ interface SuggestedChartsProps {
   columns: AnalyticsColumn[];
 }
 
-/** Auto-generated starter charts for the Charts tab: no configuration required. */
 export function SuggestedCharts({ datasetId, columns }: SuggestedChartsProps) {
   const dateColumn = useMemo(() => columns.find((c) => isDateCategory(c.category)), [columns]);
   const categoricalColumn = useMemo(
@@ -39,9 +38,9 @@ export function SuggestedCharts({ datasetId, columns }: SuggestedChartsProps) {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex items-center gap-2">
-        <SparklesIcon className="h-4 w-4 text-cyan-400" />
-        <h2 className="text-sm font-semibold text-white">Suggested charts</h2>
+      <div className="flex items-center gap-2 border-b border-white/[0.06] pb-2">
+        <SparklesIcon className="h-4 w-4 text-zinc-300" />
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-100">Suggested Analytical Charts</h2>
       </div>
 
       {dateColumn ? (

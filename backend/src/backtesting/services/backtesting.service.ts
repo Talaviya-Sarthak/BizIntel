@@ -97,7 +97,7 @@ export const backtestingService = {
     }
 
     const range = await marketDataService.range({
-      filePath: await storageService.acquireLocalPath(dataset.storagePath),
+      filePath: storageService.absolutePath(dataset.storagePath),
       dateColumn: map.dateColumn,
       openColumn: map.openColumn,
       highColumn: map.highColumn,
@@ -185,7 +185,7 @@ export const backtestingService = {
 
     // --- Load + validate market data (DuckDB), then run the engine (pure). ---
     const loaded = await marketDataService.load({
-      filePath: await storageService.acquireLocalPath(dataset.storagePath),
+      filePath: storageService.absolutePath(dataset.storagePath),
       dateColumn: map.dateColumn,
       openColumn: map.openColumn,
       highColumn: map.highColumn,

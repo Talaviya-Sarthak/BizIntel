@@ -25,6 +25,7 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
       error: {
         code: err.code,
         message: err.message,
+        ...(err.suggestion !== undefined ? { suggestion: err.suggestion } : {}),
         ...(err.details !== undefined ? { details: err.details } : {}),
       },
     });

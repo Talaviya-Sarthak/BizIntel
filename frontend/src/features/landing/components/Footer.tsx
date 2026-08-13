@@ -114,7 +114,7 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-zinc-800/80 pt-6 sm:flex-row">
           <p className="text-[11px] text-zinc-500">
-            © {new Date().getFullYear()} PS-05 Enterprise Intelligence Platform. All rights reserved.
+            © {new Date().getFullYear()} BizIntel-Enterprise Intelligence Platform. All rights reserved.
           </p>
           <div className="flex items-center gap-5 text-[11px] text-zinc-500">
             <a href="#resources" className="transition hover:text-zinc-300">Privacy Policy</a>

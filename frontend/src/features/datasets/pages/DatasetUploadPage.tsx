@@ -15,14 +15,13 @@ export function DatasetUploadPage() {
     <div className="mx-auto flex max-w-3xl flex-col gap-6">
       <PageHeader
         title="Upload Dataset"
-        description="Upload a CSV file. It will be validated, profiled with DuckDB, and its metadata stored in the dataset registry."
+        description="Upload a CSV file. It will be validated, profiled with DuckDB, and stored in the dataset registry."
       />
 
-      <div className="flex items-start gap-2 rounded-2xl border border-cyan-400/20 bg-cyan-400/[0.05] px-4 py-3 text-sm text-cyan-200">
-        <InfoIcon className="mt-0.5 h-4 w-4 shrink-0" />
+      <div className="flex items-start gap-2.5 rounded-xl border border-white/[0.06] bg-[#181818] px-4 py-3 text-xs text-zinc-300 shadow-sm">
+        <InfoIcon className="mt-0.5 h-4 w-4 shrink-0 text-zinc-400" />
         <p>
-          CSV is supported today. Parquet, Excel, and JSON ingest will be added on top of the
-          same pipeline.
+          CSV is supported. Parquet, Excel, and JSON ingest run on top of the same high-speed DuckDB analytics engine.
         </p>
       </div>
 
@@ -44,7 +43,7 @@ export function DatasetUploadPage() {
       <DatasetUploader
         name={name.trim() || undefined}
         description={description.trim() || undefined}
-        onUploaded={(dataset: Dataset) => navigate(`/datasets/${dataset.id}`)}
+        onUploaded={(dataset: Dataset) => navigate(`/datasets/${dataset.id}/analysis`)}
       />
     </div>
   );

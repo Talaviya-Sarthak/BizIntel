@@ -99,16 +99,16 @@ export default function SignUpPage({ onNavigateSignIn }: SignUpPageProps) {
   };
 
   return (
-    <Card className="card-animate w-full max-w-sm border-zinc-800 bg-zinc-900/70 backdrop-blur supports-[backdrop-filter]:bg-zinc-900/60 shadow-2xl p-6">
-      <CardHeader className="p-0 mb-4 space-y-1">
-        <CardTitle className="text-xl font-semibold tracking-tight text-white">Create account</CardTitle>
+    <Card className="card-animate w-full max-w-sm border-zinc-800 bg-zinc-900/70 backdrop-blur supports-[backdrop-filter]:bg-zinc-900/60 shadow-2xl">
+      <CardHeader className="px-6 pt-6 pb-2 space-y-1">
+        <CardTitle className="text-2xl font-semibold text-white">Create account</CardTitle>
         <CardDescription className="text-xs text-zinc-400">
           Get started with your free account
         </CardDescription>
       </CardHeader>
 
       <form onSubmit={handleSubmit}>
-        <CardContent className="p-0 flex flex-col gap-3.5">
+        <CardContent className="px-6 py-2 flex flex-col gap-4">
           {errorMessage && (
             <div className="flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-2.5 text-xs text-red-400">
               <AlertCircle className="h-4 w-4 shrink-0" />
@@ -116,78 +116,111 @@ export default function SignUpPage({ onNavigateSignIn }: SignUpPageProps) {
             </div>
           )}
 
-          <Input
-            id="fullname"
-            type="text"
-            label="Full Name"
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Name"
-            icon={<User className="h-4 w-4 text-zinc-500" />}
-          />
+          <div className="grid gap-1.5">
+            <Label htmlFor="fullname" className="text-xs font-medium text-zinc-300">
+              Full Name
+            </Label>
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500 pointer-events-none" />
+              <Input
+                id="fullname"
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Alex Morgan"
+                className="h-9.5 pl-9 text-xs bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600 focus-visible:ring-zinc-700"
+              />
+            </div>
+          </div>
 
-          <Input
-            id="signup-email"
-            type="email"
-            label="Email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            icon={<Mail className="h-4 w-4 text-zinc-500" />}
-          />
+          <div className="grid gap-1.5">
+            <Label htmlFor="signup-email" className="text-xs font-medium text-zinc-300">
+              Email
+            </Label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500 pointer-events-none" />
+              <Input
+                id="signup-email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="h-9.5 pl-9 text-xs bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600 focus-visible:ring-zinc-700"
+              />
+            </div>
+          </div>
 
           {/* Side-by-side password inputs */}
-          <div className="grid grid-cols-2 gap-2.5">
-            <Input
-              id="signup-password"
-              type={showPassword ? "text" : "password"}
-              label="Password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              icon={<Lock className="h-4 w-4 text-zinc-500" />}
-              endAdornment={
+          <div className="grid grid-cols-2 gap-3">
+            <div className="grid gap-1.5">
+              <Label htmlFor="signup-password" className="text-xs font-medium text-zinc-300">
+                Password
+              </Label>
+              <div className="relative">
+                <Lock className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-500 pointer-events-none" />
+                <Input
+                  id="signup-password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="h-9.5 pl-8 pr-7 text-xs bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600 focus-visible:ring-zinc-700"
+                />
                 <button
                   type="button"
                   aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="p-1 rounded text-zinc-400 hover:text-zinc-200"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 p-1 rounded text-zinc-400 hover:text-zinc-200 transition-colors"
                   onClick={() => setShowPassword((v) => !v)}
                 >
-                  {showPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                  {showPassword ? (
+                    <EyeOff className="h-3.5 w-3.5" />
+                  ) : (
+                    <Eye className="h-3.5 w-3.5" />
+                  )}
                 </button>
-              }
-            />
+              </div>
+            </div>
 
-            <Input
-              id="confirm-password"
-              type={showConfirmPassword ? "text" : "password"}
-              label="Confirm"
-              required
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Password"
-              icon={<Lock className="h-4 w-4 text-zinc-500" />}
-              endAdornment={
+            <div className="grid gap-1.5">
+              <Label htmlFor="confirm-password" className="text-xs font-medium text-zinc-300">
+                Confirm
+              </Label>
+              <div className="relative">
+                <Lock className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-500 pointer-events-none" />
+                <Input
+                  id="confirm-password"
+                  type={showConfirmPassword ? "text" : "password"}
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="h-9.5 pl-8 pr-7 text-xs bg-zinc-950 border-zinc-800 text-zinc-50 placeholder:text-zinc-600 focus-visible:ring-zinc-700"
+                />
                 <button
                   type="button"
                   aria-label={showConfirmPassword ? "Hide password" : "Show password"}
-                  className="p-1 rounded text-zinc-400 hover:text-zinc-200"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 p-1 rounded text-zinc-400 hover:text-zinc-200 transition-colors"
                   onClick={() => setShowConfirmPassword((v) => !v)}
                 >
-                  {showConfirmPassword ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                  {showConfirmPassword ? (
+                    <EyeOff className="h-3.5 w-3.5" />
+                  ) : (
+                    <Eye className="h-3.5 w-3.5" />
+                  )}
                 </button>
-              }
-            />
+              </div>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2 py-0.5">
+          <div className="flex items-center gap-2 py-1">
             <Checkbox
               id="terms"
               checked={agreeTerms}
               onCheckedChange={(checked) => setAgreeTerms(!!checked)}
+              className="h-4 w-4 border-zinc-700 data-[state=checked]:bg-zinc-50 data-[state=checked]:text-zinc-900"
             />
             <Label htmlFor="terms" className="text-zinc-400 text-xs leading-none cursor-pointer">
               I agree to the{" "}
@@ -201,22 +234,22 @@ export default function SignUpPage({ onNavigateSignIn }: SignUpPageProps) {
             </Label>
           </div>
 
-          <Button type="submit" loading={submitting} className="w-full h-9.5 mt-0.5 rounded-lg bg-zinc-50 text-zinc-900 hover:bg-zinc-200 text-xs font-medium transition-colors">
+          <Button type="submit" loading={submitting} className="w-full h-9.5 rounded-lg bg-zinc-50 text-zinc-900 hover:bg-zinc-200 text-xs font-semibold transition-colors mt-0.5">
             Create account
           </Button>
 
-          <div className="relative my-0.5">
+          <div className="relative my-2">
             <Separator className="bg-zinc-800" />
-            <span className="absolute left-1/2 -translate-x-1/2 -top-2.5 bg-zinc-900 px-2 text-[10px] uppercase tracking-widest text-zinc-500">
+            <span className="absolute left-1/2 -translate-x-1/2 -top-2.5 bg-zinc-900/90 px-2 text-[11px] uppercase tracking-widest text-zinc-500 font-medium">
               or
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="grid grid-cols-2 gap-3">
             <Button
               type="button"
               variant="outline"
-              className="h-9.5 rounded-lg border-zinc-800 bg-zinc-950 text-zinc-50 text-xs hover:bg-zinc-900 transition-colors"
+              className="h-9.5 rounded-lg border-zinc-800 bg-zinc-950 text-zinc-50 text-xs hover:bg-zinc-900/80 transition-colors"
             >
               <GithubIcon className="h-4 w-4 mr-2" />
               GitHub
@@ -224,7 +257,7 @@ export default function SignUpPage({ onNavigateSignIn }: SignUpPageProps) {
             <Button
               type="button"
               variant="outline"
-              className="h-9.5 rounded-lg border-zinc-800 bg-zinc-950 text-zinc-50 text-xs hover:bg-zinc-900 transition-colors"
+              className="h-9.5 rounded-lg border-zinc-800 bg-zinc-950 text-zinc-50 text-xs hover:bg-zinc-900/80 transition-colors"
             >
               <GoogleIcon className="h-4 w-4 mr-2" />
               Google
@@ -233,12 +266,12 @@ export default function SignUpPage({ onNavigateSignIn }: SignUpPageProps) {
         </CardContent>
       </form>
 
-      <CardFooter className="p-0 mt-4 pt-0 flex items-center justify-center text-xs text-zinc-400">
+      <CardFooter className="px-6 pt-4 pb-6 flex items-center justify-center text-xs text-zinc-400">
         Already have an account?
         <button
           type="button"
           onClick={onNavigateSignIn}
-          className="ml-1 text-zinc-200 hover:underline font-medium"
+          className="ml-1.5 text-zinc-200 hover:underline font-medium"
         >
           Sign in
         </button>

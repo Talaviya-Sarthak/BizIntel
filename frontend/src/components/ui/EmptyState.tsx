@@ -13,20 +13,20 @@ export function EmptyState({ icon: Icon, title, description, action, className }
   return (
     <div
       className={clsx(
-        'flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/10 bg-white/[0.02] px-6 py-14 text-center',
+        'flex flex-col items-center justify-center rounded-xl border border-dashed border-white/[0.08] bg-[#141414] px-6 py-12 text-center',
         className,
       )}
     >
       {Icon ? (
-        <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-400/10 text-cyan-400 ring-1 ring-cyan-400/20">
-          <Icon className="h-6 w-6" />
+        <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-800 text-zinc-100 border border-zinc-700/60 shadow-xs">
+          <Icon className="h-5 w-5" />
         </span>
       ) : null}
-      <h3 className="mt-4 text-sm font-semibold text-white">{title}</h3>
+      <h3 className="mt-3 text-xs font-semibold text-zinc-100">{title}</h3>
       {description ? (
-        <p className="mt-1.5 max-w-sm text-sm leading-relaxed text-slate-400">{description}</p>
+        <p className="mt-1 max-w-sm text-xs leading-relaxed text-zinc-400">{description}</p>
       ) : null}
-      {action ? <div className="mt-5">{action}</div> : null}
+      {action ? <div className="mt-4">{action}</div> : null}
     </div>
   );
 }

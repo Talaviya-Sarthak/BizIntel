@@ -104,7 +104,7 @@ async function loadSchema(userId: string, datasetId: string): Promise<DataMartDa
   return {
     id: dataset.id,
     name: dataset.name,
-    storagePath: await storageService.acquireLocalPath(dataset.storagePath),
+    storagePath: storageService.absolutePath(dataset.storagePath),
     status: dataset.status,
     columns: await listDatasetColumns(dataset.id),
   };
@@ -682,8 +682,8 @@ export const datamartService = {
     const compatible =
       sharedColumns.length > 0 && columns.every((column) => column.typeA === null || column.typeB === null || column.compatible);
 
-    const pathA = await storageService.acquireLocalPath(a.storagePath);
-    const pathB = await storageService.acquireLocalPath(b.storagePath);
+    const pathA = storageService.absolutePath(a.storagePath);
+    const pathB = storageService.absolutePath(b.storagePath);
     const [profileA, profileB] = await Promise.all([
       profileDataset(pathA, sharedColumns),
       profileDataset(pathB, sharedColumns),

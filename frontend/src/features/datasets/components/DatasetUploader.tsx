@@ -9,10 +9,8 @@ import { useUploadDataset } from '../hooks/useDatasets';
 
 interface DatasetUploaderProps {
   maxSizeMb?: number;
-  /** Optional metadata included with the upload. */
   name?: string;
   description?: string;
-  /** Called with the processed dataset once the server responds. */
   onUploaded: (dataset: Dataset) => void;
 }
 
@@ -130,21 +128,21 @@ export function DatasetUploader({
         onDragLeave={() => setDragActive(false)}
         onDrop={handleDrop}
         className={clsx(
-          'flex flex-col items-center justify-center rounded-2xl border-2 border-dashed px-6 py-14 text-center transition',
+          'flex flex-col items-center justify-center rounded-xl border-2 border-dashed px-6 py-14 text-center transition-all',
           dragActive
-            ? 'border-cyan-400/70 bg-cyan-400/[0.06]'
-            : 'border-white/15 bg-white/[0.02] hover:border-cyan-400/40',
+            ? 'border-white/40 bg-zinc-800/80'
+            : 'border-white/[0.08] bg-[#181818] hover:border-white/25',
         )}
       >
-        <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-400/10 text-cyan-400 ring-1 ring-cyan-400/20">
-          <UploadIcon className="h-7 w-7" />
+        <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-800 text-zinc-100 border border-zinc-700/60 shadow-xs">
+          <UploadIcon className="h-6 w-6" />
         </span>
-        <p className="mt-5 text-sm font-medium text-white">
+        <p className="mt-4 text-xs font-semibold text-zinc-100">
           Drag & drop your CSV file here
         </p>
-        <p className="mt-1 text-xs text-slate-500">
+        <p className="mt-1 text-[11px] text-zinc-400">
           or{' '}
-          <span className="font-medium text-cyan-400">browse your files</span> · up to{' '}
+          <span className="font-semibold text-zinc-200 underline">browse your files</span> · up to{' '}
           {maxSizeMb} MB
         </p>
         <input
@@ -160,38 +158,38 @@ export function DatasetUploader({
       </div>
 
       {file ? (
-        <div className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5">
-          <div className="flex items-center gap-4">
-            <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-cyan-400/10 text-cyan-400 ring-1 ring-cyan-400/20">
+        <div className="flex flex-col gap-4 rounded-xl border border-white/[0.06] bg-[#181818] p-4 shadow-sm">
+          <div className="flex items-center gap-3.5">
+            <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-zinc-800 text-zinc-100 border border-zinc-700/60 shadow-xs">
               <FileIcon className="h-5 w-5" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-white">{file.name}</p>
-              <p className="mt-0.5 text-xs text-slate-500">
+              <p className="truncate text-xs font-semibold text-zinc-100">{file.name}</p>
+              <p className="mt-0.5 text-[11px] text-zinc-400 font-mono">
                 {formatBytes(file.size)} · {file.type || 'text/csv'}
               </p>
             </div>
             {phase === 'success' && uploaded ? (
-              <CheckCircleIcon className="h-6 w-6 shrink-0 text-emerald-400" />
+              <CheckCircleIcon className="h-5 w-5 shrink-0 text-emerald-400" />
             ) : phase === 'error' ? (
-              <XCircleIcon className="h-6 w-6 shrink-0 text-red-400" />
+              <XCircleIcon className="h-5 w-5 shrink-0 text-red-400" />
             ) : null}
           </div>
 
           {phase === 'uploading' || phase === 'processing' ? (
             <div>
               <div className="mb-1.5 flex items-center justify-between text-xs">
-                <span className="font-medium text-slate-300">
+                <span className="font-semibold text-zinc-200">
                   {phase === 'processing' ? 'Processing dataset with DuckDB…' : 'Uploading…'}
                 </span>
-                <span className="text-slate-500">
+                <span className="text-zinc-400 font-mono">
                   {phase === 'processing' ? 'Analyzing' : `${progress}%`}
                 </span>
               </div>
-              <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+              <div className="h-1.5 overflow-hidden rounded-full bg-zinc-800">
                 <div
                   className={clsx(
-                    'h-full rounded-full bg-cyan-400 transition-all duration-300',
+                    'h-full rounded-full bg-white transition-all duration-300',
                     phase === 'processing' && 'animate-pulse',
                   )}
                   style={{ width: phase === 'processing' ? '100%' : `${progress}%` }}
@@ -201,14 +199,14 @@ export function DatasetUploader({
           ) : null}
 
           {phase === 'success' && uploaded ? (
-            <p className="text-sm text-emerald-300">
+            <p className="text-xs text-emerald-300">
               {uploaded.name} is ready with {uploaded.rowCount?.toLocaleString() ?? 0} rows
               across {uploaded.columnCount ?? 0} columns.
             </p>
           ) : null}
 
           {phase === 'error' ? (
-            <p className="rounded-lg border border-red-400/20 bg-red-400/[0.05] px-3 py-2.5 text-sm text-red-300">
+            <p className="rounded-lg border border-red-400/20 bg-red-400/[0.05] px-3 py-2 text-xs text-red-300">
               {error}
             </p>
           ) : null}
@@ -216,12 +214,12 @@ export function DatasetUploader({
           {phase === 'idle' || phase === 'error' || phase === 'success' ? (
             <div className="flex items-center gap-3">
               {phase === 'idle' ? (
-                <Button onClick={handleUpload} loading={isPending}>
-                  <UploadIcon className="h-4 w-4" />
+                <Button onClick={handleUpload} loading={isPending} className="bg-white text-black font-semibold text-xs hover:bg-zinc-200">
+                  <UploadIcon className="h-3.5 w-3.5" />
                   Upload dataset
                 </Button>
               ) : null}
-              <Button variant="ghost" onClick={reset}>
+              <Button variant="ghost" onClick={reset} className="text-xs text-zinc-400 hover:text-white">
                 Choose a different file
               </Button>
             </div>
