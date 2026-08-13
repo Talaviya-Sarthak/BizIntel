@@ -19,6 +19,8 @@ export interface UploadRecord {
   uploadedAt: string;
   indexed: boolean;
   chunkCount: number;
+  pageCount?: number;
+  status?: string;
 }
 
 export async function ingestDocument(
@@ -40,4 +42,12 @@ export async function fetchUploads(): Promise<UploadRecord[]> {
     { withCredentials: true },
   );
   return response.data.uploads;
+}
+
+export async function deleteDocument(fileId: string): Promise<boolean> {
+  const response = await axios.delete<{ success: boolean }>(
+    `${API_BASE}/uploads/${encodeURIComponent(fileId)}`,
+    { withCredentials: true },
+  );
+  return response.data.success;
 }

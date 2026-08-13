@@ -41,13 +41,29 @@ router.post(
 
 /**
  * GET /api/v1/uploads
- * List all ingested uploaded files
+ * List all permanently stored uploaded files from Supabase pgvector
  */
 router.get(
   '/',
   asyncHandler(async (_req, res) => {
-    const uploads = uploadService.listUploads();
+    const uploads = await uploadService.listUploads();
     res.status(200).json({ success: true, uploads });
+  }),
+);
+
+/**
+ * DELETE /api/v1/uploads/:id
+ * Permanently delete document metadata, chunks, and embeddings from Supabase
+ */
+router.delete(
+  '/:id',
+  asyncHandler(async (req, res) => {
+    const fileId = req.params.id;
+    if (!fileId) {
+      throw ApiError.badRequest('MISSING_FILE_ID', 'File ID parameter is required.');
+    }
+    await uploadService.deleteUpload(fileId);
+    res.status(200).json({ success: true, message: `Document successfully deleted from Supabase RAG store.` });
   }),
 );
 

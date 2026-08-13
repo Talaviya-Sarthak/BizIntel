@@ -24,7 +24,7 @@ describe('Phase 8: Upload System Unit Tests', { timeout: 30000 }, () => {
     await service.processUpload('doc1.txt', 'Text content 1');
     await service.processUpload('doc2.txt', 'Text content 2');
 
-    const uploads = service.listUploads();
+    const uploads = await service.listUploads();
     expect(uploads.length).toBe(2);
   });
 

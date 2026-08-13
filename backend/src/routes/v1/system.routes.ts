@@ -36,7 +36,7 @@ router.get(
     const memoryStats = memoryManager.getStats();
     const vectorStats = knowledgeVectorStore.stats();
     const jobs = jobQueue.listJobs();
-    const uploads = uploadService.listUploads();
+    const uploads = await uploadService.listUploads();
 
     res.status(200).json({
       success: true,

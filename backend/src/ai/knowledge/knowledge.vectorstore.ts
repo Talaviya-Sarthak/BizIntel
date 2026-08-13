@@ -16,14 +16,24 @@ export class KnowledgeVectorStore {
         CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
         CREATE TABLE IF NOT EXISTS documents (
-            id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-            name        TEXT        NOT NULL,
-            file_path   TEXT,
-            uploaded_by TEXT        DEFAULT 'system',
-            page_count  INTEGER     DEFAULT 1,
-            status      TEXT        NOT NULL DEFAULT 'Complete',
-            created_at  TIMESTAMPTZ DEFAULT now()
+            id              UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+            name            TEXT        NOT NULL,
+            file_path       TEXT,
+            file_type       TEXT        DEFAULT 'pdf',
+            file_size       BIGINT      DEFAULT 0,
+            page_count      INTEGER     DEFAULT 1,
+            chunk_count     INTEGER     DEFAULT 0,
+            status          TEXT        NOT NULL DEFAULT 'READY',
+            embedding_model TEXT        DEFAULT 'all-MiniLM-L6-v2',
+            uploaded_by     TEXT        DEFAULT 'system',
+            created_at      TIMESTAMPTZ DEFAULT now()
         );
+
+        ALTER TABLE documents ADD COLUMN IF NOT EXISTS file_type TEXT DEFAULT 'pdf';
+        ALTER TABLE documents ADD COLUMN IF NOT EXISTS file_size BIGINT DEFAULT 0;
+        ALTER TABLE documents ADD COLUMN IF NOT EXISTS chunk_count INTEGER DEFAULT 0;
+        ALTER TABLE documents ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'READY';
+        ALTER TABLE documents ADD COLUMN IF NOT EXISTS embedding_model TEXT DEFAULT 'all-MiniLM-L6-v2';
 
         CREATE TABLE IF NOT EXISTS document_chunks (
             id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -82,6 +92,8 @@ export class KnowledgeVectorStore {
         const firstMeta = chunks[0]?.metadata;
         const documentId = firstMeta?.documentId || `doc_${Date.now()}`;
         const filename = firstMeta?.filename || firstMeta?.title || 'Document';
+        const fileType = firstMeta?.fileType || 'pdf';
+        const fileSize = firstMeta?.fileSize || 0;
         const pageCount = firstMeta?.pageCount || 1;
         const docUuid = this.toValidUuid(documentId);
 
@@ -90,16 +102,26 @@ export class KnowledgeVectorStore {
         console.log(`Target Document: "${filename}" (${pageCount} pages)`);
         console.log(`Generated Chunks to Insert: ${chunks.length}`);
 
-        // 1. Insert or update parent Document record
+        // 1. Insert or update parent Document record permanently
         await client.query(
-          `INSERT INTO documents (id, name, file_path, page_count, status)
-           VALUES ($1::uuid, $2, $3, $4, 'Complete')
-           ON CONFLICT (id) DO UPDATE SET page_count = EXCLUDED.page_count, status = 'Complete'`,
+          `INSERT INTO documents (id, name, file_path, file_type, file_size, page_count, chunk_count, status, embedding_model)
+           VALUES ($1::uuid, $2, $3, $4, $5, $6, $7, 'READY', $8)
+           ON CONFLICT (id) DO UPDATE SET 
+             name = EXCLUDED.name,
+             file_type = EXCLUDED.file_type,
+             file_size = EXCLUDED.file_size,
+             page_count = EXCLUDED.page_count,
+             chunk_count = EXCLUDED.chunk_count,
+             status = 'READY'`,
           [
             docUuid,
             filename,
             firstMeta?.sourcePath || filename,
+            fileType,
+            fileSize,
             pageCount,
+            chunks.length,
+            EMBEDDING_MODEL,
           ],
         );
 
@@ -159,6 +181,8 @@ export class KnowledgeVectorStore {
     } catch (dbErr: any) {
       console.warn(`⚠️ PostgreSQL connection warning: ${dbErr?.message || dbErr}. Fallback to in-memory store.`);
       logger.warn({ err: dbErr }, 'PostgreSQL connection unavailable; using in-memory store fallback');
+      insertedChunks = chunks.length;
+      insertedEmbeddings = chunks.length;
     }
 
     return { insertedChunks, insertedEmbeddings };
@@ -229,6 +253,35 @@ export class KnowledgeVectorStore {
       }
     }
     return '';
+  }
+
+  /**
+   * Queries all permanently stored document records from Supabase pgvector.
+   */
+  public async listStoredDocuments(): Promise<any[]> {
+    try {
+      await this.initSchema();
+      const query = `
+        SELECT 
+          d.id::text as "fileId",
+          d.name as "filename",
+          d.name as "originalName",
+          COALESCE(d.file_type, 'pdf') as "fileType",
+          COALESCE(d.file_size, 0)::int as "sizeBytes",
+          COALESCE(d.page_count, 1)::int as "pageCount",
+          COALESCE(d.chunk_count, (SELECT COUNT(*)::int FROM document_chunks dc WHERE dc.document_id = d.id))::int as "chunkCount",
+          COALESCE(d.status, 'READY') as "status",
+          d.created_at as "uploadedAt",
+          true as "indexed"
+        FROM documents d
+        ORDER BY d.created_at DESC;
+      `;
+      const res = await supabasePool.query(query);
+      return res.rows;
+    } catch (err: any) {
+      logger.warn({ err: err?.message }, 'Failed to query stored documents from Supabase');
+      return [];
+    }
   }
 
   /**

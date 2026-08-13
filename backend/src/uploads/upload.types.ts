@@ -9,11 +9,13 @@ export interface UploadRecord {
   fileId: string;
   filename: string;
   originalName: string;
-  fileType: SupportedDocumentFormat | 'csv' | 'xlsx';
+  fileType: SupportedDocumentFormat | 'csv' | 'xlsx' | string;
   sizeBytes: number;
   uploadedAt: string;
   indexed: boolean;
   chunkCount: number;
+  pageCount: number;
+  status: 'READY' | 'PROCESSING' | 'FAILED' | string;
 }
 
 export interface IngestionUploadResponse {
