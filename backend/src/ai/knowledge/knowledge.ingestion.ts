@@ -1,3 +1,4 @@
+import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { logger } from '../../config/logger';
 import { knowledgeChunker, KnowledgeChunker, type PageContent } from './knowledge.chunker';
 import { knowledgeEmbeddingService, KnowledgeEmbeddingService } from './knowledge.embeddings';
@@ -79,7 +80,6 @@ async function extractPdfPages(buffer: Buffer): Promise<{ pages: PageContent[]; 
   let libraryUsed = 'pdfjs-dist (Mozilla PDF.js)';
 
   try {
-    const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
     const uint8Array = new Uint8Array(buffer);
     const loadingTask = pdfjs.getDocument({
       data: uint8Array,
