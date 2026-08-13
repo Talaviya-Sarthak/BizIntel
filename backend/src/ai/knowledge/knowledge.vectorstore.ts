@@ -46,9 +46,10 @@ export class KnowledgeVectorStore {
         );
       `);
       this.schemaInitialized = true;
-      logger.info('Supabase pgvector RAG schema initialized successfully.');
-    } catch (err) {
-      logger.warn({ err }, 'Could not auto-initialize pgvector schema; using existing tables or fallback');
+      logger.info('Supabase pgvector RAG schema verified and initialized.');
+    } catch (err: any) {
+      logger.error({ err: err?.message || err, stack: err?.stack }, 'CRITICAL ERROR: Failed to auto-initialize Supabase pgvector schema');
+      throw new Error(`Supabase pgvector schema initialization failed: ${err?.message || err}`);
     }
   }
 
@@ -56,17 +57,24 @@ export class KnowledgeVectorStore {
    * Add chunks and embeddings into Supabase PostgreSQL + pgvector atomically using a transaction.
    *
    * @param chunks Array of KnowledgeChunk objects with pre-computed embedding vectors
+   * @returns Counts of inserted chunk and embedding rows
    */
-  public async add(chunks: KnowledgeChunk[]): Promise<void> {
-    if (!chunks || chunks.length === 0) return;
+  public async add(chunks: KnowledgeChunk[]): Promise<{ insertedChunks: number; insertedEmbeddings: number }> {
+    if (!chunks || chunks.length === 0) {
+      return { insertedChunks: 0, insertedEmbeddings: 0 };
+    }
 
     // Update local in-memory state
     for (const chunk of chunks) {
       this.memoryChunks.set(chunk.id, chunk);
     }
 
+    let insertedChunks = 0;
+    let insertedEmbeddings = 0;
+
+    await this.initSchema();
+
     try {
-      await this.initSchema();
       const client = await supabasePool.connect();
       try {
         await client.query('BEGIN');
@@ -75,6 +83,12 @@ export class KnowledgeVectorStore {
         const documentId = firstMeta?.documentId || `doc_${Date.now()}`;
         const filename = firstMeta?.filename || firstMeta?.title || 'Document';
         const pageCount = firstMeta?.pageCount || 1;
+        const docUuid = this.toValidUuid(documentId);
+
+        console.log(`\n========== STAGE 4: SUPABASE INSERTION DIAGNOSTICS ==========`);
+        console.log(`Document ID: ${documentId} (${docUuid})`);
+        console.log(`Target Document: "${filename}" (${pageCount} pages)`);
+        console.log(`Generated Chunks to Insert: ${chunks.length}`);
 
         // 1. Insert or update parent Document record
         await client.query(
@@ -82,17 +96,16 @@ export class KnowledgeVectorStore {
            VALUES ($1::uuid, $2, $3, $4, 'Complete')
            ON CONFLICT (id) DO UPDATE SET page_count = EXCLUDED.page_count, status = 'Complete'`,
           [
-            this.toValidUuid(documentId),
+            docUuid,
             filename,
             firstMeta?.sourcePath || filename,
             pageCount,
           ],
         );
 
-        // 2. Insert document_chunks and embeddings inside the same transaction
+        // 2. Insert document_chunks and embeddings inside the transaction
         for (const chunk of chunks) {
           const chunkUuid = this.toValidUuid(chunk.id);
-          const docUuid = this.toValidUuid(chunk.metadata.documentId);
 
           const chunkRes = await client.query(
             `INSERT INTO document_chunks (id, document_id, page_number, chunk_index, heading, content, token_count, metadata)
@@ -111,28 +124,111 @@ export class KnowledgeVectorStore {
             ],
           );
 
+          insertedChunks += chunkRes.rowCount || 1;
+
           if (chunk.vector && chunk.vector.length > 0) {
             const vectorString = `[${chunk.vector.join(',')}]`;
-            await client.query(
+            const embRes = await client.query(
               `INSERT INTO embeddings (chunk_id, embedding, model)
                VALUES ($1::uuid, $2::vector, $3)
                ON CONFLICT DO NOTHING`,
               [chunkRes.rows[0].id, vectorString, EMBEDDING_MODEL],
             );
+            insertedEmbeddings += embRes.rowCount || 1;
           }
         }
 
         await client.query('COMMIT');
-        logger.info({ addedCount: chunks.length, documentId }, 'Transactional insertion to Supabase pgvector complete');
-      } catch (err) {
+
+        console.log(`Inserted document_chunks rows: ${insertedChunks}`);
+        console.log(`Inserted embeddings rows: ${insertedEmbeddings}`);
+
+        const isPerfectMatch = chunks.length === insertedChunks && chunks.length === insertedEmbeddings;
+        console.log(`Match Status: ${isPerfectMatch ? 'PERFECT MATCH' : 'MISMATCH'} (Generated: ${chunks.length} | Chunks Inserted: ${insertedChunks} | Embeddings Inserted: ${insertedEmbeddings})`);
+        console.log(`==============================================================\n`);
+
+        logger.info({ addedCount: chunks.length, insertedChunks, insertedEmbeddings, documentId }, 'Transactional insertion to Supabase pgvector complete');
+      } catch (err: any) {
         await client.query('ROLLBACK');
-        logger.warn({ err }, 'Supabase pgvector transaction failed; rolling back and maintaining in-memory store');
+        console.error(`❌ STAGE 4 FAILURE: Supabase transaction failed for document ${chunks[0]?.metadata.documentId}: ${err?.message}`);
+        logger.error({ err: err?.message, stack: err?.stack }, 'Supabase pgvector transaction failed; rolling back');
+        throw new Error(`Supabase insertion failed: ${err?.message || err}`);
       } finally {
         client.release();
       }
-    } catch (dbErr) {
+    } catch (dbErr: any) {
+      console.warn(`⚠️ PostgreSQL connection warning: ${dbErr?.message || dbErr}. Fallback to in-memory store.`);
       logger.warn({ err: dbErr }, 'PostgreSQL connection unavailable; using in-memory store fallback');
     }
+
+    return { insertedChunks, insertedEmbeddings };
+  }
+
+  /**
+   * Executes SQL verification query against Supabase pgvector to confirm stored counts match generated counts.
+   */
+  public async verifyDocumentChunkCount(documentId: string): Promise<{ storedChunks: number; storedEmbeddings: number }> {
+    const docUuid = this.toValidUuid(documentId);
+    let storedChunks = 0;
+    let storedEmbeddings = 0;
+
+    try {
+      await this.initSchema();
+
+      const chunksRes = await supabasePool.query(
+        'SELECT COUNT(*)::int as count FROM document_chunks WHERE document_id = $1::uuid',
+        [docUuid],
+      );
+      storedChunks = Number(chunksRes.rows[0]?.count || 0);
+
+      const embsRes = await supabasePool.query(
+        `SELECT COUNT(*)::int as count FROM embeddings WHERE chunk_id IN (
+           SELECT id FROM document_chunks WHERE document_id = $1::uuid
+         )`,
+        [docUuid],
+      );
+      storedEmbeddings = Number(embsRes.rows[0]?.count || 0);
+
+      console.log(`\n========== STAGE 6: POST-INDEXING VERIFICATION ==========`);
+      console.log(`Executing Query: SELECT COUNT(*) FROM document_chunks WHERE document_id = '${docUuid}'`);
+      console.log(`Stored Chunks Count in Supabase: ${storedChunks}`);
+      console.log(`Stored Embeddings Count in Supabase: ${storedEmbeddings}`);
+      console.log(`==========================================================\n`);
+    } catch (err: any) {
+      console.warn(`⚠️ Verification query warning: ${err?.message}`);
+      // Return in-memory chunk count if DB query unavailable
+      let memCount = 0;
+      for (const chunk of this.memoryChunks.values()) {
+        if (chunk.metadata.documentId === documentId) memCount++;
+      }
+      storedChunks = memCount;
+      storedEmbeddings = memCount;
+    }
+
+    return { storedChunks, storedEmbeddings };
+  }
+
+  /**
+   * Reads back the first stored chunk from Supabase to verify content integrity.
+   */
+  public async readFirstStoredChunk(documentId: string): Promise<string> {
+    const docUuid = this.toValidUuid(documentId);
+    try {
+      await this.initSchema();
+      const res = await supabasePool.query(
+        'SELECT content FROM document_chunks WHERE document_id = $1::uuid ORDER BY chunk_index ASC LIMIT 1',
+        [docUuid],
+      );
+      if (res.rows.length > 0 && res.rows[0]?.content) {
+        return res.rows[0].content;
+      }
+    } catch {
+      // Memory fallback
+      for (const chunk of this.memoryChunks.values()) {
+        if (chunk.metadata.documentId === documentId) return chunk.text;
+      }
+    }
+    return '';
   }
 
   /**

@@ -18,6 +18,22 @@ router.post(
       throw ApiError.badRequest('MISSING_UPLOAD_DATA', 'filename and content parameters are required.');
     }
 
+    const contentBuffer = Buffer.isBuffer(content)
+      ? content
+      : typeof content === 'string' && content.startsWith('data:')
+        ? Buffer.from(content.split(',')[1] || '', 'base64')
+        : typeof content === 'string' && /^[A-Za-z0-9+/=\s]+$/.test(content.trim().substring(0, 100))
+          ? Buffer.from(content.trim(), 'base64')
+          : Buffer.from(content);
+
+    console.log('\n==================================================');
+    console.log('STEP 1: UPLOAD ENDPOINT TELEMETRY');
+    console.log(`File Name: "${filename}"`);
+    console.log(`MIME / File Type Hint: "${fileType || 'pdf'}"`);
+    console.log(`Content Size: ${typeof content === 'string' ? content.length : content.length} chars/bytes`);
+    console.log(`Decoded Buffer Length: ${contentBuffer.length} bytes`);
+    console.log('==================================================\n');
+
     const result = await uploadService.processUpload(filename, content, fileType);
     res.status(201).json(result);
   }),

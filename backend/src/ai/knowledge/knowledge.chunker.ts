@@ -1,6 +1,5 @@
-import {
-  EMBEDDING_VERSION,
-} from './knowledge.constants';
+import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
+import { EMBEDDING_VERSION } from './knowledge.constants';
 import type { KnowledgeChunk, KnowledgeDocumentMetadata } from './knowledge.types';
 import { estimateTokenCount, normalizeDocumentText } from './knowledge.utils';
 
@@ -10,51 +9,42 @@ export interface PageContent {
 }
 
 export interface ChunkerOptions {
-  maxWords?: number;
-  overlapWords?: number;
   chunkSize?: number;
   chunkOverlap?: number;
+  maxWords?: number;
+  overlapWords?: number;
 }
 
 export class KnowledgeChunker {
-  private readonly maxWords: number;
-  private readonly overlapWords: number;
+  private readonly chunkSize: number;
+  private readonly chunkOverlap: number;
 
   constructor(options: ChunkerOptions = {}) {
-    if (
-      options.chunkSize !== undefined &&
-      options.chunkOverlap !== undefined &&
-      options.chunkOverlap >= options.chunkSize
-    ) {
+    this.chunkSize = options.chunkSize ?? 500;
+    this.chunkOverlap = options.chunkOverlap ?? 100;
+
+    if (this.chunkOverlap >= this.chunkSize) {
       throw new Error('chunkOverlap must be strictly less than chunkSize');
-    }
-
-    if (options.maxWords !== undefined) {
-      this.maxWords = options.maxWords;
-    } else if (options.chunkSize !== undefined) {
-      this.maxWords = Math.max(3, Math.floor(options.chunkSize / 20));
-    } else {
-      this.maxWords = 500;
-    }
-
-    if (options.overlapWords !== undefined) {
-      this.overlapWords = options.overlapWords;
-    } else if (options.chunkOverlap !== undefined) {
-      this.overlapWords = Math.max(1, Math.floor(options.chunkOverlap / 20));
-    } else {
-      this.overlapWords = 80;
     }
   }
 
   /**
-   * Splits per-page text into word-bounded semantic chunks aligned with paragraph,
-   * section, and heading boundaries.
+   * Splits per-page document text into chunks using LangChain RecursiveCharacterTextSplitter
+   * with chunkSize=800 and chunkOverlap=150.
    *
    * @param pages Extracted array of page contents
    * @param metadata Base document metadata
    * @returns Array of semantic KnowledgeChunk objects
    */
-  public splitPages(pages: PageContent[], metadata: KnowledgeDocumentMetadata): KnowledgeChunk[] {
+  public async splitPagesAsync(
+    pages: PageContent[],
+    metadata: KnowledgeDocumentMetadata,
+  ): Promise<KnowledgeChunk[]> {
+    const splitter = new RecursiveCharacterTextSplitter({
+      chunkSize: this.chunkSize,
+      chunkOverlap: this.chunkOverlap,
+    });
+
     const allChunks: { text: string; pageNumber: number; sectionHeading?: string; wordCount: number }[] = [];
     let currentHeading = metadata.title || 'General';
 
@@ -68,8 +58,58 @@ export class KnowledgeChunker {
         currentHeading = headingMatch[1].trim();
       }
 
-      // Split page text semantically into max 500-word chunks with 80-word overlap
-      const rawPageChunks = this.wordBoundSemanticSplit(normalizedPageText, this.maxWords, this.overlapWords);
+      // Split page text using RecursiveCharacterTextSplitter
+      const rawPageChunks = await splitter.splitText(normalizedPageText);
+
+      for (const chunkText of rawPageChunks) {
+        // Do NOT filter out chunks < 100 characters; retain all chunks
+        const words = chunkText.split(/\s+/).filter(Boolean).length;
+        allChunks.push({
+          text: chunkText,
+          pageNumber: page.pageNumber,
+          sectionHeading: currentHeading,
+          wordCount: words,
+        });
+      }
+    }
+
+    const totalChunks = allChunks.length;
+
+    return allChunks.map((c, index) => {
+      const tokenEstimate = estimateTokenCount(c.text);
+      return {
+        id: `chk_${metadata.documentId}_${index}`,
+        text: c.text,
+        metadata: {
+          ...metadata,
+          documentName: metadata.title || metadata.filename,
+          chunkIndex: index,
+          totalChunks,
+          pageNumber: c.pageNumber,
+          sectionHeading: c.sectionHeading,
+          tokenEstimate,
+          sourcePath: metadata.source || metadata.filename,
+          embeddingVersion: EMBEDDING_VERSION,
+        },
+      };
+    });
+  }
+
+  public splitPages(pages: PageContent[], metadata: KnowledgeDocumentMetadata): KnowledgeChunk[] {
+    // Synchronous fallback for legacy callers using simple Recursive character splitting
+    const allChunks: { text: string; pageNumber: number; sectionHeading?: string; wordCount: number }[] = [];
+    let currentHeading = metadata.title || 'General';
+
+    for (const page of pages) {
+      const normalizedPageText = normalizeDocumentText(page.text);
+      if (!normalizedPageText) continue;
+
+      const headingMatch = normalizedPageText.match(/(?:^|\n)(?:#+\s*|SECTION\s+\d+|CHAPTER\s+\d+|[A-Z0-9\s]{4,30}:?\n)([^\n]+)/i);
+      if (headingMatch && headingMatch[1]) {
+        currentHeading = headingMatch[1].trim();
+      }
+
+      const rawPageChunks = this.recursiveCharacterSplitSync(normalizedPageText, this.chunkSize, this.chunkOverlap);
 
       for (const chunkText of rawPageChunks) {
         const words = chunkText.split(/\s+/).filter(Boolean).length;
@@ -109,52 +149,49 @@ export class KnowledgeChunker {
     return this.splitPages(pages, metadata);
   }
 
-  /**
-   * Word-bounded semantic text splitter (preserves paragraphs, bullet lists, headings, and sentence boundaries).
-   */
-  private wordBoundSemanticSplit(text: string, maxWords: number, overlapWords: number): string[] {
-    const totalWords = text.split(/\s+/).filter(Boolean);
-    if (totalWords.length <= maxWords) {
-      return [text];
-    }
+  private recursiveCharacterSplitSync(text: string, chunkSize: number, chunkOverlap: number): string[] {
+    if (text.length <= chunkSize) return [text];
 
-    // Split text into semantic blocks (paragraphs \n\n, lines \n, or sentences . )
-    let blocks = text.split(/\n\n+/).filter((b) => b.trim().length > 0);
-    if (blocks.length === 1) {
-      blocks = text.split(/(?<=\.\s+)/).filter((b) => b.trim().length > 0);
-    }
-
+    const separators = ['\n\n', '\n', ' ', ''];
     const chunks: string[] = [];
-    let currentBlockGroup: string[] = [];
-    let currentWordCount = 0;
 
-    for (const block of blocks) {
-      const blockWords = block.split(/\s+/).filter(Boolean).length;
+    const split = (str: string, sepIndex: number): string[] => {
+      if (str.length <= chunkSize) return [str];
+      const sep = separators[sepIndex] ?? '';
+      const parts = sep ? str.split(sep) : str.split('');
+      const result: string[] = [];
+      let current = '';
 
-      if (currentWordCount + blockWords <= maxWords) {
-        currentBlockGroup.push(block);
-        currentWordCount += blockWords;
-      } else {
-        if (currentBlockGroup.length > 0) {
-          chunks.push(currentBlockGroup.join(' ').trim());
-        }
-
-        const prevText = currentBlockGroup.join(' ');
-        const prevWords = prevText.split(/\s+/).filter(Boolean);
-
-        if (prevWords.length > overlapWords) {
-          const overlapStr = prevWords.slice(prevWords.length - overlapWords).join(' ');
-          currentBlockGroup = [overlapStr, block];
-          currentWordCount = overlapWords + blockWords;
+      for (const part of parts) {
+        const candidate = current ? current + sep + part : part;
+        if (candidate.length <= chunkSize) {
+          current = candidate;
         } else {
-          currentBlockGroup = [block];
-          currentWordCount = blockWords;
+          if (current) result.push(current);
+          if (part.length > chunkSize && sepIndex < separators.length - 1) {
+            result.push(...split(part, sepIndex + 1));
+            current = '';
+          } else {
+            current = part;
+          }
         }
       }
-    }
+      if (current) result.push(current);
+      return result;
+    };
 
-    if (currentBlockGroup.length > 0) {
-      chunks.push(currentBlockGroup.join(' ').trim());
+    const initialChunks = split(text, 0);
+
+    // Apply overlap
+    for (let i = 0; i < initialChunks.length; i++) {
+      const chunk = initialChunks[i] || '';
+      if (i > 0 && chunkOverlap > 0) {
+        const prev = initialChunks[i - 1] || '';
+        const overlapStr = prev.slice(-chunkOverlap);
+        chunks.push(overlapStr + chunk);
+      } else {
+        chunks.push(chunk);
+      }
     }
 
     return chunks;
