@@ -1,4 +1,3 @@
-import { pipeline } from '@xenova/transformers';
 import { logger } from '../../config/logger';
 import { EMBEDDING_DIMENSIONS } from './knowledge.constants';
 
@@ -21,7 +20,9 @@ async function getExtractor(): Promise<any> {
     logger.info(
       `Knowledge Embedding Model Loading...\nModel: sentence-transformers/all-MiniLM-L6-v2\nDimensions: ${EMBEDDING_DIMENSIONS}`,
     );
-    extractorPromise = pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2').then((extractor) => {
+    extractorPromise = import('@xenova/transformers').then(({ pipeline }) =>
+      pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2'),
+    ).then((extractor) => {
       logger.info(
         'Knowledge Embedding Model Loaded\nModel: sentence-transformers/all-MiniLM-L6-v2\nDimensions: 384\nStatus: Ready',
       );
