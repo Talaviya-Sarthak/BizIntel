@@ -858,7 +858,7 @@ export const analyticsService = {
 
   async getFullStatistics(dataset: Dataset, columns: DatasetColumn[]) {
     this.assertReady(dataset);
-    const filePath = this.filePath(dataset);
+    const filePath = await this.filePath(dataset);
     const results = [];
 
     for (const column of columns) {
@@ -1006,7 +1006,7 @@ export const analyticsService = {
 
   async getMissingValueAnalysis(dataset: Dataset, columns: DatasetColumn[]) {
     this.assertReady(dataset);
-    const filePath = this.filePath(dataset);
+    const filePath = await this.filePath(dataset);
     const ref = csvTableRef(filePath);
 
     const totalRow = firstRow(
@@ -1069,7 +1069,7 @@ export const analyticsService = {
 
   async getOutlierAnalysis(dataset: Dataset, columns: DatasetColumn[]) {
     this.assertReady(dataset);
-    const filePath = this.filePath(dataset);
+    const filePath = await this.filePath(dataset);
     const numericColumns = columns.filter((col) =>
       isNumericCategory(classifyColumnCategory(col.dataType)),
     );
@@ -1154,7 +1154,7 @@ export const analyticsService = {
 
   async getBusinessInsights(dataset: Dataset, columns: DatasetColumn[]) {
     this.assertReady(dataset);
-    const filePath = this.filePath(dataset);
+    const filePath = await this.filePath(dataset);
     const insights: Array<{
       type: string;
       title: string;

@@ -96,8 +96,20 @@ export const backtestingService = {
       );
     }
 
+    let filePath: string;
+    try {
+      filePath = await storageService.absolutePath(dataset.storagePath);
+    } catch {
+      throw ApiError.conflict(
+        BACKTEST_ERROR_CODES.NOT_READY,
+        'Dataset file is not available in storage',
+        { datasetId: dataset.id },
+        'Re-upload the dataset to make it available for backtesting.',
+      );
+    }
+
     const range = await marketDataService.range({
-      filePath: storageService.absolutePath(dataset.storagePath),
+      filePath,
       dateColumn: map.dateColumn,
       openColumn: map.openColumn,
       highColumn: map.highColumn,
@@ -184,8 +196,20 @@ export const backtestingService = {
     }
 
     // --- Load + validate market data (DuckDB), then run the engine (pure). ---
+    let filePath: string;
+    try {
+      filePath = await storageService.absolutePath(dataset.storagePath);
+    } catch {
+      throw ApiError.conflict(
+        BACKTEST_ERROR_CODES.NOT_READY,
+        'Dataset file is not available in storage',
+        { datasetId: dataset.id },
+        'Re-upload the dataset to make it available for backtesting.',
+      );
+    }
+
     const loaded = await marketDataService.load({
-      filePath: storageService.absolutePath(dataset.storagePath),
+      filePath,
       dateColumn: map.dateColumn,
       openColumn: map.openColumn,
       highColumn: map.highColumn,

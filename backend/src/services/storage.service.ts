@@ -25,6 +25,11 @@ export interface PersistResult {
 }
 
 export interface StorageService {
+  /**
+   * Ensures the stored dataset exists locally and returns the absolute file path.
+   * Downloads from Supabase Storage on first call; subsequent calls return the cached path.
+   */
+  absolutePath(storagePath: string): Promise<string>;
   /** Directory used for in-progress multipart uploads. */
   getTempDir(): string;
   /**
@@ -91,6 +96,10 @@ class SupabaseStorageService implements StorageService {
 
   getTempDir(): string {
     return this.tempDir;
+  }
+
+  async absolutePath(storagePath: string): Promise<string> {
+    return this.acquireLocalPath(storagePath);
   }
 
   bucket(): string {

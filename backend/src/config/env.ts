@@ -48,6 +48,11 @@ const envSchema = z.object({
 
   // --- AI configuration ---
   GROQ_API_KEY: z.string().optional().default(''),
+
+  // --- Supabase DataMart Storage ---
+  SUPABASE_URL: z.string().optional().default(''),
+  SUPABASE_SERVICE_ROLE_KEY: z.string().optional().default(''),
+  SUPABASE_DATAMART_BUCKET: z.string().optional().default('datamart-datasets'),
 });
 
 const parsed = envSchema.safeParse(process.env);
