@@ -1072,7 +1072,6 @@ function escapeLike(input: string): string {
 // Shared helpers
 // ---------------------------------------------------------------------------
 
-<<<<<<< HEAD
 /**
  * Wraps DuckDB execution errors into user-friendly ApiError instances so the
  * client receives a meaningful message instead of a generic 500.
@@ -1093,16 +1092,6 @@ function runDuckDbQuery(filePath: string, sql: string, params: unknown[] = []): 
   });
 }
 
-function resolveColumn(columns: DatasetColumn[], name: string): DatasetColumn {
-  const column = columns.find((entry) => entry.columnName === name);
-  if (!column) {
-    throw ApiError.badRequest('COLUMN_NOT_FOUND', `Column not found: "${name}"`);
-  }
-  return column;
-}
-
-=======
->>>>>>> 50ef85d75a69eea2f7a08a00898025714d3b3ab1
 function countCategory(
   counts: Map<ColumnCategory, number>,
   predicate: (category: ColumnCategory) => boolean,
