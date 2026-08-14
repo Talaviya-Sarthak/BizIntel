@@ -1,6 +1,6 @@
 import { pipeline } from '@xenova/transformers';
-import { logger } from '../../config/logger';
-import { EMBEDDING_DIMENSIONS } from './knowledge.constants';
+import { logger } from '../../config/logger.js';
+import { EMBEDDING_DIMENSIONS } from './knowledge.constants.js';
 
 /**
  * Interface that all embedding providers (HuggingFace, OpenAI, Voyage) must implement.

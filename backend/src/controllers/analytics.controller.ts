@@ -1,11 +1,11 @@
 import type { Request, Response } from 'express';
-import * as datasetColumnRepository from '../repositories/datasetColumn.repository';
-import { analyticsService } from '../services/analytics.service';
-import { asyncHandler } from '../utils/asyncHandler';
+import * as datasetColumnRepository from '../repositories/datasetColumn.repository.js';
+import { analyticsService } from '../services/analytics.service.js';
+import { asyncHandler } from '../utils/asyncHandler.js';
 import type {
   AnalyticsGroupByInput,
   AnalyticsTimeSeriesInput,
-} from '../validators/analytics.validator';
+} from '../validators/analytics.validator.js';
 
 /**
  * Thin HTTP layer for the Dataset Intelligence Workspace. Every handler

@@ -1,6 +1,6 @@
 import pino from 'pino';
 import { pinoHttp } from 'pino-http';
-import { env } from './env';
+import { env } from './env.js';
 
 /**
  * Structured logger. Redacts secrets and sensitive request data before

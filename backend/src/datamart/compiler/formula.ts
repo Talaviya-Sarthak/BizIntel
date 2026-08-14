@@ -1,10 +1,10 @@
-import { ApiError } from '../../utils/httpError';
-import { DATAMART_ERROR_CODES } from '../types';
+import { ApiError } from '../../utils/httpError.js';
+import { DATAMART_ERROR_CODES } from '../types/index.js';
 import {
   AGGREGATION_FUNCTIONS,
   NUMERIC_AGGREGATIONS,
   type DataMartAggregation,
-} from '../types';
+} from '../types/index.js';
 
 /**
  * Safe expression grammar for calculated metrics.

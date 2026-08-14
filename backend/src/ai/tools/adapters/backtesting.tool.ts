@@ -1,8 +1,8 @@
-import { backtestRepository } from '../../../backtesting/repositories/backtest.repository';
-import { backtestingService } from '../../../backtesting/services/backtesting.service';
-import type { IntentCategory } from '../../router/intent.types';
-import type { AITool } from '../tool.interface';
-import type { ToolContext, ToolResult } from '../tool.types';
+import { backtestRepository } from '../../../backtesting/repositories/backtest.repository.js';
+import { backtestingService } from '../../../backtesting/services/backtesting.service.js';
+import type { IntentCategory } from '../../router/intent.types.js';
+import type { AITool } from '../tool.interface.js';
+import type { ToolContext, ToolResult } from '../tool.types.js';
 
 export class BacktestingTool implements AITool {
   public readonly id = 'backtesting_tool';

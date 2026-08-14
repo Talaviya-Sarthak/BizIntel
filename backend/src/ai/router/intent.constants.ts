@@ -1,4 +1,4 @@
-import type { IntentCategory } from './intent.types';
+import type { IntentCategory } from './intent.types.js';
 
 /** Array of all valid intent category literals */
 export const SUPPORTED_INTENTS: readonly IntentCategory[] = [

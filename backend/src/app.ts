@@ -2,11 +2,11 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
-import { corsOrigins, env } from './config/env';
-import { httpLogger } from './config/logger';
-import { errorHandler, notFoundHandler } from './middlewares/errorHandler';
-import { apiLimiter } from './middlewares/rateLimiter';
-import apiRoutes from './routes';
+import { corsOrigins, env } from './config/env.js';
+import { httpLogger } from './config/logger.js';
+import { errorHandler, notFoundHandler } from './middlewares/errorHandler.js';
+import { apiLimiter } from './middlewares/rateLimiter.js';
+import apiRoutes from './routes/index.js';
 
 export const app = express();
 

@@ -1,8 +1,8 @@
-import { supabasePool } from '../../config/database';
-import { logger } from '../../config/logger';
-import { DEFAULT_TOP_K, EMBEDDING_DIMENSIONS, EMBEDDING_MODEL, SIMILARITY_THRESHOLD } from './knowledge.constants';
-import type { KnowledgeChunk, VectorSearchResult, VectorStoreStats } from './knowledge.types';
-import { cosineSimilarity } from './knowledge.utils';
+import { supabasePool } from '../../config/database.js';
+import { logger } from '../../config/logger.js';
+import { DEFAULT_TOP_K, EMBEDDING_DIMENSIONS, EMBEDDING_MODEL, SIMILARITY_THRESHOLD } from './knowledge.constants.js';
+import type { KnowledgeChunk, VectorSearchResult, VectorStoreStats } from './knowledge.types.js';
+import { cosineSimilarity } from './knowledge.utils.js';
 
 export class KnowledgeVectorStore {
   private readonly memoryChunks = new Map<string, KnowledgeChunk>();

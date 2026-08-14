@@ -1,5 +1,5 @@
 import type { PoolClient } from 'pg';
-import { pool } from '../../config/database';
+import { pool } from '../../config/database.js';
 import type {
   DataMartAnalysis,
   DataMartAnalysisRun,
@@ -12,7 +12,7 @@ import type {
   DataMartWidgetType,
   MetricDefinition,
   MetricFormat,
-} from '../types';
+} from '../types/index.js';
 
 /** Reusable client/table abstraction: prefer an explicit client for transactions. */
 function db(client?: PoolClient): PoolClient | typeof pool {

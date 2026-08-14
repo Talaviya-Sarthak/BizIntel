@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
-import { datamartService } from '../services/datamart.service';
-import { asyncHandler } from '../../utils/asyncHandler';
+import { datamartService } from '../services/datamart.service.js';
+import { asyncHandler } from '../../utils/asyncHandler.js';
 
 /**
  * Thin HTTP layer for the DataMart module. Handlers stay in the service;

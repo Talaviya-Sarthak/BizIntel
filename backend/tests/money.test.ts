@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { clampNumber, mean, roundMoney, roundPrice, sampleStdDev, wholeShares } from '../src/backtesting/utils/money';
+import { clampNumber, mean, roundMoney, roundPrice, sampleStdDev, wholeShares } from '../src/backtesting/utils/money.js';
 
 describe('money utilities', () => {
   it('rounds money to 2 decimals and prices to 6 decimals', () => {

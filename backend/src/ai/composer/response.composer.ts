@@ -1,5 +1,5 @@
-import type { ExecutionPlan } from '../orchestrator/pipeline.types';
-import type { ToolResult } from '../tools/tool.types';
+import type { ExecutionPlan } from '../orchestrator/pipeline.types.js';
+import type { ToolResult } from '../tools/tool.types.js';
 
 export interface ComposerInput {
   userQuestion: string;

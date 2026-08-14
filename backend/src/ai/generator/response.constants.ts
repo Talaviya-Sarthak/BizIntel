@@ -1,4 +1,4 @@
-import { GROQ_LLM_MODEL } from '../constants';
+import { GROQ_LLM_MODEL } from '../constants.js';
 
 /** LLM model used for response generation */
 export const RESPONSE_GENERATOR_MODEL = GROQ_LLM_MODEL;

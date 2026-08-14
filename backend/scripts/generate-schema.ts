@@ -1,4 +1,4 @@
-import { getMigrationFiles, REPO_ROOT, SCHEMA_MIGRATIONS_TABLE_SQL } from './migration-utils';
+import { getMigrationFiles, REPO_ROOT, SCHEMA_MIGRATIONS_TABLE_SQL } from './migration-utils.js';
 
 /**
  * Regenerates `database/schema.sql` from the migration files.

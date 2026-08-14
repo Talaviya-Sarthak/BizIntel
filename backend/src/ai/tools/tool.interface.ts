@@ -1,5 +1,5 @@
-import type { IntentCategory } from '../router/intent.types';
-import type { ToolContext, ToolResult } from './tool.types';
+import type { IntentCategory } from '../router/intent.types.js';
+import type { ToolContext, ToolResult } from './tool.types.js';
 
 /**
  * Contract that every AI Tool adapter must implement.

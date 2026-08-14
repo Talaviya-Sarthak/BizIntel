@@ -1,8 +1,8 @@
-import { logger } from '../../config/logger';
-import { DEFAULT_TOP_K, SIMILARITY_THRESHOLD } from './knowledge.constants';
-import { knowledgeEmbeddingService, KnowledgeEmbeddingService } from './knowledge.embeddings';
-import type { KnowledgeChunk, RetrievalResult, VectorSearchResult } from './knowledge.types';
-import { knowledgeVectorStore, KnowledgeVectorStore } from './knowledge.vectorstore';
+import { logger } from '../../config/logger.js';
+import { DEFAULT_TOP_K, SIMILARITY_THRESHOLD } from './knowledge.constants.js';
+import { knowledgeEmbeddingService, KnowledgeEmbeddingService } from './knowledge.embeddings.js';
+import type { KnowledgeChunk, RetrievalResult, VectorSearchResult } from './knowledge.types.js';
+import { knowledgeVectorStore, KnowledgeVectorStore } from './knowledge.vectorstore.js';
 
 export interface RetrieverOptions {
   topK?: number;

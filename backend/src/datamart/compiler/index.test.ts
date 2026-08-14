@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import type { DatasetColumn } from '../../models/dataset.model';
-import { ApiError } from '../../utils/httpError';
+import type { DatasetColumn } from '../../models/dataset.model.js';
+import { ApiError } from '../../utils/httpError.js';
 import {
   DataMartQueryCompiler,
   type DataMartDatasetSchema,
   type DataMartSchemaLoader,
-} from './index';
-import type { DataMartQuery } from '../types';
+} from './index.js';
+import type { DataMartQuery } from '../types/index.js';
 
 function column(columnName: string, dataType: string): DatasetColumn {
   return {

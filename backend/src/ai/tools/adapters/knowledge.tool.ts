@@ -1,7 +1,7 @@
-import { knowledgeService } from '../../knowledge/knowledge.service';
-import type { IntentCategory } from '../../router/intent.types';
-import type { AITool } from '../tool.interface';
-import type { ToolContext, ToolResult } from '../tool.types';
+import { knowledgeService } from '../../knowledge/knowledge.service.js';
+import type { IntentCategory } from '../../router/intent.types.js';
+import type { AITool } from '../tool.interface.js';
+import type { ToolContext, ToolResult } from '../tool.types.js';
 
 export class KnowledgeTool implements AITool {
   public readonly id = 'knowledge_tool';

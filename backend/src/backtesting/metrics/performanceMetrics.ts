@@ -1,6 +1,6 @@
-import type { EngineEquityPoint, EngineTrade } from '../engines/backtestEngine';
-import type { BenchmarkMetrics, PerformanceMetrics } from '../types';
-import { mean, sampleStdDev } from '../utils/money';
+import type { EngineEquityPoint, EngineTrade } from '../engines/backtestEngine.js';
+import type { BenchmarkMetrics, PerformanceMetrics } from '../types/index.js';
+import { mean, sampleStdDev } from '../utils/money.js';
 
 const TRADING_DAYS_PER_YEAR = 252;
 const MS_PER_YEAR = 1000 * 60 * 60 * 24 * 365.25;

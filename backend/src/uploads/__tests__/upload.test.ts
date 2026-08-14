@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from 'vitest';
-import { uploadService, UploadService } from '../upload.service';
+import { uploadService, UploadService } from '../upload.service.js';
 
 describe('Phase 8: Upload System Unit Tests', { timeout: 30000 }, () => {
   let service: UploadService;

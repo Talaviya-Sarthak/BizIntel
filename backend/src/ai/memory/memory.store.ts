@@ -1,6 +1,6 @@
-import { logger } from '../../config/logger';
-import { DEFAULT_SESSION_TTL_MINUTES } from './memory.constants';
-import type { ConversationSession } from './memory.types';
+import { logger } from '../../config/logger.js';
+import { DEFAULT_SESSION_TTL_MINUTES } from './memory.constants.js';
+import type { ConversationSession } from './memory.types.js';
 
 /**
  * Low-level in-memory session store backed by a JavaScript Map.

@@ -1,5 +1,5 @@
-import { pool } from '../config/database';
-import type { DatasetColumn } from '../models/dataset.model';
+import { pool } from '../config/database.js';
+import type { DatasetColumn } from '../models/dataset.model.js';
 
 const COLUMN_COLUMNS = `
   id,

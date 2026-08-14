@@ -1,20 +1,20 @@
-import { env } from '../config/env';
-import { logger } from '../config/logger';
-import { ApiError } from '../utils/httpError';
-import { responsePresentationAgent, ResponsePresentationAgent } from './agents/response.presentation.agent';
-import { artifactGenerator, ArtifactGenerator } from './artifacts/artifact.generator';
-import type { GeneratedArtifact } from './artifacts/artifact.types';
-import { executionEngine, ExecutionEngine } from './execution/execution.service';
-import { responseGenerator } from './generator/response.generator';
-import type { AIResponse } from './generator/response.types';
-import { memoryManager } from './memory/memory.manager';
-import { aiOrchestrator } from './orchestrator/orchestrator';
-import { intentRouter } from './router/router';
-import { initializeDefaultTools } from './tools/tool.factory';
-import { toolRegistry } from './tools/tool.registry';
-import type { ToolContext } from './tools/tool.types';
-import { visualDecisionEngine, VisualDecisionEngine } from './visualization/visual.decision.engine';
-import type { VisualizationResult } from './visualization/visualization.types';
+import { env } from '../config/env.js';
+import { logger } from '../config/logger.js';
+import { ApiError } from '../utils/httpError.js';
+import { responsePresentationAgent, ResponsePresentationAgent } from './agents/response.presentation.agent.js';
+import { artifactGenerator, ArtifactGenerator } from './artifacts/artifact.generator.js';
+import type { GeneratedArtifact } from './artifacts/artifact.types.js';
+import { executionEngine, ExecutionEngine } from './execution/execution.service.js';
+import { responseGenerator } from './generator/response.generator.js';
+import type { AIResponse } from './generator/response.types.js';
+import { memoryManager } from './memory/memory.manager.js';
+import { aiOrchestrator } from './orchestrator/orchestrator.js';
+import { intentRouter } from './router/router.js';
+import { initializeDefaultTools } from './tools/tool.factory.js';
+import { toolRegistry } from './tools/tool.registry.js';
+import type { ToolContext } from './tools/tool.types.js';
+import { visualDecisionEngine, VisualDecisionEngine } from './visualization/visual.decision.engine.js';
+import type { VisualizationResult } from './visualization/visualization.types.js';
 
 export interface AIServiceChatResult {
   sessionId: string;

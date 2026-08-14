@@ -1,5 +1,5 @@
 import type { PoolClient } from 'pg';
-import { pool } from '../../config/database';
+import { pool } from '../../config/database.js';
 import type {
   BacktestRow,
   BacktestStatus,
@@ -9,7 +9,7 @@ import type {
   PerformanceMetrics,
   TradeRecord,
   BacktestSummary,
-} from '../types';
+} from '../types/index.js';
 
 /** Reusable client/table abstraction: prefer an explicit client for transactions. */
 function db(client?: PoolClient): PoolClient | typeof pool {

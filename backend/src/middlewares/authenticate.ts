@@ -1,7 +1,7 @@
 import type { RequestHandler } from 'express';
-import { env } from '../config/env';
-import { ApiError } from '../utils/httpError';
-import { verifyAccessToken } from '../utils/jwt';
+import { env } from '../config/env.js';
+import { ApiError } from '../utils/httpError.js';
+import { verifyAccessToken } from '../utils/jwt.js';
 
 /**
  * Reads the access token from the auth cookie (primary, web clients) or the

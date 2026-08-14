@@ -1,6 +1,6 @@
 import type { Response } from 'express';
-import { env } from '../config/env';
-import { signAccessToken } from './jwt';
+import { env } from '../config/env.js';
+import { signAccessToken } from './jwt.js';
 
 const COOKIE_OPTIONS = {
   httpOnly: true,

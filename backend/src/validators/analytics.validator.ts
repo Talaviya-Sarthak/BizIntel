@@ -7,7 +7,7 @@ import {
   type FilterNode,
   type GroupByRequest,
   type TimeSeriesRequest,
-} from '../types/analytics';
+} from '../types/analytics.js';
 
 /** `:column` path parameter — just a non-empty identifier. */
 export const analyticsColumnParamsSchema = z.object({

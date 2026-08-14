@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { parse } from 'csv-parse';
-import { ApiError } from '../utils/httpError';
+import { ApiError } from '../utils/httpError.js';
 
 /**
  * Raised when uploaded file *content* fails validation. The message is a

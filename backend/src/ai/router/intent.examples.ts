@@ -1,4 +1,4 @@
-import type { IntentExample } from './intent.types';
+import type { IntentExample } from './intent.types.js';
 
 /** 30 Canonical Few-Shot Intent Examples covering all 5 intent categories */
 export const INTENT_EXAMPLES: IntentExample[] = [

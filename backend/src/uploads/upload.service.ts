@@ -1,8 +1,8 @@
-import { logger } from '../config/logger';
-import { knowledgeIngestionService, KnowledgeIngestionService } from '../ai/knowledge/knowledge.ingestion';
-import { knowledgeVectorStore, KnowledgeVectorStore } from '../ai/knowledge/knowledge.vectorstore';
-import type { SupportedDocumentFormat } from '../ai/knowledge/knowledge.types';
-import type { IngestionUploadResponse, UploadRecord } from './upload.types';
+import { logger } from '../config/logger.js';
+import { knowledgeIngestionService, KnowledgeIngestionService } from '../ai/knowledge/knowledge.ingestion.js';
+import { knowledgeVectorStore, KnowledgeVectorStore } from '../ai/knowledge/knowledge.vectorstore.js';
+import type { SupportedDocumentFormat } from '../ai/knowledge/knowledge.types.js';
+import type { IngestionUploadResponse, UploadRecord } from './upload.types.js';
 
 export class UploadService {
   private readonly records = new Map<string, UploadRecord>();

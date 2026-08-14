@@ -1,5 +1,5 @@
-import { logger } from '../../config/logger';
-import type { StepExecutionResult } from './execution.types';
+import { logger } from '../../config/logger.js';
+import type { StepExecutionResult } from './execution.types.js';
 
 export class ExecutionLogger {
   public logStepStart(planId: string, stepId: string, toolId: string): void {

@@ -1,5 +1,5 @@
-import type { ToolResult } from '../tools/tool.types';
-import type { ChartType, VisualizationResult } from './visualization.types';
+import type { ToolResult } from '../tools/tool.types.js';
+import type { ChartType, VisualizationResult } from './visualization.types.js';
 
 export class VisualizationService {
   /**

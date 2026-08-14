@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test } from 'vitest';
-import { buildExecutionPlan } from '../../orchestrator/execution-plan';
-import type { ToolContext } from '../../tools/tool.types';
-import { executionEngine, ExecutionEngine } from '../execution.service';
+import { buildExecutionPlan } from '../../orchestrator/execution-plan.js';
+import type { ToolContext } from '../../tools/tool.types.js';
+import { executionEngine, ExecutionEngine } from '../execution.service.js';
 
 describe('Phase 8: AI Execution Engine Unit Tests', () => {
   let engine: ExecutionEngine;

@@ -1,5 +1,5 @@
-import type { ToolContext } from '../tools/tool.types';
-import type { ExecutionPlanGraph } from './execution.types';
+import type { ToolContext } from '../tools/tool.types.js';
+import type { ExecutionPlanGraph } from './execution.types.js';
 
 export interface MultiStepExecutionContext extends ToolContext {
   graph: ExecutionPlanGraph;

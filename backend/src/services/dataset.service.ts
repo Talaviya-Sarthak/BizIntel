@@ -1,11 +1,11 @@
-import { toPublicDataset, type PublicDataset } from '../models/dataset.model';
-import * as datasetRepository from '../repositories/dataset.repository';
-import * as datasetColumnRepository from '../repositories/datasetColumn.repository';
-import { DATAMART_BUCKET } from '../config/supabase';
-import { ApiError } from '../utils/httpError';
-import { duckdbService } from './duckdb.service';
-import { storageService } from './storage.service';
-import { DatasetValidationError, validationService } from './validation.service';
+import { toPublicDataset, type PublicDataset } from '../models/dataset.model.js';
+import * as datasetRepository from '../repositories/dataset.repository.js';
+import * as datasetColumnRepository from '../repositories/datasetColumn.repository.js';
+import { DATAMART_BUCKET } from '../config/supabase.js';
+import { ApiError } from '../utils/httpError.js';
+import { duckdbService } from './duckdb.service.js';
+import { storageService } from './storage.service.js';
+import { DatasetValidationError, validationService } from './validation.service.js';
 
 export interface CreateUploadInput {
   userId: string;

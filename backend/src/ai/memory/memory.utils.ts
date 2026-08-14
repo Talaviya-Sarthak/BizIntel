@@ -1,4 +1,4 @@
-import type { MemoryContext, MemoryMessage } from './memory.types';
+import type { MemoryContext, MemoryMessage } from './memory.types.js';
 
 /**
  * Estimates token count for text (approx 4 characters per token).

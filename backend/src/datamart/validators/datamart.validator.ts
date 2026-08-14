@@ -1,12 +1,12 @@
 import { z } from 'zod';
-import { FILTER_OPERATORS, TIME_GRANULARITIES } from '../../types/analytics';
+import { FILTER_OPERATORS, TIME_GRANULARITIES } from '../../types/analytics.js';
 import {
   DATAMART_AGGREGATIONS,
   METRIC_FORMATS,
   type FilterNode,
   type DataMartQueryMetric,
   type MetricDefinition,
-} from '../types';
+} from '../types/index.js';
 
 /** `:id` path parameter — UUIDs only. */
 export const datamartIdParamsSchema = z.object({

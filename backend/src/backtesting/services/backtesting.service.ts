@@ -1,14 +1,14 @@
-import { pool } from '../../config/database';
-import { findByIdAndUser as findDatasetByIdAndUser } from '../../repositories/dataset.repository';
-import { listByDatasetId as listDatasetColumns } from '../../repositories/datasetColumn.repository';
-import { storageService } from '../../services/storage.service';
-import { ApiError } from '../../utils/httpError';
-import { strategyRegistry } from '../strategies/registry';
-import type { MarketData, Strategy, StrategyParameters } from '../strategies/types';
-import { runBacktest, type EngineTrade } from '../engines/backtestEngine';
-import { computeBenchmarkMetrics, computeMetrics } from '../metrics/performanceMetrics';
-import { marketDataService } from './marketData.service';
-import { backtestRepository, type CreateBacktestInput } from '../repositories/backtest.repository';
+import { pool } from '../../config/database.js';
+import { findByIdAndUser as findDatasetByIdAndUser } from '../../repositories/dataset.repository.js';
+import { listByDatasetId as listDatasetColumns } from '../../repositories/datasetColumn.repository.js';
+import { storageService } from '../../services/storage.service.js';
+import { ApiError } from '../../utils/httpError.js';
+import { strategyRegistry } from '../strategies/registry.js';
+import type { MarketData, Strategy, StrategyParameters } from '../strategies/types.js';
+import { runBacktest, type EngineTrade } from '../engines/backtestEngine.js';
+import { computeBenchmarkMetrics, computeMetrics } from '../metrics/performanceMetrics.js';
+import { marketDataService } from './marketData.service.js';
+import { backtestRepository, type CreateBacktestInput } from '../repositories/backtest.repository.js';
 import {
   BACKTEST_ERROR_CODES,
   type BacktestSummary,
@@ -16,8 +16,8 @@ import {
   type EquitySeriesPoint,
   type MarketCompatibility,
   type TradeRecord,
-} from '../types';
-import type { BacktestCreateInput } from '../validators/backtest.validator';
+} from '../types/index.js';
+import type { BacktestCreateInput } from '../validators/backtest.validator.js';
 
 /** Bars beyond warmup needed to generate and execute at least one signal. */
 const MIN_EXECUTABLE_BARS_AFTER_WARMUP = 2;

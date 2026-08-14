@@ -1,16 +1,16 @@
 import '../../utils/pdf-polyfill';
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
-import { logger } from '../../config/logger';
-import { knowledgeChunker, KnowledgeChunker, type PageContent } from './knowledge.chunker';
-import { knowledgeEmbeddingService, KnowledgeEmbeddingService } from './knowledge.embeddings';
+import { logger } from '../../config/logger.js';
+import { knowledgeChunker, KnowledgeChunker, type PageContent } from './knowledge.chunker.js';
+import { knowledgeEmbeddingService, KnowledgeEmbeddingService } from './knowledge.embeddings.js';
 import type {
   DocumentValidationDiagnostics,
   KnowledgeChunk,
   KnowledgeDocumentMetadata,
   SupportedDocumentFormat,
-} from './knowledge.types';
-import { estimateTokenCount, normalizeDocumentText, titleFromFilename } from './knowledge.utils';
-import { knowledgeVectorStore, KnowledgeVectorStore } from './knowledge.vectorstore';
+} from './knowledge.types.js';
+import { estimateTokenCount, normalizeDocumentText, titleFromFilename } from './knowledge.utils.js';
+import { knowledgeVectorStore, KnowledgeVectorStore } from './knowledge.vectorstore.js';
 
 export interface IngestDocumentInput {
   documentId?: string;

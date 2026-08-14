@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { createPool, REPO_ROOT } from './migration-utils';
+import { createPool, REPO_ROOT } from './migration-utils.js';
 
 /**
  * Applies `database/seed.sql` (development-only demo data).

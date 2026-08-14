@@ -3,7 +3,7 @@
  * PS-05 Enterprise Intelligence Platform
  */
 
-import type { ExecutionPlan } from '../orchestrator/pipeline.types';
+import type { ExecutionPlan } from '../orchestrator/pipeline.types.js';
 
 /** Runtime context provided to an AI Tool when executing */
 export interface ToolContext {

@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import * as analyticsController from '../../controllers/analytics.controller';
-import { authenticate } from '../../middlewares/authenticate';
-import { requireDatasetOwner } from '../../middlewares/requireDatasetOwner';
-import { validate } from '../../middlewares/validate';
+import * as analyticsController from '../../controllers/analytics.controller.js';
+import { authenticate } from '../../middlewares/authenticate.js';
+import { requireDatasetOwner } from '../../middlewares/requireDatasetOwner.js';
+import { validate } from '../../middlewares/validate.js';
 import {
   analyticsBucketsQuerySchema,
   analyticsColumnParamsSchema,
@@ -11,7 +11,7 @@ import {
   analyticsScatterSchema,
   analyticsTimeSeriesSchema,
   analyticsTopValuesQuerySchema,
-} from '../../validators/analytics.validator';
+} from '../../validators/analytics.validator.js';
 
 /**
  * Dataset Intelligence Workspace analytics API. Every route is protected by

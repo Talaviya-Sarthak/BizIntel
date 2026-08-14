@@ -3,8 +3,8 @@
  * PS-05 Enterprise Intelligence Platform
  */
 
-import type { MemoryContext } from '../memory/memory.types';
-import type { ResponseCitation } from '../generator/response.types';
+import type { MemoryContext } from '../memory/memory.types.js';
+import type { ResponseCitation } from '../generator/response.types.js';
 
 /** Supported document formats for enterprise ingestion */
 export type SupportedDocumentFormat = 'pdf' | 'docx' | 'txt' | 'markdown';

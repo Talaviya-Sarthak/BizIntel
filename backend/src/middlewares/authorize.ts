@@ -1,8 +1,8 @@
 import type { RequestHandler } from 'express';
-import * as userRepository from '../repositories/user.repository';
-import type { UserRole } from '../models/user.model';
-import { ApiError } from '../utils/httpError';
-import { asyncHandler } from '../utils/asyncHandler';
+import * as userRepository from '../repositories/user.repository.js';
+import type { UserRole } from '../models/user.model.js';
+import { ApiError } from '../utils/httpError.js';
+import { asyncHandler } from '../utils/asyncHandler.js';
 
 /**
  * Role-based authorization. Must be mounted after `authenticate`.

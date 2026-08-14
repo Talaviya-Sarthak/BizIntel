@@ -1,8 +1,8 @@
-export * from './memory.types';
-export * from './memory.constants';
-export * from './memory.store';
-export * from './memory.repository';
-export * from './memory.context';
-export * from './memory.summary';
-export * from './memory.utils';
-export { MemoryManager, memoryManager } from './memory.manager';
+export * from './memory.types.js';
+export * from './memory.constants.js';
+export * from './memory.store.js';
+export * from './memory.repository.js';
+export * from './memory.context.js';
+export * from './memory.summary.js';
+export * from './memory.utils.js';
+export { MemoryManager, memoryManager } from './memory.manager.js';

@@ -1,6 +1,7 @@
 {
   "name": "@ps05/backend",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "description": "PS-05 Enterprise Intelligence Platform - REST API backend",
   "main": "dist/src/server.js",

@@ -1,15 +1,15 @@
 import type { Request, Response } from 'express';
-import { MAX_DATASET_SIZE_BYTES } from '../config/env';
-import { toPublicDataset } from '../models/dataset.model';
-import * as datasetRepository from '../repositories/dataset.repository';
-import * as datasetColumnRepository from '../repositories/datasetColumn.repository';
-import { datasetService } from '../services/dataset.service';
-import { duckdbService } from '../services/duckdb.service';
-import { storageService, sanitizeFilename } from '../services/storage.service';
-import { validationService } from '../services/validation.service';
-import { ApiError } from '../utils/httpError';
-import { asyncHandler } from '../utils/asyncHandler';
-import type { DatasetPreviewQuery, DatasetUploadInput } from '../validators/dataset.validator';
+import { MAX_DATASET_SIZE_BYTES } from '../config/env.js';
+import { toPublicDataset } from '../models/dataset.model.js';
+import * as datasetRepository from '../repositories/dataset.repository.js';
+import * as datasetColumnRepository from '../repositories/datasetColumn.repository.js';
+import { datasetService } from '../services/dataset.service.js';
+import { duckdbService } from '../services/duckdb.service.js';
+import { storageService, sanitizeFilename } from '../services/storage.service.js';
+import { validationService } from '../services/validation.service.js';
+import { ApiError } from '../utils/httpError.js';
+import { asyncHandler } from '../utils/asyncHandler.js';
+import type { DatasetPreviewQuery, DatasetUploadInput } from '../validators/dataset.validator.js';
 
 export const listDatasets = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.auth!.userId;

@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, test } from 'vitest';
-import { buildExecutionPlan } from '../../orchestrator/execution-plan';
-import type { ToolResult } from '../../tools/tool.types';
-import { memoryManager, MemoryManager } from '../memory.manager';
-import { memoryRepository, MemoryRepository } from '../memory.repository';
-import { memoryStore, MemoryStore } from '../memory.store';
+import { buildExecutionPlan } from '../../orchestrator/execution-plan.js';
+import type { ToolResult } from '../../tools/tool.types.js';
+import { memoryManager, MemoryManager } from '../memory.manager.js';
+import { memoryRepository, MemoryRepository } from '../memory.repository.js';
+import { memoryStore, MemoryStore } from '../memory.store.js';
 
 describe('Memory Layer Unit Tests', () => {
   let store: MemoryStore;

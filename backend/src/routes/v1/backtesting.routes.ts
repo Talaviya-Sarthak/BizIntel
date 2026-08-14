@@ -1,14 +1,14 @@
 import { Router } from 'express';
-import * as backtestController from '../../backtesting/controllers/backtest.controller';
-import { authenticate } from '../../middlewares/authenticate';
-import { validate } from '../../middlewares/validate';
+import * as backtestController from '../../backtesting/controllers/backtest.controller.js';
+import { authenticate } from '../../middlewares/authenticate.js';
+import { validate } from '../../middlewares/validate.js';
 import {
   backtestCreateSchema,
   backtestIdParamsSchema,
   backtestListQuerySchema,
   backtestTradesQuerySchema,
   datasetIdParamsSchema,
-} from '../../backtesting/validators/backtest.validator';
+} from '../../backtesting/validators/backtest.validator.js';
 
 /**
  * Backtesting API.

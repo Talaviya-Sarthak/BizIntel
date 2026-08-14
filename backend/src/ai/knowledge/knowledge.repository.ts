@@ -1,5 +1,5 @@
-import type { KnowledgeChunk, VectorSearchResult, VectorStoreStats } from './knowledge.types';
-import { knowledgeVectorStore, KnowledgeVectorStore } from './knowledge.vectorstore';
+import type { KnowledgeChunk, VectorSearchResult, VectorStoreStats } from './knowledge.types.js';
+import { knowledgeVectorStore, KnowledgeVectorStore } from './knowledge.vectorstore.js';
 
 export class KnowledgeRepository {
   constructor(private readonly vectorStore: KnowledgeVectorStore = knowledgeVectorStore) {}

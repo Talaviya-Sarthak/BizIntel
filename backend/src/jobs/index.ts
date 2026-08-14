@@ -1,2 +1,2 @@
-export * from './job.types';
-export { JobQueue, jobQueue } from './job.queue';
+export * from './job.types.js';
+export { JobQueue, jobQueue } from './job.queue.js';

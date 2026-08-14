@@ -1,19 +1,19 @@
 import { ChatGroq } from '@langchain/groq';
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
-import { env } from '../../config/env';
-import { logger } from '../../config/logger';
-import { GROQ_FALLBACK_MODELS, GROQ_LLM_MODEL } from '../constants';
+import { env } from '../../config/env.js';
+import { logger } from '../../config/logger.js';
+import { GROQ_FALLBACK_MODELS, GROQ_LLM_MODEL } from '../constants.js';
 import {
   RESPONSE_GENERATOR_MAX_TOKENS,
   RESPONSE_GENERATOR_TEMPERATURE,
-} from './response.constants';
-import { RESPONSE_GENERATION_SYSTEM_PROMPT } from './response.prompts';
-import type { AIResponse, ResponseContext } from './response.types';
+} from './response.constants.js';
+import { RESPONSE_GENERATION_SYSTEM_PROMPT } from './response.prompts.js';
+import type { AIResponse, ResponseContext } from './response.types.js';
 import {
   buildResponseMetadata,
   formatGeneratorPromptInput,
   generateFallbackAnswer,
-} from './response.utils';
+} from './response.utils.js';
 
 export class ResponseGenerator {
   /**

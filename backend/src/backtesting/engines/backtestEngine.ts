@@ -1,5 +1,5 @@
-import type { Bar, MarketData, Signal, Strategy, StrategyParameters } from '../strategies/types';
-import { roundMoney, roundPrice, wholeShares } from '../utils/money';
+import type { Bar, MarketData, Signal, Strategy, StrategyParameters } from '../strategies/types.js';
+import { roundMoney, roundPrice, wholeShares } from '../utils/money.js';
 
 export interface EngineConfig {
   initialCapital: number;

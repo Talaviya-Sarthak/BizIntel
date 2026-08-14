@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { asyncHandler } from '../utils/asyncHandler';
-import { ApiError } from '../utils/httpError';
-import { uploadService } from './upload.service';
+import { asyncHandler } from '../utils/asyncHandler.js';
+import { ApiError } from '../utils/httpError.js';
+import { uploadService } from './upload.service.js';
 
 const router = Router();
 

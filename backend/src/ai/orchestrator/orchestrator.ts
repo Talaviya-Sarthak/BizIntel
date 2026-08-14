@@ -1,7 +1,7 @@
-import { logger } from '../../config/logger';
-import type { IntentResult } from '../router/intent.types';
-import { buildExecutionPlan } from './execution-plan';
-import type { ExecutionPlan } from './pipeline.types';
+import { logger } from '../../config/logger.js';
+import type { IntentResult } from '../router/intent.types.js';
+import { buildExecutionPlan } from './execution-plan.js';
+import type { ExecutionPlan } from './pipeline.types.js';
 
 export class AIOrchestrator {
   /**

@@ -1,5 +1,5 @@
-import { pool } from '../config/database';
-import type { User, UserRole } from '../models/user.model';
+import { pool } from '../config/database.js';
+import type { User, UserRole } from '../models/user.model.js';
 
 const USER_COLUMNS = `
   id,

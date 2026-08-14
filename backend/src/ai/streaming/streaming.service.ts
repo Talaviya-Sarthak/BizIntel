@@ -1,5 +1,5 @@
 import type { Response } from 'express';
-import type { SSEEventPayload, SSEStage } from './streaming.types';
+import type { SSEEventPayload, SSEStage } from './streaming.types.js';
 
 export class StreamingService {
   /**

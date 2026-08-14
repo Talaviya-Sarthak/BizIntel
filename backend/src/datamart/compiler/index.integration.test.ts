@@ -2,10 +2,10 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import type { DatasetColumn } from '../../models/dataset.model';
-import { duckdbService } from '../../services/duckdb.service';
-import { DataMartQueryCompiler, type DataMartDatasetSchema } from './index';
-import type { DataMartQuery } from '../types';
+import type { DatasetColumn } from '../../models/dataset.model.js';
+import { duckdbService } from '../../services/duckdb.service.js';
+import { DataMartQueryCompiler, type DataMartDatasetSchema } from './index.js';
+import type { DataMartQuery } from '../types/index.js';
 
 /**
  * End-to-end coverage for the compiler: builds the fixtures, compiles real

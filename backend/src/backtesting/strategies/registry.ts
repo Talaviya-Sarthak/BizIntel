@@ -1,7 +1,7 @@
-import type { Strategy } from './types';
-import { smaCrossoverStrategy } from './smaCrossover';
-import { rsiStrategy } from './rsi';
-import { bollingerBandsStrategy } from './bollingerBands';
+import type { Strategy } from './types.js';
+import { smaCrossoverStrategy } from './smaCrossover.js';
+import { rsiStrategy } from './rsi.js';
+import { bollingerBandsStrategy } from './bollingerBands.js';
 
 /**
  * Strategy registry — the single source of truth for available strategies.

@@ -1,6 +1,6 @@
-import type { ToolResult } from '../tools/tool.types';
-import { memoryStore, MemoryStore } from './memory.store';
-import type { ConversationSession, ConversationSummary, MemoryMessage } from './memory.types';
+import type { ToolResult } from '../tools/tool.types.js';
+import { memoryStore, MemoryStore } from './memory.store.js';
+import type { ConversationSession, ConversationSummary, MemoryMessage } from './memory.types.js';
 
 /**
  * Repository layer isolating storage mechanics from business logic.

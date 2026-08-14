@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
-import { backtestingService } from '../services/backtesting.service';
-import { asyncHandler } from '../../utils/asyncHandler';
-import type { BacktestCreateInput } from '../validators/backtest.validator';
+import { backtestingService } from '../services/backtesting.service.js';
+import { asyncHandler } from '../../utils/asyncHandler.js';
+import type { BacktestCreateInput } from '../validators/backtest.validator.js';
 
 /**
  * Thin HTTP layer for the backtesting module. Handlers stay in the service;

@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { smaCrossoverStrategy } from '../src/backtesting/strategies/smaCrossover';
-import { rsiStrategy } from '../src/backtesting/strategies/rsi';
-import { bollingerBandsStrategy } from '../src/backtesting/strategies/bollingerBands';
-import { strategyRegistry } from '../src/backtesting/strategies/registry';
-import { runBacktest } from '../src/backtesting/engines/backtestEngine';
-import { smaAt, rsiAt, populationStdDevAt } from '../src/backtesting/strategies/indicators';
-import { bar, trending, uShape } from './helpers';
-import type { Strategy, StrategyParameters, StrategyState, Signal, Bar } from '../src/backtesting/strategies/types';
+import { smaCrossoverStrategy } from '../src/backtesting/strategies/smaCrossover.js';
+import { rsiStrategy } from '../src/backtesting/strategies/rsi.js';
+import { bollingerBandsStrategy } from '../src/backtesting/strategies/bollingerBands.js';
+import { strategyRegistry } from '../src/backtesting/strategies/registry.js';
+import { runBacktest } from '../src/backtesting/engines/backtestEngine.js';
+import { smaAt, rsiAt, populationStdDevAt } from '../src/backtesting/strategies/indicators.js';
+import { bar, trending, uShape } from './helpers.js';
+import type { Strategy, StrategyParameters, StrategyState, Signal, Bar } from '../src/backtesting/strategies/types.js';
 
 describe('strategy metadata & validation', () => {
   it('registers all three strategies', () => {

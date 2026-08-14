@@ -1,16 +1,16 @@
-import { logger } from '../../config/logger';
-import type { ExecutionPlan } from '../orchestrator/pipeline.types';
-import { initializeDefaultTools } from '../tools/tool.factory';
-import { toolRegistry, ToolRegistry } from '../tools/tool.registry';
-import type { ToolContext, ToolResult } from '../tools/tool.types';
-import { DEFAULT_EXECUTION_TIMEOUT_MS, DEFAULT_MAX_RETRIES } from './execution.constants';
-import { executionLogger, ExecutionLogger } from './execution.logger';
+import { logger } from '../../config/logger.js';
+import type { ExecutionPlan } from '../orchestrator/pipeline.types.js';
+import { initializeDefaultTools } from '../tools/tool.factory.js';
+import { toolRegistry, ToolRegistry } from '../tools/tool.registry.js';
+import type { ToolContext, ToolResult } from '../tools/tool.types.js';
+import { DEFAULT_EXECUTION_TIMEOUT_MS, DEFAULT_MAX_RETRIES } from './execution.constants.js';
+import { executionLogger, ExecutionLogger } from './execution.logger.js';
 import type {
   ExecutionPlanGraph,
   ExecutionStep,
   MultiStepExecutionResult,
   StepExecutionResult,
-} from './execution.types';
+} from './execution.types.js';
 
 export class ExecutionEngine {
   constructor(

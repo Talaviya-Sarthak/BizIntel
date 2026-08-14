@@ -1,4 +1,4 @@
-import type { Strategy, StrategyParameters, StrategyState, Signal, Bar } from './types';
+import type { Strategy, StrategyParameters, StrategyState, Signal, Bar } from './types.js';
 
 const PARAMETER_DEFS = [
   {

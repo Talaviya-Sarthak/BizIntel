@@ -1,7 +1,7 @@
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
-import { EMBEDDING_VERSION } from './knowledge.constants';
-import type { KnowledgeChunk, KnowledgeDocumentMetadata } from './knowledge.types';
-import { estimateTokenCount, normalizeDocumentText } from './knowledge.utils';
+import { EMBEDDING_VERSION } from './knowledge.constants.js';
+import type { KnowledgeChunk, KnowledgeDocumentMetadata } from './knowledge.types.js';
+import { estimateTokenCount, normalizeDocumentText } from './knowledge.utils.js';
 
 export interface PageContent {
   pageNumber: number;

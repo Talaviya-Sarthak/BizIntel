@@ -3,7 +3,7 @@ import {
   createPool,
   getAppliedMigrations,
   getMigrationFiles,
-} from './migration-utils';
+} from './migration-utils.js';
 
 async function main(): Promise<void> {
   const pool = createPool();

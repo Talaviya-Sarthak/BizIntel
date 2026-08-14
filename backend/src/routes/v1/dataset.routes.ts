@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import * as datasetController from '../../controllers/dataset.controller';
-import { authenticate } from '../../middlewares/authenticate';
-import { requireDatasetOwner } from '../../middlewares/requireDatasetOwner';
-import { uploadDatasetFile } from '../../middlewares/upload';
-import { validate } from '../../middlewares/validate';
-import { datasetPreviewQuerySchema, datasetUploadSchema } from '../../validators/dataset.validator';
+import * as datasetController from '../../controllers/dataset.controller.js';
+import { authenticate } from '../../middlewares/authenticate.js';
+import { requireDatasetOwner } from '../../middlewares/requireDatasetOwner.js';
+import { uploadDatasetFile } from '../../middlewares/upload.js';
+import { validate } from '../../middlewares/validate.js';
+import { datasetPreviewQuerySchema, datasetUploadSchema } from '../../validators/dataset.validator.js';
 
 const router = Router();
 

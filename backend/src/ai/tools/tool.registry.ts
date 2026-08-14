@@ -1,13 +1,13 @@
-import { logger } from '../../config/logger';
-import type { IntentCategory } from '../router/intent.types';
+import { logger } from '../../config/logger.js';
+import type { IntentCategory } from '../router/intent.types.js';
 import {
   DuplicateToolError,
   InvalidContextError,
   ToolExecutionError,
   ToolNotFoundError,
-} from './tool.errors';
-import type { AITool } from './tool.interface';
-import type { ToolContext, ToolResult } from './tool.types';
+} from './tool.errors.js';
+import type { AITool } from './tool.interface.js';
+import type { ToolContext, ToolResult } from './tool.types.js';
 
 export class ToolRegistry {
   private readonly tools = new Map<string, AITool>();

@@ -1,12 +1,12 @@
-import type { DatasetColumn } from '../models/dataset.model';
+import type { DatasetColumn } from '../models/dataset.model.js';
 import {
   classifyColumnCategory,
   isNumericCategory,
   type FilterCondition,
   type FilterNode,
-} from '../types/analytics';
-import { ApiError } from './httpError';
-import { quoteIdent } from '../services/duckdb.service';
+} from '../types/analytics.js';
+import { ApiError } from './httpError.js';
+import { quoteIdent } from '../services/duckdb.service.js';
 
 /**
  * Shared, safe filter SQL builder used by the Dataset Intelligence analytics

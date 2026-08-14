@@ -1,15 +1,15 @@
 import { Router } from 'express';
-import { aiRoutes } from '../../ai';
-import { uploadRoutes } from '../../uploads';
-import analyticsRoutes from './analytics.routes';
-import authRoutes from './auth.routes';
-import backtestingRoutes from './backtesting.routes';
-import dashboardRoutes from './dashboard.routes';
-import datasetRoutes from './dataset.routes';
-import datamartRoutes from './datamart.routes';
-import healthRoutes from './health.routes';
-import ragRoutes from './rag.routes';
-import systemRoutes from './system.routes';
+import { aiRoutes } from '../../ai/index.js';
+import { uploadRoutes } from '../../uploads/index.js';
+import analyticsRoutes from './analytics.routes.js';
+import authRoutes from './auth.routes.js';
+import backtestingRoutes from './backtesting.routes.js';
+import dashboardRoutes from './dashboard.routes.js';
+import datasetRoutes from './dataset.routes.js';
+import datamartRoutes from './datamart.routes.js';
+import healthRoutes from './health.routes.js';
+import ragRoutes from './rag.routes.js';
+import systemRoutes from './system.routes.js';
 
 const router = Router();
 

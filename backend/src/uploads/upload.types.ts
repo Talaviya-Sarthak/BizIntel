@@ -3,7 +3,7 @@
  * PS-05 Enterprise Intelligence Platform
  */
 
-import type { SupportedDocumentFormat } from '../ai/knowledge/knowledge.types';
+import type { SupportedDocumentFormat } from '../ai/knowledge/knowledge.types.js';
 
 export interface UploadRecord {
   fileId: string;

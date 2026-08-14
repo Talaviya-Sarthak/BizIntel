@@ -3,8 +3,8 @@
  * PS-05 Enterprise Intelligence Platform
  */
 
-import type { ExecutionPlan } from '../orchestrator/pipeline.types';
-import type { ToolResult } from '../tools/tool.types';
+import type { ExecutionPlan } from '../orchestrator/pipeline.types.js';
+import type { ToolResult } from '../tools/tool.types.js';
 
 /** Role of a message in a conversation session */
 export type MessageRole = 'user' | 'assistant' | 'system';

@@ -1,8 +1,8 @@
-import type { Dataset, DatasetColumn } from '../models/dataset.model';
-import { storageService } from './storage.service';
-import { duckdbService, csvTableRef, quoteIdent, type Row } from './duckdb.service';
-import { ApiError } from '../utils/httpError';
-import { buildFilterWhere, resolveColumn } from '../utils/filterSql';
+import type { Dataset, DatasetColumn } from '../models/dataset.model.js';
+import { storageService } from './storage.service.js';
+import { duckdbService, csvTableRef, quoteIdent, type Row } from './duckdb.service.js';
+import { ApiError } from '../utils/httpError.js';
+import { buildFilterWhere, resolveColumn } from '../utils/filterSql.js';
 import {
   classifyColumnCategory,
   isCategoricalCategory,
@@ -14,7 +14,7 @@ import {
   type ScatterRequest,
   type TimeGranularity,
   type TimeSeriesRequest,
-} from '../types/analytics';
+} from '../types/analytics.js';
 
 /** Maximum numeric columns included in a correlation matrix (pairs are O(k²)). */
 const MAX_CORRELATION_COLUMNS = 12;

@@ -1,7 +1,7 @@
 import type { RequestHandler } from 'express';
-import * as datasetRepository from '../repositories/dataset.repository';
-import { ApiError } from '../utils/httpError';
-import { asyncHandler } from '../utils/asyncHandler';
+import * as datasetRepository from '../repositories/dataset.repository.js';
+import { ApiError } from '../utils/httpError.js';
+import { asyncHandler } from '../utils/asyncHandler.js';
 
 /**
  * Ownership guard for dataset routes. Must be mounted after `authenticate`.

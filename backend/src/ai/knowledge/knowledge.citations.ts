@@ -1,5 +1,5 @@
-import type { ResponseCitation } from '../generator/response.types';
-import type { VectorSearchResult } from './knowledge.types';
+import type { ResponseCitation } from '../generator/response.types.js';
+import type { VectorSearchResult } from './knowledge.types.js';
 
 export class KnowledgeCitations {
   /**

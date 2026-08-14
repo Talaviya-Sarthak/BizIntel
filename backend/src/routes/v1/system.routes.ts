@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { memoryManager } from '../../ai/memory/memory.manager';
-import { knowledgeVectorStore } from '../../ai/knowledge/knowledge.vectorstore';
-import { jobQueue } from '../../jobs/job.queue';
-import { uploadService } from '../../uploads/upload.service';
-import { asyncHandler } from '../../utils/asyncHandler';
+import { memoryManager } from '../../ai/memory/memory.manager.js';
+import { knowledgeVectorStore } from '../../ai/knowledge/knowledge.vectorstore.js';
+import { jobQueue } from '../../jobs/job.queue.js';
+import { uploadService } from '../../uploads/upload.service.js';
+import { asyncHandler } from '../../utils/asyncHandler.js';
 
 const router = Router();
 

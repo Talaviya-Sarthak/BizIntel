@@ -1,15 +1,15 @@
-import type { DatasetColumn } from '../../models/dataset.model';
-import { findByIdAndUser as findDatasetByIdAndUser } from '../../repositories/dataset.repository';
-import { listByDatasetId as listDatasetColumns } from '../../repositories/datasetColumn.repository';
-import { storageService } from '../../services/storage.service';
-import { csvTableRef, duckdbService, quoteIdent } from '../../services/duckdb.service';
+import type { DatasetColumn } from '../../models/dataset.model.js';
+import { findByIdAndUser as findDatasetByIdAndUser } from '../../repositories/dataset.repository.js';
+import { listByDatasetId as listDatasetColumns } from '../../repositories/datasetColumn.repository.js';
+import { storageService } from '../../services/storage.service.js';
+import { csvTableRef, duckdbService, quoteIdent } from '../../services/duckdb.service.js';
 import {
   classifyColumnCategory,
   isDateCategory,
   isNumericCategory,
   type ColumnCategory,
-} from '../../types/analytics';
-import { ApiError } from '../../utils/httpError';
+} from '../../types/analytics.js';
+import { ApiError } from '../../utils/httpError.js';
 import {
   DATAMART_DEFAULT_LIMIT,
   DATAMART_MAX_LIMIT,
@@ -17,9 +17,9 @@ import {
   DataMartQueryCompiler,
   type DataMartDatasetSchema,
   type CompiledDataMartQuery,
-} from '../compiler';
-import { compileFormula, type FormulaContext } from '../compiler/formula';
-import { datamartRepository } from '../repositories/datamart.repository';
+} from '../compiler/index.js';
+import { compileFormula, type FormulaContext } from '../compiler/formula.js';
+import { datamartRepository } from '../repositories/datamart.repository.js';
 import {
   DATAMART_ERROR_CODES,
   NUMERIC_AGGREGATIONS,
@@ -33,7 +33,7 @@ import {
   type DataMartQueryResult,
   type DataMartResultColumn,
   type MetricDefinition,
-} from '../types';
+} from '../types/index.js';
 import type {
   CreateDashboardInput,
   CreateMetricInput,
@@ -42,7 +42,7 @@ import type {
   UpdateDashboardInput,
   UpdateMetricInput,
   UpdateWidgetInput,
-} from '../repositories/datamart.repository';
+} from '../repositories/datamart.repository.js';
 
 const compiler = new DataMartQueryCompiler();
 

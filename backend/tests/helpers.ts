@@ -1,4 +1,4 @@
-import type { Bar } from '../src/backtesting/strategies/types';
+import type { Bar } from '../src/backtesting/strategies/types.js';
 
 const DAY = 86_400_000;
 

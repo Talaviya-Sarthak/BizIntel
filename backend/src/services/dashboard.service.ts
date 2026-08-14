@@ -1,5 +1,5 @@
-import { toPublicDataset } from '../models/dataset.model';
-import * as datasetRepository from '../repositories/dataset.repository';
+import { toPublicDataset } from '../models/dataset.model.js';
+import * as datasetRepository from '../repositories/dataset.repository.js';
 
 export interface DashboardSummary {
   datasets: {

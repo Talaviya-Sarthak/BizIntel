@@ -1,7 +1,7 @@
-import type { ExecutionPlan } from '../orchestrator/pipeline.types';
-import type { ToolResult } from '../tools/tool.types';
-import type { AIResponseMetadata, ResponseCitation, ResponseContext } from './response.types';
-import { buildConversationPrompt } from '../memory/memory.utils';
+import type { ExecutionPlan } from '../orchestrator/pipeline.types.js';
+import type { ToolResult } from '../tools/tool.types.js';
+import type { AIResponseMetadata, ResponseCitation, ResponseContext } from './response.types.js';
+import { buildConversationPrompt } from '../memory/memory.utils.js';
 
 /**
  * Builds standard AIResponseMetadata object.

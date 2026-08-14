@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import * as datamartController from '../../datamart/controllers/datamart.controller';
-import { authenticate } from '../../middlewares/authenticate';
-import { validate } from '../../middlewares/validate';
+import * as datamartController from '../../datamart/controllers/datamart.controller.js';
+import { authenticate } from '../../middlewares/authenticate.js';
+import { validate } from '../../middlewares/validate.js';
 import {
   comparisonQuerySchema,
   createAnalysisSchema,
@@ -19,7 +19,7 @@ import {
   updateDashboardSchema,
   updateMetricSchema,
   updateWidgetSchema,
-} from '../../datamart/validators/datamart.validator';
+} from '../../datamart/validators/datamart.validator.js';
 
 /**
  * DataMart API — the reusable analytical layer.

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { computeBenchmarkMetrics, computeMaxDrawdown, computeMetrics } from '../src/backtesting/metrics/performanceMetrics';
-import type { EngineEquityPoint, EngineTrade } from '../src/backtesting/engines/backtestEngine';
+import { computeBenchmarkMetrics, computeMaxDrawdown, computeMetrics } from '../src/backtesting/metrics/performanceMetrics.js';
+import type { EngineEquityPoint, EngineTrade } from '../src/backtesting/engines/backtestEngine.js';
 
 const DAY = 86_400_000;
 

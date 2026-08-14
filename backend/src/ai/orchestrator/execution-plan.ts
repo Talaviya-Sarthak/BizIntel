@@ -1,6 +1,6 @@
-import type { IntentResult } from '../router/intent.types';
-import { FALLBACK_PIPELINE_MAPPING, INTENT_PIPELINE_MAP } from './pipeline.constants';
-import type { ExecutionPlan } from './pipeline.types';
+import type { IntentResult } from '../router/intent.types.js';
+import { FALLBACK_PIPELINE_MAPPING, INTENT_PIPELINE_MAP } from './pipeline.constants.js';
+import type { ExecutionPlan } from './pipeline.types.js';
 
 /**
  * Builds a strongly-typed ExecutionPlan given an IntentResult.

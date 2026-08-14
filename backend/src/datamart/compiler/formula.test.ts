@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { ApiError } from '../../utils/httpError';
-import { compileFormula, type FormulaContext } from './formula';
+import { ApiError } from '../../utils/httpError.js';
+import { compileFormula, type FormulaContext } from './formula.js';
 
 function context(columns: string[], numeric: string[] = []): FormulaContext {
   const set = new Set(columns);

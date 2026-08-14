@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from 'vitest';
-import { jobQueue, JobQueue } from '../job.queue';
+import { jobQueue, JobQueue } from '../job.queue.js';
 
 describe('Phase 8: Background Job Queue Unit Tests', () => {
   let queue: JobQueue;

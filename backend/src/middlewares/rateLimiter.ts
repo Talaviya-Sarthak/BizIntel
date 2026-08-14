@@ -1,6 +1,6 @@
 import rateLimit from 'express-rate-limit';
 import type { Request, Response } from 'express';
-import { logger } from '../config/logger';
+import { logger } from '../config/logger.js';
 
 /**
  * Generic API rate limiter — applied to all API routes.

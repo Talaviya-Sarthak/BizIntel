@@ -1,6 +1,6 @@
 import type { RequestHandler } from 'express';
 import { ZodError, type ZodSchema } from 'zod';
-import { ApiError } from '../utils/httpError';
+import { ApiError } from '../utils/httpError.js';
 
 type ValidationTarget = 'body' | 'query' | 'params';
 

@@ -1,6 +1,6 @@
-import { pool } from '../config/database';
-import type { Dataset, DatasetSchema } from '../models/dataset.model';
-import type { DatasetFileType, DatasetStatus } from '../types/dataset';
+import { pool } from '../config/database.js';
+import type { Dataset, DatasetSchema } from '../models/dataset.model.js';
+import type { DatasetFileType, DatasetStatus } from '../types/dataset.js';
 
 const DATASET_COLUMNS = `
   id,

@@ -7,9 +7,9 @@
  * configuration — never free-form SQL — and compiled into safe DuckDB SQL by
  * the DataMartQueryCompiler at execution time.
  */
-import type { FilterNode, TimeGranularity } from '../../types/analytics';
+import type { FilterNode, TimeGranularity } from '../../types/analytics.js';
 
-export type { FilterNode, TimeGranularity } from '../../types/analytics';
+export type { FilterNode, TimeGranularity } from '../../types/analytics.js';
 
 // ---------------------------------------------------------------------------
 // Aggregations

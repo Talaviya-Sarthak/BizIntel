@@ -1,5 +1,5 @@
-import { logger } from '../config/logger';
-import type { BackgroundJob, JobStatus, JobType } from './job.types';
+import { logger } from '../config/logger.js';
+import type { BackgroundJob, JobStatus, JobType } from './job.types.js';
 
 export class JobQueue {
   private readonly jobs = new Map<string, BackgroundJob>();

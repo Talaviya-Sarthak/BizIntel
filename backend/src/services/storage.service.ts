@@ -2,9 +2,9 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { Readable } from 'node:stream';
-import { env } from '../config/env';
-import { DATAMART_BUCKET, getSupabaseAdminClient } from '../config/supabase';
-import { logger } from '../config/logger';
+import { env } from '../config/env.js';
+import { DATAMART_BUCKET, getSupabaseAdminClient } from '../config/supabase.js';
+import { logger } from '../config/logger.js';
 
 /**
  * DataMart storage abstraction backed by Supabase Storage.

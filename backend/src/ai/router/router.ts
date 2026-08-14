@@ -1,16 +1,16 @@
 import { ChatGroq } from '@langchain/groq';
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
-import { env } from '../../config/env';
-import { logger } from '../../config/logger';
-import { GROQ_LLM_MODEL } from '../constants';
+import { env } from '../../config/env.js';
+import { logger } from '../../config/logger.js';
+import { GROQ_LLM_MODEL } from '../constants.js';
 import {
   DEFAULT_FALLBACK_INTENT,
   INTENT_ROUTER_TEMPERATURE,
   MIN_INTENT_CONFIDENCE_THRESHOLD,
   SUPPORTED_INTENTS,
-} from './intent.constants';
-import { INTENT_CLASSIFICATION_SYSTEM_PROMPT } from './intent.prompts';
-import type { IntentCategory, IntentResult } from './intent.types';
+} from './intent.constants.js';
+import { INTENT_CLASSIFICATION_SYSTEM_PROMPT } from './intent.prompts.js';
+import type { IntentCategory, IntentResult } from './intent.types.js';
 
 export class IntentRouter {
   private model: ChatGroq | null = null;

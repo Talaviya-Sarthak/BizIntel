@@ -1,13 +1,13 @@
-import type { DatasetColumn } from '../../models/dataset.model';
-import { csvTableRef, quoteIdent } from '../../services/duckdb.service';
+import type { DatasetColumn } from '../../models/dataset.model.js';
+import { csvTableRef, quoteIdent } from '../../services/duckdb.service.js';
 import {
   classifyColumnCategory,
   isDateCategory,
   isNumericCategory,
   TIME_GRANULARITIES,
-} from '../../types/analytics';
-import { ApiError } from '../../utils/httpError';
-import { buildFilterWhere } from '../../utils/filterSql';
+} from '../../types/analytics.js';
+import { ApiError } from '../../utils/httpError.js';
+import { buildFilterWhere } from '../../utils/filterSql.js';
 import {
   AGGREGATION_FUNCTIONS,
   DATAMART_ERROR_CODES,
@@ -16,8 +16,8 @@ import {
   type DataMartJoin,
   type DataMartQuery,
   type DataMartSort,
-} from '../types';
-import { compileFormula, type FormulaContext } from './formula';
+} from '../types/index.js';
+import { compileFormula, type FormulaContext } from './formula.js';
 
 /**
  * DataMartQueryCompiler — the ONLY path from a structured `DataMartQuery` to

@@ -1,6 +1,6 @@
-import type { ResponseCitation } from '../generator/response.types';
-import type { ToolResult } from '../tools/tool.types';
-import type { ArtifactFormat, GeneratedArtifact } from './artifact.types';
+import type { ResponseCitation } from '../generator/response.types.js';
+import type { ToolResult } from '../tools/tool.types.js';
+import type { ArtifactFormat, GeneratedArtifact } from './artifact.types.js';
 
 export class ArtifactGenerator {
   /**

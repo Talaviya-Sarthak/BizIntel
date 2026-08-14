@@ -1,5 +1,5 @@
-import type { IntentCategory } from '../router/intent.types';
-import type { NextAction, PipelineName } from './pipeline.types';
+import type { IntentCategory } from '../router/intent.types.js';
+import type { NextAction, PipelineName } from './pipeline.types.js';
 
 export interface PipelineMapping {
   pipeline: PipelineName;

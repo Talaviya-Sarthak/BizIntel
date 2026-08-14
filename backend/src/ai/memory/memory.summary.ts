@@ -1,9 +1,9 @@
 import { ChatGroq } from '@langchain/groq';
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
-import { env } from '../../config/env';
-import { logger } from '../../config/logger';
-import { SUMMARIZER_MODEL, SUMMARIZER_TEMPERATURE } from './memory.constants';
-import type { ConversationSession, ConversationSummary } from './memory.types';
+import { env } from '../../config/env.js';
+import { logger } from '../../config/logger.js';
+import { SUMMARIZER_MODEL, SUMMARIZER_TEMPERATURE } from './memory.constants.js';
+import type { ConversationSession, ConversationSummary } from './memory.types.js';
 
 export class ConversationSummarizer {
   private model: ChatGroq | null = null;

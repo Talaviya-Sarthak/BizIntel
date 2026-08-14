@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import type { DatasetColumn } from '../models/dataset.model';
-import { ApiError } from './httpError';
+import type { DatasetColumn } from '../models/dataset.model.js';
+import { ApiError } from './httpError.js';
 import {
   buildFilterWhere,
   coerceFilterValue,
   qualifiedIdent,
   resolveColumn,
-} from './filterSql';
-import type { FilterNode } from '../types/analytics';
+} from './filterSql.js';
+import type { FilterNode } from '../types/analytics.js';
 
 function column(columnName: string, dataType: string): DatasetColumn {
   return {

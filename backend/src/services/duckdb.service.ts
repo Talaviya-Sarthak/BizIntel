@@ -2,7 +2,7 @@ import duckdb from 'duckdb';
 import {
   classifyColumnCategory,
   type ColumnCategory,
-} from '../types/analytics';
+} from '../types/analytics.js';
 
 type DuckDb = duckdb.Database;
 export type Row = Record<string, unknown>;

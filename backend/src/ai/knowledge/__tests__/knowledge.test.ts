@@ -1,15 +1,15 @@
 import { beforeEach, describe, expect, test } from 'vitest';
-import { KnowledgeChunker, knowledgeChunker } from '../knowledge.chunker';
-import { KnowledgeCitations, knowledgeCitations } from '../knowledge.citations';
-import { EMBEDDING_DIMENSIONS } from '../knowledge.constants';
-import { KnowledgeEmbeddingService, knowledgeEmbeddingService } from '../knowledge.embeddings';
-import { KnowledgeIngestionService, knowledgeIngestionService } from '../knowledge.ingestion';
-import { KnowledgeRepository } from '../knowledge.repository';
-import { KnowledgeRetriever, knowledgeRetriever } from '../knowledge.retriever';
-import { KnowledgeService, knowledgeService } from '../knowledge.service';
-import type { KnowledgeChunk, KnowledgeDocumentMetadata } from '../knowledge.types';
-import { cosineSimilarity, estimateTokenCount, normalizeDocumentText, titleFromFilename } from '../knowledge.utils';
-import { KnowledgeVectorStore, knowledgeVectorStore } from '../knowledge.vectorstore';
+import { KnowledgeChunker, knowledgeChunker } from '../knowledge.chunker.js';
+import { KnowledgeCitations, knowledgeCitations } from '../knowledge.citations.js';
+import { EMBEDDING_DIMENSIONS } from '../knowledge.constants.js';
+import { KnowledgeEmbeddingService, knowledgeEmbeddingService } from '../knowledge.embeddings.js';
+import { KnowledgeIngestionService, knowledgeIngestionService } from '../knowledge.ingestion.js';
+import { KnowledgeRepository } from '../knowledge.repository.js';
+import { KnowledgeRetriever, knowledgeRetriever } from '../knowledge.retriever.js';
+import { KnowledgeService, knowledgeService } from '../knowledge.service.js';
+import type { KnowledgeChunk, KnowledgeDocumentMetadata } from '../knowledge.types.js';
+import { cosineSimilarity, estimateTokenCount, normalizeDocumentText, titleFromFilename } from '../knowledge.utils.js';
+import { KnowledgeVectorStore, knowledgeVectorStore } from '../knowledge.vectorstore.js';
 
 describe('Phase 7: Enterprise Knowledge Engine (RAG) Unit Tests', { timeout: 30000 }, () => {
   // --- SECTION 1: Document Utilities Tests (8 tests) ---

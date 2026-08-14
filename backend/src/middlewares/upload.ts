@@ -1,9 +1,9 @@
 import multer from 'multer';
 import path from 'node:path';
 import type { NextFunction, Request, Response } from 'express';
-import { MAX_DATASET_SIZE_BYTES } from '../config/env';
-import { ApiError } from '../utils/httpError';
-import { storageService } from '../services/storage.service';
+import { MAX_DATASET_SIZE_BYTES } from '../config/env.js';
+import { ApiError } from '../utils/httpError.js';
+import { storageService } from '../services/storage.service.js';
 
 const SUPPORTED_EXTENSIONS = new Set(['.csv']);
 

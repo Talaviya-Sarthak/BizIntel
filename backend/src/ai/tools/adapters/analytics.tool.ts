@@ -1,8 +1,8 @@
-import { datamartService } from '../../../datamart/services/datamart.service';
-import * as datasetRepository from '../../../repositories/dataset.repository';
-import type { IntentCategory } from '../../router/intent.types';
-import type { AITool } from '../tool.interface';
-import type { ToolContext, ToolResult } from '../tool.types';
+import { datamartService } from '../../../datamart/services/datamart.service.js';
+import * as datasetRepository from '../../../repositories/dataset.repository.js';
+import type { IntentCategory } from '../../router/intent.types.js';
+import type { AITool } from '../tool.interface.js';
+import type { ToolContext, ToolResult } from '../tool.types.js';
 
 export class AnalyticsTool implements AITool {
   public readonly id = 'analytics_tool';

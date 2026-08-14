@@ -1,22 +1,22 @@
-import { logger } from '../../config/logger';
-import type { ExecutionPlan } from '../orchestrator/pipeline.types';
-import type { ToolResult } from '../tools/tool.types';
-import { buildMemoryContext } from './memory.context';
+import { logger } from '../../config/logger.js';
+import type { ExecutionPlan } from '../orchestrator/pipeline.types.js';
+import type { ToolResult } from '../tools/tool.types.js';
+import { buildMemoryContext } from './memory.context.js';
 
 import {
   MAX_CHAT_HISTORY_MESSAGES,
   SUMMARY_TRIGGER_MESSAGE_COUNT,
-} from './memory.constants';
-import { memoryRepository, MemoryRepository } from './memory.repository';
-import { conversationSummarizer, ConversationSummarizer } from './memory.summary';
+} from './memory.constants.js';
+import { memoryRepository, MemoryRepository } from './memory.repository.js';
+import { conversationSummarizer, ConversationSummarizer } from './memory.summary.js';
 import type {
   ConversationSession,
   ConversationSummary,
   MemoryContext,
   MemoryMessage,
   MemoryStats,
-} from './memory.types';
-import { trimMessages } from './memory.utils';
+} from './memory.types.js';
+import { trimMessages } from './memory.utils.js';
 
 export class MemoryManager {
   constructor(

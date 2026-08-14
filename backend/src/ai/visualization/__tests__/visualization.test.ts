@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from 'vitest';
-import type { ToolResult } from '../../tools/tool.types';
-import { visualizationService, VisualizationService } from '../visualization.generator';
+import type { ToolResult } from '../../tools/tool.types.js';
+import { visualizationService, VisualizationService } from '../visualization.generator.js';
 
 describe('Phase 8: Visualization Service Unit Tests', () => {
   let service: VisualizationService;

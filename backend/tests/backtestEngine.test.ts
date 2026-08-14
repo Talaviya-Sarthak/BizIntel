@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { runBacktest, type EngineConfig } from '../src/backtesting/engines/backtestEngine';
-import type { Bar, Strategy } from '../src/backtesting/strategies/types';
-import { trending, bar } from './helpers';
+import { runBacktest, type EngineConfig } from '../src/backtesting/engines/backtestEngine.js';
+import type { Bar, Strategy } from '../src/backtesting/strategies/types.js';
+import { trending, bar } from './helpers.js';
 
 const scripted: Strategy = {
   id: 'scripted',

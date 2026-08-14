@@ -1,7 +1,7 @@
 import type { ErrorRequestHandler, RequestHandler } from 'express';
 import { ZodError } from 'zod';
-import { logger } from '../config/logger';
-import { ApiError } from '../utils/httpError';
+import { logger } from '../config/logger.js';
+import { ApiError } from '../utils/httpError.js';
 
 export const notFoundHandler: RequestHandler = (_req, res) => {
   res.status(404).json({

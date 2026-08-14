@@ -1,7 +1,7 @@
 import { Router, type Request, type Response } from 'express';
-import { pool } from '../../config/database';
-import { knowledgeVectorStore } from '../../ai/knowledge/knowledge.vectorstore';
-import { asyncHandler } from '../../utils/asyncHandler';
+import { pool } from '../../config/database.js';
+import { knowledgeVectorStore } from '../../ai/knowledge/knowledge.vectorstore.js';
+import { asyncHandler } from '../../utils/asyncHandler.js';
 
 const router = Router();
 

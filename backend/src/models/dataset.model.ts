@@ -1,4 +1,4 @@
-import type { DatasetFileType, DatasetStatus } from '../types/dataset';
+import type { DatasetFileType, DatasetStatus } from '../types/dataset.js';
 
 /** Database row for the `datasets` table. */
 /** A single column entry in the stored JSONB `schema`. */

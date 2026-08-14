@@ -1,4 +1,4 @@
-import { INTENT_DESCRIPTIONS, SUPPORTED_INTENTS } from './intent.constants';
+import { INTENT_DESCRIPTIONS, SUPPORTED_INTENTS } from './intent.constants.js';
 
 /**
  * System prompt forcing strict JSON output intent classification.

@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
-import { appInfo } from '../config/app';
-import { pool } from '../config/database';
-import { asyncHandler } from '../utils/asyncHandler';
+import { appInfo } from '../config/app.js';
+import { pool } from '../config/database.js';
+import { asyncHandler } from '../utils/asyncHandler.js';
 
 /**
  * Liveness + database connectivity probe.

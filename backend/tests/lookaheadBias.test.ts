@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { runBacktest } from '../src/backtesting/engines/backtestEngine';
-import { smaCrossoverStrategy } from '../src/backtesting/strategies/smaCrossover';
-import { rsiStrategy } from '../src/backtesting/strategies/rsi';
-import { bollingerBandsStrategy } from '../src/backtesting/strategies/bollingerBands';
-import { strategyRegistry } from '../src/backtesting/strategies/registry';
-import type { Bar, Strategy, StrategyParameters } from '../src/backtesting/strategies/types';
-import { bar } from './helpers';
+import { runBacktest } from '../src/backtesting/engines/backtestEngine.js';
+import { smaCrossoverStrategy } from '../src/backtesting/strategies/smaCrossover.js';
+import { rsiStrategy } from '../src/backtesting/strategies/rsi.js';
+import { bollingerBandsStrategy } from '../src/backtesting/strategies/bollingerBands.js';
+import { strategyRegistry } from '../src/backtesting/strategies/registry.js';
+import type { Bar, Strategy, StrategyParameters } from '../src/backtesting/strategies/types.js';
+import { bar } from './helpers.js';
 
 /**
  * LOOK-AHEAD BIAS REGRESSION TEST.

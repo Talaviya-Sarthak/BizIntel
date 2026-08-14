@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express';
-import { asyncHandler } from '../../utils/asyncHandler';
-import { aiService } from '../ai.service';
-import { streamingService } from '../streaming/streaming.service';
-import type { ChatResponse } from '../types';
+import { asyncHandler } from '../../utils/asyncHandler.js';
+import { aiService } from '../ai.service.js';
+import { streamingService } from '../streaming/streaming.service.js';
+import type { ChatResponse } from '../types.js';
 
 /**
  * POST /api/v1/ai/chat

@@ -1,6 +1,6 @@
 import { Pool, types as pgTypes } from 'pg';
-import { env } from './env';
-import { logger } from './logger';
+import { env } from './env.js';
+import { logger } from './logger.js';
 
 // BIGINT and NUMERIC arrive as strings by default. Dataset row/column counts
 // are well within safe integer range, so parse them to JS numbers at the

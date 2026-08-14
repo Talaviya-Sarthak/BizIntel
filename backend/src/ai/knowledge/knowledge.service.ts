@@ -1,14 +1,14 @@
 import { ChatGroq } from '@langchain/groq';
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
-import { env } from '../../config/env';
-import { logger } from '../../config/logger';
-import { GROQ_LLM_MODEL } from '../constants';
-import { knowledgeCitations, KnowledgeCitations } from './knowledge.citations';
-import { RAG_GROUNDED_ANSWER_SYSTEM_PROMPT } from './knowledge.prompts';
-import { knowledgeRetriever, KnowledgeRetriever } from './knowledge.retriever';
-import { normalizeDocumentText } from './knowledge.utils';
+import { env } from '../../config/env.js';
+import { logger } from '../../config/logger.js';
+import { GROQ_LLM_MODEL } from '../constants.js';
+import { knowledgeCitations, KnowledgeCitations } from './knowledge.citations.js';
+import { RAG_GROUNDED_ANSWER_SYSTEM_PROMPT } from './knowledge.prompts.js';
+import { knowledgeRetriever, KnowledgeRetriever } from './knowledge.retriever.js';
+import { normalizeDocumentText } from './knowledge.utils.js';
 
-import type { KnowledgeAnswer, VectorSearchResult } from './knowledge.types';
+import type { KnowledgeAnswer, VectorSearchResult } from './knowledge.types.js';
 
 export class KnowledgeService {
   private model: ChatGroq | null = null;

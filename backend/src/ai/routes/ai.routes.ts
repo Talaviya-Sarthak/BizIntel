@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { authenticate } from '../../middlewares/authenticate';
-import { validate } from '../../middlewares/validate';
-import * as aiController from '../controllers/ai.controller';
-import { chatInputSchema } from '../validators/ai.validator';
+import { authenticate } from '../../middlewares/authenticate.js';
+import { validate } from '../../middlewares/validate.js';
+import * as aiController from '../controllers/ai.controller.js';
+import { chatInputSchema } from '../validators/ai.validator.js';
 
 const router = Router();
 

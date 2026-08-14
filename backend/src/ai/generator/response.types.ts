@@ -3,10 +3,10 @@
  * PS-05 Enterprise Intelligence Platform
  */
 
-import type { MemoryContext } from '../memory/memory.types';
-import type { ExecutionPlan, PipelineName } from '../orchestrator/pipeline.types';
-import type { IntentCategory } from '../router/intent.types';
-import type { ToolResult } from '../tools/tool.types';
+import type { MemoryContext } from '../memory/memory.types.js';
+import type { ExecutionPlan, PipelineName } from '../orchestrator/pipeline.types.js';
+import type { IntentCategory } from '../router/intent.types.js';
+import type { ToolResult } from '../tools/tool.types.js';
 
 /** Citation or data source reference */
 export interface ResponseCitation {

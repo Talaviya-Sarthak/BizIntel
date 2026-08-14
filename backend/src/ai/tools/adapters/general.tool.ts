@@ -1,6 +1,6 @@
-import type { IntentCategory } from '../../router/intent.types';
-import type { AITool } from '../tool.interface';
-import type { ToolContext, ToolResult } from '../tool.types';
+import type { IntentCategory } from '../../router/intent.types.js';
+import type { AITool } from '../tool.interface.js';
+import type { ToolContext, ToolResult } from '../tool.types.js';
 
 export class GeneralTool implements AITool {
   public readonly id = 'general_tool';

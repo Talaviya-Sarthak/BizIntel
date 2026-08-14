@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from 'vitest';
-import type { ToolResult } from '../../tools/tool.types';
-import { artifactGenerator, ArtifactGenerator } from '../artifact.generator';
+import type { ToolResult } from '../../tools/tool.types.js';
+import { artifactGenerator, ArtifactGenerator } from '../artifact.generator.js';
 
 describe('Phase 8: Artifact Generator Unit Tests', () => {
   let generator: ArtifactGenerator;

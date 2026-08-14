@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { detectMarketColumns, validateMarketData, toTimestamp } from '../src/backtesting/marketData/marketColumns';
+import { detectMarketColumns, validateMarketData, toTimestamp } from '../src/backtesting/marketData/marketColumns.js';
 
 describe('detectMarketColumns', () => {
   it('detects a standard OHLCV dataset with mixed-case headers', () => {

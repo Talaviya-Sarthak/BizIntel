@@ -3,8 +3,8 @@
  * PS-05 Enterprise Intelligence Platform
  */
 
-import type { IntentCategory } from '../router/intent.types';
-import type { ToolResult } from '../tools/tool.types';
+import type { IntentCategory } from '../router/intent.types.js';
+import type { ToolResult } from '../tools/tool.types.js';
 
 export type ExecutionStrategy = 'sequential' | 'parallel';
 

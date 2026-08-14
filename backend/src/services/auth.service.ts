@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
-import * as userRepository from '../repositories/user.repository';
-import { ApiError } from '../utils/httpError';
-import type { LoginInput, RegisterInput } from '../validators/auth.validator';
-import type { PublicUser, User } from '../models/user.model';
+import * as userRepository from '../repositories/user.repository.js';
+import { ApiError } from '../utils/httpError.js';
+import type { LoginInput, RegisterInput } from '../validators/auth.validator.js';
+import type { PublicUser, User } from '../models/user.model.js';
 
 const BCRYPT_ROUNDS = 10;
 

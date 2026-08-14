@@ -1,14 +1,14 @@
-import type { Bar, MarketData } from '../strategies/types';
-import { BACKTEST_ERROR_CODES } from '../types';
-import { ApiError } from '../../utils/httpError';
-import { duckdbService, csvTableRef, quoteIdent, type Row } from '../../services/duckdb.service';
+import type { Bar, MarketData } from '../strategies/types.js';
+import { BACKTEST_ERROR_CODES } from '../types/index.js';
+import { ApiError } from '../../utils/httpError.js';
+import { duckdbService, csvTableRef, quoteIdent, type Row } from '../../services/duckdb.service.js';
 import {
   detectMarketColumns,
   validateMarketData,
   toTimestamp,
   type CandidateColumn,
   type MarketColumnMap,
-} from '../marketData/marketColumns';
+} from '../marketData/marketColumns.js';
 
 export interface LoadMarketDataInput {
   filePath: string;

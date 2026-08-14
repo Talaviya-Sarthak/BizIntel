@@ -1,8 +1,8 @@
-import type { ExecutionPlan } from '../orchestrator/pipeline.types';
-import type { ToolResult } from '../tools/tool.types';
-import { MAX_CONTEXT_MESSAGES, MAX_CONTEXT_TOKEN_BUDGET } from './memory.constants';
-import type { ConversationSession, MemoryContext } from './memory.types';
-import { findRelevantMessages } from './memory.utils';
+import type { ExecutionPlan } from '../orchestrator/pipeline.types.js';
+import type { ToolResult } from '../tools/tool.types.js';
+import { MAX_CONTEXT_MESSAGES, MAX_CONTEXT_TOKEN_BUDGET } from './memory.constants.js';
+import type { ConversationSession, MemoryContext } from './memory.types.js';
+import { findRelevantMessages } from './memory.utils.js';
 
 /**
  * Builds a comprehensive MemoryContext object from a session and current execution outputs.

@@ -1,6 +1,6 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import { env } from './env';
-import { logger } from './logger';
+import { env } from './env.js';
+import { logger } from './logger.js';
 
 /**
  * DATA MART Supabase Storage configuration (backend-only).

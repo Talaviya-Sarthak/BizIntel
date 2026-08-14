@@ -1,9 +1,9 @@
 import type { Request, Response } from 'express';
-import { toPublicUser } from '../models/user.model';
-import * as authService from '../services/auth.service';
-import { asyncHandler } from '../utils/asyncHandler';
-import { clearAuthCookie, setAuthCookie } from '../utils/cookies';
-import { signAccessToken } from '../utils/jwt';
+import { toPublicUser } from '../models/user.model.js';
+import * as authService from '../services/auth.service.js';
+import { asyncHandler } from '../utils/asyncHandler.js';
+import { clearAuthCookie, setAuthCookie } from '../utils/cookies.js';
+import { signAccessToken } from '../utils/jwt.js';
 
 export const register = asyncHandler(async (req: Request, res: Response) => {
   const { user } = await authService.register(req.body);
