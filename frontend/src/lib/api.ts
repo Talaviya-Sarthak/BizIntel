@@ -24,6 +24,7 @@ export const api = axios.create({
 // This ensures cross-origin auth works even when browsers block third-party cookies.
 api.interceptors.request.use((config) => {
   const token = getAccessToken();
+  console.log(`[api] request interceptor: url=${config.url}, token=${token ? 'present' : 'MISSING'}`);
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

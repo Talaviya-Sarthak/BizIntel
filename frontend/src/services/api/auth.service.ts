@@ -34,7 +34,9 @@ export const authService = {
 
   async login(input: LoginInput): Promise<User> {
     const { data } = await api.post<ApiSuccess<AuthPayload>>('/auth/login', input);
+    console.log('[auth] login response:', JSON.stringify({ hasToken: !!data.data.token, tokenLength: data.data.token?.length, tokenPreview: data.data.token?.substring(0, 30) }));
     setAccessToken(data.data.token);
+    console.log('[auth] login: setAccessToken called. localStorage now has:', localStorage.getItem('bizintel_auth_token') ? 'YES' : 'NO');
     return data.data.user;
   },
 
@@ -50,9 +52,11 @@ export const authService = {
   async getCurrentUser(): Promise<User | null> {
     try {
       const { data } = await api.get<ApiSuccess<AuthPayload>>('/auth/me');
+      console.log('[auth] getCurrentUser: success, user =', data.data.user?.email);
       return data.data.user;
     } catch (error) {
       const status = axiosStatus(error);
+      console.log('[auth] getCurrentUser: failed, status =', status);
       if (status === 401 || status === 403) {
         return null;
       }

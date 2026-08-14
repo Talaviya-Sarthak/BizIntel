@@ -10,10 +10,12 @@ function authHeaders(): Record<string, string> {
 }
 
 export async function sendChatMessage(message: string, sessionId?: string): Promise<ChatResponse> {
+  const headers = authHeaders();
+  console.log('[ai.api] sendChatMessage: authHeaders =', JSON.stringify(headers));
   const { data } = await api.post<ChatResponse>(
     `${API_BASE}/ai/chat`,
     { message, sessionId },
-    { headers: authHeaders() },
+    { headers },
   );
   return data;
 }
@@ -26,13 +28,12 @@ export function subscribeToAIStream(
 ): () => void {
   const url = `${API_BASE}/ai/stream?message=${encodeURIComponent(message)}${sessionId ? `&sessionId=${sessionId}` : ''}`;
   const controller = new AbortController();
+  const headers = { Accept: 'text/event-stream', ...authHeaders() };
+  console.log('[ai.api] subscribeToAIStream: headers =', JSON.stringify(headers));
 
   fetch(url, {
     credentials: 'include',
-    headers: {
-      Accept: 'text/event-stream',
-      ...authHeaders(),
-    },
+    headers,
     signal: controller.signal,
   })
     .then(async (response) => {
