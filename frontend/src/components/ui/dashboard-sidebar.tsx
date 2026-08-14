@@ -9,7 +9,6 @@ import {
   ChevronRight,
   Inbox,
   Activity,
-  CreditCard,
   Globe,
   Terminal,
   Blocks,
@@ -69,7 +68,6 @@ const mockNavGroups: NavGroupData[] = [
           { id: 'bt-new', title: 'New Backtest', icon: PlusCircle, path: '/backtesting/new' },
         ]
       },
-      { id: 'reports', title: 'Reports & Export', icon: CreditCard, path: '/reports' },
     ]
   },
   {
