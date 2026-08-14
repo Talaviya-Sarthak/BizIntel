@@ -54,7 +54,6 @@ export const authService = {
     } catch (error) {
       const status = axiosStatus(error);
       if (status === 401 || status === 403) {
-        clearAccessToken();
         return null;
       }
       throw error;
