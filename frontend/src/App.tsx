@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider } from 'react-router-dom';
 import { AuthProvider } from './features/auth/context/AuthProvider';
@@ -17,6 +18,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <RouterProvider router={router} future={{ v7_startTransition: true }} />
+        <Analytics />
       </AuthProvider>
     </QueryClientProvider>
   );
