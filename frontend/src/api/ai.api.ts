@@ -2,8 +2,6 @@ import type { ChatResponse, SSEEventPayload } from '../types/ai.types';
 import { api } from '../lib/api';
 import { getAccessToken } from '../lib/authToken';
 
-const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) || '/api/v1';
-
 function authHeaders(): Record<string, string> {
   const token = getAccessToken();
   return token ? { Authorization: `Bearer ${token}` } : {};
@@ -13,7 +11,7 @@ export async function sendChatMessage(message: string, sessionId?: string): Prom
   const headers = authHeaders();
   console.log('[ai.api] sendChatMessage: authHeaders =', JSON.stringify(headers));
   const { data } = await api.post<ChatResponse>(
-    `${API_BASE}/ai/chat`,
+    '/ai/chat',
     { message, sessionId },
     { headers, timeout: 600_000 },
   );
@@ -26,7 +24,8 @@ export function subscribeToAIStream(
   onEvent?: (payload: SSEEventPayload) => void,
   onError?: (err: any) => void,
 ): () => void {
-  const url = `${API_BASE}/ai/stream?message=${encodeURIComponent(message)}${sessionId ? `&sessionId=${sessionId}` : ''}`;
+  const baseUrl = (import.meta.env.VITE_API_URL as string | undefined)?.replace(/\/+$/, '') || '/api/v1';
+  const url = `${baseUrl}/ai/stream?message=${encodeURIComponent(message)}${sessionId ? `&sessionId=${sessionId}` : ''}`;
   const controller = new AbortController();
   const headers = { Accept: 'text/event-stream', ...authHeaders() };
   console.log('[ai.api] subscribeToAIStream: headers =', JSON.stringify(headers));

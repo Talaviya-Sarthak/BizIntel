@@ -18,13 +18,14 @@ router.post(
       throw ApiError.badRequest('MISSING_UPLOAD_DATA', 'filename and content parameters are required.');
     }
 
+    const isBinaryFormat = fileType === 'pdf' || fileType === 'docx' || fileType === 'xlsx';
     const contentBuffer = Buffer.isBuffer(content)
       ? content
       : typeof content === 'string' && content.startsWith('data:')
         ? Buffer.from(content.split(',')[1] || '', 'base64')
-        : typeof content === 'string' && /^[A-Za-z0-9+/=\s]+$/.test(content.trim().substring(0, 100))
+        : typeof content === 'string' && isBinaryFormat && /^[A-Za-z0-9+/=\s]+$/.test(content.trim().substring(0, 100))
           ? Buffer.from(content.trim(), 'base64')
-          : Buffer.from(content);
+          : Buffer.from(typeof content === 'string' ? content : String(content), 'utf-8');
 
     console.log('\n==================================================');
     console.log('STEP 1: UPLOAD ENDPOINT TELEMETRY');

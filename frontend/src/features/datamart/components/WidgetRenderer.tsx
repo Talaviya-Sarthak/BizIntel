@@ -99,7 +99,22 @@ export function WidgetRenderer({ widget }: { widget: DataMartDashboardWidget }) 
 
   if (widget.type === 'bar' || widget.type === 'line' || widget.type === 'area') {
     if (isEmpty) {
-      return <ErrorState title="No data" message="This analysis returned no rows." />;
+      return (
+        <div className="flex flex-col items-center justify-center py-10 px-4 text-center rounded-2xl bg-zinc-900/40 border border-zinc-800/80 space-y-2">
+          <div className="p-2.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700/50">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+          <p className="text-xs font-semibold text-zinc-200">No matching data</p>
+          <p className="text-[11px] text-zinc-400 max-w-xs leading-relaxed">
+            This query executed cleanly but returned 0 rows. Verify that the dataset contains records and active filters match.
+          </p>
+          <span className="inline-block font-mono text-[10px] px-2.5 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700/60 mt-1">
+            0 rows · {result.columns.length} columns available
+          </span>
+        </div>
+      );
     }
     const chartType = widget.type === 'area' ? 'line' : widget.type;
     return <PinnedChart widget={widget} result={result} chartType={chartType} />;
@@ -107,7 +122,19 @@ export function WidgetRenderer({ widget }: { widget: DataMartDashboardWidget }) 
 
   if (widget.type === 'pie' || widget.type === 'scatter') {
     if (isEmpty) {
-      return <ErrorState title="No data" message="This analysis returned no rows." />;
+      return (
+        <div className="flex flex-col items-center justify-center py-10 px-4 text-center rounded-2xl bg-zinc-900/40 border border-zinc-800/80 space-y-2">
+          <div className="p-2.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700/50">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+            </svg>
+          </div>
+          <p className="text-xs font-semibold text-zinc-200">No matching data</p>
+          <p className="text-[11px] text-zinc-400 max-w-xs leading-relaxed">
+            This query returned 0 rows for chart visualization.
+          </p>
+        </div>
+      );
     }
     return <PinnedChart widget={widget} result={result} chartType={widget.type} />;
   }
@@ -129,12 +156,12 @@ function KpiWidget({
   const valueKey = (widget.configuration?.valueKey as string | undefined) ?? '';
   const firstRow = result.rows[0];
   const firstValue = firstRow
-    ? valueKey
+    ? valueKey && valueKey in firstRow
       ? (firstRow[valueKey] ?? null)
       : Object.values(firstRow)[0]
     : null;
   const firstKey = firstRow
-    ? valueKey
+    ? valueKey && valueKey in firstRow
       ? valueKey
       : Object.keys(firstRow)[0]
     : null;
@@ -159,19 +186,31 @@ function PinnedChart({
   result: DataMartQueryResult;
   chartType: 'bar' | 'line' | 'pie' | 'scatter';
 }) {
+  const availableColumnNames = new Set(result.columns.map((c) => c.name));
+
+  const rawXKey = widget.configuration?.xKey as string | undefined;
+  const rawYKey = widget.configuration?.yKey as string | undefined;
+
+  const validXKey = rawXKey && availableColumnNames.has(rawXKey) ? rawXKey : undefined;
+  const validYKey = rawYKey && availableColumnNames.has(rawYKey) ? rawYKey : undefined;
+
   const dimensions = result.columns.filter((column) => column.category !== 'metric');
   const lastMetric = result.columns[result.columns.length - 1];
   const metric =
     result.columns.find((column) => column.category === 'metric') ?? lastMetric;
+
   const xKey =
-    (widget.configuration?.xKey as string | undefined) ??
+    validXKey ??
     dimensions[0]?.name ??
     result.columns[0]?.name ??
     '';
+
   const yKey =
-    (widget.configuration?.yKey as string | undefined) ??
-    metric?.name ??
-    lastMetric?.name ??
+    validYKey ??
+    (metric?.name && metric.name !== xKey ? metric.name : undefined) ??
+    (lastMetric?.name && lastMetric.name !== xKey ? lastMetric.name : undefined) ??
+    result.columns.find((c) => c.name !== xKey)?.name ??
+    result.columns[0]?.name ??
     '';
 
   if (chartType === 'bar') {

@@ -67,7 +67,7 @@ export function AnalysisSidebar({
 
   return (
     <aside className="w-64 shrink-0">
-      <nav className="sticky top-24 flex flex-col gap-1 rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+      <nav className="sticky top-2 flex flex-col gap-1 rounded-2xl border border-white/10 bg-[#121214] p-3 max-h-[calc(100vh-100px)] overflow-y-auto">
         <div className="mb-2 px-3 py-2">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
             Analysis Dashboard

@@ -157,6 +157,7 @@ export class KnowledgeIngestionService {
     // ----------------------------------------------------------------
     // STEP 1: UPLOAD ENDPOINT TELEMETRY
     // ----------------------------------------------------------------
+    const isBinaryFormat = (fileType as string) === 'pdf' || (fileType as string) === 'docx' || (fileType as string) === 'xlsx';
     let buffer: Buffer;
     if (Buffer.isBuffer(input.fileContent)) {
       buffer = input.fileContent;
@@ -165,6 +166,7 @@ export class KnowledgeIngestionService {
       buffer = Buffer.from(base64Data, 'base64');
     } else if (
       typeof input.fileContent === 'string' &&
+      isBinaryFormat &&
       /^[A-Za-z0-9+/=\s]+$/.test(input.fileContent.trim().substring(0, 100))
     ) {
       buffer = Buffer.from(input.fileContent.trim(), 'base64');

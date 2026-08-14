@@ -142,7 +142,7 @@ export function AnalysisDashboardPage() {
       ) : null}
 
       {isReady ? (
-        <div className="flex gap-6">
+        <div className="flex gap-6 items-start">
           {/* Sidebar Navigation */}
           <AnalysisSidebar
             activeSection={activeSection}

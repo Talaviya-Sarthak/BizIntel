@@ -51,7 +51,7 @@ const mockNavGroups: NavGroupData[] = [
         icon: FolderKanban,
         children: [
           { id: 'dm-query', title: 'Query Builder', icon: Hash, path: '/datamart/query' },
-          { id: 'dm-analyses', title: 'Analyses', icon: Hash, path: '/datamart/analyses' },
+          { id: 'dm-analyses', title: 'Analysis', icon: Hash, path: '/datamart/analyses' },
           { id: 'dm-dashboards', title: 'Dashboards', icon: Hash, path: '/datamart/dashboards' },
           { id: 'dm-metrics', title: 'Metrics Catalog', icon: Hash, path: '/datamart/metrics' },
         ]
@@ -79,7 +79,6 @@ const mockNavGroups: NavGroupData[] = [
 ];
 
 const mockBottomItems: NavItemData[] = [
-  { id: 'settings-bottom', title: 'Settings', icon: Settings, shortcut: '⌘,', path: '/settings' },
   { id: 'logout', title: 'Log out', icon: LogOut, path: '/signin' },
 ];
 

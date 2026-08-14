@@ -1,7 +1,5 @@
 import { api } from '../lib/api';
 
-const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) || '/api/v1';
-
 export interface IngestResponse {
   success: boolean;
   fileId: string;
@@ -29,7 +27,7 @@ export async function ingestDocument(
   fileType?: string,
 ): Promise<IngestResponse> {
   const { data } = await api.post<IngestResponse>(
-    `${API_BASE}/uploads/ingest`,
+    '/uploads/ingest',
     { filename, content, fileType },
     { timeout: 900_000 },
   );
@@ -38,14 +36,14 @@ export async function ingestDocument(
 
 export async function fetchUploads(): Promise<UploadRecord[]> {
   const { data } = await api.get<{ success: boolean; uploads: UploadRecord[] }>(
-    `${API_BASE}/uploads`,
+    '/uploads',
   );
   return data.uploads;
 }
 
 export async function deleteDocument(fileId: string): Promise<boolean> {
   const { data } = await api.delete<{ success: boolean }>(
-    `${API_BASE}/uploads/${encodeURIComponent(fileId)}`,
+    `/uploads/${encodeURIComponent(fileId)}`,
   );
   return data.success;
 }
