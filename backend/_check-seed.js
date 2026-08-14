@@ -1,5 +1,5 @@
 const { Pool } = require('pg');
-require('dotenv').config({ path: 'D:/BizIntel/ps05-enterprise-intelligence/backend/.env' });
+require('dotenv').config({ path: 'D:/BizIntel/backend/.env' });
 const p = new Pool({ connectionString: process.env.DATABASE_URL });
 
 async function main() {
