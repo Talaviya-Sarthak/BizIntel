@@ -30,7 +30,7 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="relative py-16 sm:py-24 border-t border-zinc-800/80">
+    <section id="how-it-works" className="relative py-10 sm:py-14 border-t border-zinc-800/80">
       <div className="container-shell">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

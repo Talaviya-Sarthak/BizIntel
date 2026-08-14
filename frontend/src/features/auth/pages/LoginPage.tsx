@@ -70,6 +70,7 @@ export default function LoginPage({
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -119,7 +120,7 @@ export default function LoginPage({
               Email
             </Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500 pointer-events-none" />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400 pointer-events-none z-10" />
               <Input
                 id="email"
                 type="email"
@@ -137,7 +138,7 @@ export default function LoginPage({
               Password
             </Label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500 pointer-events-none" />
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400 pointer-events-none z-10" />
               <Input
                 id="password"
                 type={showPassword ? "text" : "password"}
@@ -150,7 +151,7 @@ export default function LoginPage({
               <button
                 type="button"
                 aria-label={showPassword ? "Hide password" : "Show password"}
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-md text-zinc-400 hover:text-zinc-200 transition-colors"
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-md text-zinc-400 hover:text-zinc-200 transition-colors z-10"
                 onClick={() => setShowPassword((v) => !v)}
               >
                 {showPassword ? (
@@ -166,6 +167,8 @@ export default function LoginPage({
             <div className="flex items-center gap-2">
               <Checkbox
                 id="remember"
+                checked={rememberMe}
+                onCheckedChange={setRememberMe}
                 className="h-4 w-4 border-zinc-700 data-[state=checked]:bg-zinc-50 data-[state=checked]:text-zinc-900"
               />
               <Label htmlFor="remember" className="text-zinc-400 text-xs cursor-pointer">

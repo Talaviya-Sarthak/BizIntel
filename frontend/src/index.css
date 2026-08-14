@@ -53,3 +53,19 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.2);
 }
+
+/* Prevent Browser Autofill from overriding dark input styles and hiding icons */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: #fafafa !important;
+  -webkit-box-shadow: 0 0 0px 1000px #09090b inset !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+

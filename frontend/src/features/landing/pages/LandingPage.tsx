@@ -7,6 +7,7 @@ import { HowItWorks } from '../components/HowItWorks';
 import { Navbar } from '../components/Navbar';
 import { PlatformBackground } from '../components/PlatformBackground';
 import { PlatformOverview } from '../components/PlatformOverview';
+import LogoCloud from '../../../components/ui/logo-cloud-14';
 
 export function LandingPage() {
   return (
@@ -17,6 +18,7 @@ export function LandingPage() {
         <PlatformOverview />
         <HowItWorks />
         <Architecture />
+        <LogoCloud />
         <FAQ />
         <CTA />
       </main>
@@ -24,3 +26,4 @@ export function LandingPage() {
     </PlatformBackground>
   );
 }
+

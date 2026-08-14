@@ -5,7 +5,6 @@ import {
   FolderKanban, 
   Settings, 
   LogOut,
-  Hash,
   ChevronDown,
   ChevronRight,
   Inbox,
@@ -15,7 +14,11 @@ import {
   Terminal,
   Blocks,
   PanelLeftClose,
-  PanelLeftOpen
+  PanelLeftOpen,
+  BarChart2,
+  LayoutGrid,
+  Gauge,
+  PlusCircle
 } from 'lucide-react';
 
 export type NavItemData = {
@@ -50,10 +53,10 @@ const mockNavGroups: NavGroupData[] = [
         title: 'DataMart Studio', 
         icon: FolderKanban,
         children: [
-          { id: 'dm-query', title: 'Query Builder', icon: Hash, path: '/datamart/query' },
-          { id: 'dm-analyses', title: 'Analysis', icon: Hash, path: '/datamart/analyses' },
-          { id: 'dm-dashboards', title: 'Dashboards', icon: Hash, path: '/datamart/dashboards' },
-          { id: 'dm-metrics', title: 'Metrics Catalog', icon: Hash, path: '/datamart/metrics' },
+          { id: 'dm-query', title: 'Query Builder', icon: Terminal, path: '/datamart/query' },
+          { id: 'dm-analyses', title: 'Analysis', icon: BarChart2, path: '/datamart/analyses' },
+          { id: 'dm-dashboards', title: 'Dashboards', icon: LayoutGrid, path: '/datamart/dashboards' },
+          { id: 'dm-metrics', title: 'Metrics Catalog', icon: Gauge, path: '/datamart/metrics' },
         ]
       },
       { id: 'knowledge-base', title: 'Knowledge Base', icon: Globe, path: '/knowledge-base' },
@@ -62,8 +65,8 @@ const mockNavGroups: NavGroupData[] = [
         title: 'Backtesting', 
         icon: Terminal,
         children: [
-          { id: 'bt-overview', title: 'Strategy Overview', icon: Hash, path: '/backtesting' },
-          { id: 'bt-new', title: 'New Backtest', icon: Hash, path: '/backtesting/new' },
+          { id: 'bt-overview', title: 'Strategy Overview', icon: Activity, path: '/backtesting' },
+          { id: 'bt-new', title: 'New Backtest', icon: PlusCircle, path: '/backtesting/new' },
         ]
       },
       { id: 'reports', title: 'Reports & Export', icon: CreditCard, path: '/reports' },
@@ -154,7 +157,8 @@ function NavItem({
 }) {
   const isActive = activeId === item.id || (item.path && activeId === item.path);
   const hasChildren = !!item.children;
-  const [isOpen, setIsOpen] = useState(true);
+  const isChildActive = hasChildren && item.children?.some(c => c.id === activeId || (c.path && activeId === c.path));
+  const [isOpen, setIsOpen] = useState(!!isChildActive);
 
   const handleClick = () => {
     if (hasChildren && !collapsed) {
@@ -163,6 +167,7 @@ function NavItem({
       onSelect(item.id, item.path);
     }
   };
+
 
   return (
     <div className="flex flex-col w-full">

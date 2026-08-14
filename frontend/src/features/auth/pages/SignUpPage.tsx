@@ -121,7 +121,7 @@ export default function SignUpPage({ onNavigateSignIn }: SignUpPageProps) {
               Full Name
             </Label>
             <div className="relative">
-              <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500 pointer-events-none" />
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400 pointer-events-none z-10" />
               <Input
                 id="fullname"
                 type="text"
@@ -139,7 +139,7 @@ export default function SignUpPage({ onNavigateSignIn }: SignUpPageProps) {
               Email
             </Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500 pointer-events-none" />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400 pointer-events-none z-10" />
               <Input
                 id="signup-email"
                 type="email"
@@ -159,7 +159,7 @@ export default function SignUpPage({ onNavigateSignIn }: SignUpPageProps) {
                 Password
               </Label>
               <div className="relative">
-                <Lock className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-500 pointer-events-none" />
+                <Lock className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400 pointer-events-none z-10" />
                 <Input
                   id="signup-password"
                   type={showPassword ? "text" : "password"}
@@ -172,7 +172,7 @@ export default function SignUpPage({ onNavigateSignIn }: SignUpPageProps) {
                 <button
                   type="button"
                   aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="absolute right-1 top-1/2 -translate-y-1/2 p-1 rounded text-zinc-400 hover:text-zinc-200 transition-colors"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 p-1 rounded text-zinc-400 hover:text-zinc-200 transition-colors z-10"
                   onClick={() => setShowPassword((v) => !v)}
                 >
                   {showPassword ? (
@@ -189,7 +189,7 @@ export default function SignUpPage({ onNavigateSignIn }: SignUpPageProps) {
                 Confirm
               </Label>
               <div className="relative">
-                <Lock className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-500 pointer-events-none" />
+                <Lock className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-400 pointer-events-none z-10" />
                 <Input
                   id="confirm-password"
                   type={showConfirmPassword ? "text" : "password"}
@@ -202,7 +202,7 @@ export default function SignUpPage({ onNavigateSignIn }: SignUpPageProps) {
                 <button
                   type="button"
                   aria-label={showConfirmPassword ? "Hide password" : "Show password"}
-                  className="absolute right-1 top-1/2 -translate-y-1/2 p-1 rounded text-zinc-400 hover:text-zinc-200 transition-colors"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 p-1 rounded text-zinc-400 hover:text-zinc-200 transition-colors z-10"
                   onClick={() => setShowConfirmPassword((v) => !v)}
                 >
                   {showConfirmPassword ? (

@@ -6,29 +6,40 @@ interface LogoProps {
 
 export function Logo({ className }: LogoProps) {
   return (
-    <span className={clsx('inline-flex items-center gap-2.5', className)}>
-      <span className="relative inline-flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-500/15 ring-1 ring-cyan-400/40">
-        <svg viewBox="0 0 24 24" className="h-5 w-5 text-cyan-400" fill="none" aria-hidden="true">
+    <span className={clsx('inline-flex items-center gap-2.5 select-none', className)}>
+      {/* Modern Monochrome Geometric Logo Mark */}
+      <span className="relative flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-b from-zinc-800 to-zinc-900 border border-zinc-700/80 shadow-inner group">
+        <svg
+          viewBox="0 0 32 32"
+          className="h-4.5 w-4.5 text-zinc-100 transition-transform duration-300 group-hover:scale-110"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          {/* Abstract Data Nodes & Prism Layers */}
           <path
-            d="M4 15l4-4 3 3 5-6 4 4"
+            d="M16 4L26 10V22L16 28L6 22V10L16 4Z"
             stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+            className="opacity-40"
+          />
+          <path
+            d="M16 10L22 13.5V20.5L16 24L10 20.5V13.5L16 10Z"
+            fill="currentColor"
+            fillOpacity="0.2"
+            stroke="currentColor"
+            strokeWidth="1.5"
             strokeLinejoin="round"
           />
-          <path
-            d="M4 19h16"
-            stroke="currentColor"
-            strokeWidth="1.8"
-            strokeLinecap="round"
-          />
+          <circle cx="16" cy="17" r="2.5" fill="#ffffff" />
         </svg>
-        <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.9)]" />
+        <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.7)]" />
       </span>
-      <span className="text-base font-bold tracking-tight text-white">
-        BizIntel
-        <span className="ml-2 hidden text-xs font-medium uppercase tracking-[0.22em] text-slate-500 sm:inline">
-          Intelligence
+
+      {/* Brand Label */}
+      <span className="flex items-center gap-2">
+        <span className="text-sm font-semibold tracking-tight text-white font-sans">
+          BizIntel
         </span>
       </span>
     </span>

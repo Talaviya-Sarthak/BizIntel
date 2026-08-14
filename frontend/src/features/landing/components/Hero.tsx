@@ -1,102 +1,79 @@
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { Button } from '../../../components/ui/Button';
 import { ArrowRightIcon } from './icons';
-import { IntelligenceConsole } from './IntelligenceConsole';
 
 export function Hero() {
   return (
-    <section id="platform" className="relative pb-16 pt-24 sm:pb-24 sm:pt-32">
-      <div className="container-shell">
-        <div className="grid items-center gap-10 lg:grid-cols-2">
-          {/* Left Column: Refined 3-Word Typographic Headline & Copy */}
-          <div className="flex flex-col items-start text-left">
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <span className="inline-flex items-center gap-2 rounded-full border border-zinc-800/80 bg-zinc-900/60 px-3 py-1 text-[11px] font-medium tracking-wide text-zinc-300">
-                <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
-                BizIntel-Enterprise Intelligence Platform
-              </span>
-            </motion.div>
+    <section id="platform" className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center pt-28 pb-16 sm:pt-32 sm:pb-20 lg:pt-36 lg:pb-24 overflow-hidden">
+      {/* Background ambient lighting glow - aligned on exact center axis */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-gradient-to-b from-zinc-400/10 via-zinc-600/5 to-transparent blur-[140px] pointer-events-none rounded-full" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[250px] bg-white/[0.02] blur-[110px] pointer-events-none rounded-full" />
 
-            {/* 3-Word Typographic Composition with Brand Cyan Accent */}
-            <div className="mt-5 flex flex-col items-start leading-none select-none">
-              {/* Word 1: DATA */}
-              <motion.span
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className="font-display text-2xl sm:text-3xl tracking-widest text-zinc-400 font-bold uppercase"
+      <div className="container-shell relative z-10 w-full flex justify-center">
+        {/* Constrained 960px Max-Width Hero Container */}
+        <div className="flex flex-col items-center text-center max-w-[960px] w-full mx-auto my-auto pt-6 sm:pt-8">
+          
+          {/* Static Centered Refined Headline with Premium Metallic Gradient */}
+          <h1 className="text-[38px] sm:text-[54px] lg:text-[70px] font-extrabold tracking-tight leading-[1.1] sm:leading-[1.08] select-none text-center">
+            <span className="bg-[linear-gradient(180deg,#FFFFFF_0%,#E4E4E7_50%,#A1A1AA_100%)] bg-clip-text text-transparent inline sm:block">
+              Enterprise Intelligence for{' '}
+            </span>
+            <span className="bg-[linear-gradient(180deg,#FFFFFF_0%,#F4F4F5_45%,#71717A_100%)] bg-clip-text text-transparent inline sm:block sm:mt-1">
+              Smarter Business Decisions
+            </span>
+          </h1>
+
+          {/* Concise Subheading with Comfortable Whitespace & Line-Height */}
+          <p className="mt-8 sm:mt-10 max-w-[620px] text-sm sm:text-base leading-relaxed text-zinc-400 font-normal tracking-normal text-center">
+            A unified enterprise intelligence layer combining quantitative strategy backtesting, DataMart SQL analytics, and retail AI decision support.
+          </p>
+
+          {/* Redesigned CTAs */}
+          <div className="mt-9 sm:mt-11 flex flex-wrap items-center justify-center gap-4">
+            <Link to="/signup">
+              <Button
+                variant="default"
+                size="lg"
+                className="h-11 px-6 text-xs sm:text-sm bg-white text-zinc-950 font-semibold hover:bg-zinc-200 rounded-xl transition-all shadow-[0_0_30px_rgba(255,255,255,0.12)] flex items-center gap-2 group"
               >
-                DATA
-              </motion.span>
-
-              {/* Word 2: INTELLIGENCE (Brand Cyan Accent & Anchored Size) */}
-              <motion.span
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-cyan-400 leading-none my-1"
+                Get Started
+                <ArrowRightIcon className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+              </Button>
+            </Link>
+            <a href="#capabilities">
+              <Button
+                variant="outline"
+                size="lg"
+                className="h-11 px-6 text-xs sm:text-sm border-zinc-800/90 bg-zinc-900/60 text-zinc-300 hover:bg-zinc-800 hover:text-white hover:border-zinc-700 font-medium rounded-xl transition-all shadow-sm backdrop-blur-md"
               >
-                INTELLIGENCE
-              </motion.span>
-
-              {/* Word 3: DECISIONS */}
-              <motion.span
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="font-display text-2xl sm:text-3xl tracking-widest text-zinc-100 font-bold uppercase"
-              >
-                DECISIONS
-              </motion.span>
-            </div>
-
-            {/* Supporting Copy */}
-            <motion.p
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-5 max-w-md text-xs leading-relaxed text-zinc-400 sm:text-sm"
-            >
-              A unified enterprise intelligence layer combining quantitative strategy backtesting, DataMart SQL analytics, and retail AI decision support.
-            </motion.p>
-
-            {/* CTAs */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-7 flex flex-wrap items-center gap-3"
-            >
-              <Link to="/signup">
-                <Button variant="default" size="lg" className="h-9.5 text-xs px-4 bg-zinc-50 text-zinc-950 hover:bg-zinc-200 font-medium rounded-lg">
-                  Get Started
-                  <ArrowRightIcon className="h-3.5 w-3.5 ml-1.5" />
-                </Button>
-              </Link>
-              <a href="#capabilities">
-                <Button variant="outline" size="lg" className="h-9.5 text-xs px-4 border-zinc-800 bg-zinc-900 text-zinc-200 hover:bg-zinc-800 font-medium rounded-lg">
-                  Explore Capabilities
-                </Button>
-              </a>
-            </motion.div>
+                Explore Capabilities
+              </Button>
+            </a>
           </div>
 
-          {/* Right Column: Product Intelligence Console */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.98, y: 16 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full flex justify-center lg:justify-end"
-          >
-            <IntelligenceConsole />
-          </motion.div>
+          {/* Minimal Enterprise Proof Highlights */}
+          <div className="mt-10 sm:mt-12 pt-5 border-t border-zinc-800/60 w-full max-w-[760px] flex flex-wrap items-center justify-around gap-4 sm:gap-8 text-xs font-medium text-zinc-400">
+            <div className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
+              <span>Deterministic Strategy Backtests</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
+              <span>Real-Time DataMart SQL</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-zinc-400" />
+              <span>Autonomous AI Decision Support</span>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
   );
 }
+
+
+
+
+

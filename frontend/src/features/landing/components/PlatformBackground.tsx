@@ -63,41 +63,32 @@ export function PlatformBackground({ children }: { children: React.ReactNode }) 
 
   return (
     <div className="relative min-h-screen bg-zinc-950 text-zinc-50 overflow-x-hidden">
-      <style>{`
-        .platform-accent-lines{position:fixed;inset:0;pointer-events:none;opacity:.5;z-index:0}
-        .platform-hline,.platform-vline{position:absolute;background:#27272a;will-change:transform,opacity}
-        .platform-hline{left:0;right:0;height:1px;transform:scaleX(0);transform-origin:50% 50%;animation:drawX .8s cubic-bezier(.22,.61,.36,1) forwards}
-        .platform-vline{top:0;bottom:0;width:1px;transform:scaleY(0);transform-origin:50% 0%;animation:drawY .9s cubic-bezier(.22,.61,.36,1) forwards}
-        .platform-hline:nth-child(1){top:18%;animation-delay:.12s}
-        .platform-hline:nth-child(2){top:50%;animation-delay:.22s}
-        .platform-hline:nth-child(3){top:82%;animation-delay:.32s}
-        .platform-vline:nth-child(4){left:22%;animation-delay:.42s}
-        .platform-vline:nth-child(5){left:50%;animation-delay:.54s}
-        .platform-vline:nth-child(6){left:78%;animation-delay:.66s}
-        @keyframes drawX{0%{transform:scaleX(0);opacity:0}60%{opacity:.8}100%{transform:scaleX(1);opacity:.5}}
-        @keyframes drawY{0%{transform:scaleY(0);opacity:0}60%{opacity:.8}100%{transform:scaleY(1);opacity:.5}}
-      `}</style>
+      {/* Single Clean Enterprise Background Grid Overlay */}
+      <div
+        className="fixed inset-0 pointer-events-none z-0 opacity-70"
+        style={{
+          backgroundImage: `
+            linear-gradient(to right, rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255, 255, 255, 0.12) 1px, transparent 1px)
+          `,
+          backgroundSize: '56px 56px',
+          maskImage: 'radial-gradient(ellipse at 50% 40%, rgba(0,0,0,1) 0%, rgba(0,0,0,0.65) 75%, rgba(0,0,0,0.3) 100%)',
+          WebkitMaskImage: 'radial-gradient(ellipse at 50% 40%, rgba(0,0,0,1) 0%, rgba(0,0,0,0.65) 75%, rgba(0,0,0,0.3) 100%)',
+        }}
+      />
 
-      {/* Vignette */}
-      <div className="fixed inset-0 pointer-events-none [background:radial-gradient(80%_60%_at_50%_30%,rgba(255,255,255,0.04),transparent_60%)] z-0" />
-
-      {/* Accent lines */}
-      <div className="platform-accent-lines">
-        <div className="platform-hline" />
-        <div className="platform-hline" />
-        <div className="platform-hline" />
-        <div className="platform-vline" />
-        <div className="platform-vline" />
-        <div className="platform-vline" />
-      </div>
+      {/* Vignette Lighting */}
+      <div className="fixed inset-0 pointer-events-none [background:radial-gradient(85%_65%_at_50%_40%,rgba(255,255,255,0.03),transparent_70%)] z-0" />
 
       {/* Particles Canvas */}
       <canvas
         ref={canvasRef}
-        className="fixed inset-0 w-full h-full opacity-40 mix-blend-screen pointer-events-none z-0"
+        className="fixed inset-0 w-full h-full opacity-35 mix-blend-screen pointer-events-none z-0"
       />
 
       <div className="relative z-10">{children}</div>
     </div>
   );
 }
+
+

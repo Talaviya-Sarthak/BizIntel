@@ -3,7 +3,7 @@ import EnterpriseAIPipeline from '../../../components/ui/ai-agent-pipeline';
 
 export function Architecture() {
   return (
-    <section id="architecture" className="relative py-16 sm:py-24 border-t border-zinc-800/80">
+    <section id="architecture" className="relative py-10 sm:py-14 border-t border-zinc-800/80">
       <div className="container-shell">
         <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.2fr]">
           <motion.div

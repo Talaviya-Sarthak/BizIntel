@@ -136,8 +136,8 @@ export function ContactPage() {
                       required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder=""
-                      className="h-9 w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 text-xs text-zinc-100 focus:outline-none focus:border-zinc-700 transition-colors"
+                      placeholder="e.g. Alex Morgan"
+                      className="h-9 w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-zinc-700 transition-colors"
                     />
                   </div>
 
@@ -151,8 +151,8 @@ export function ContactPage() {
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder=""
-                      className="h-9 w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 text-xs text-zinc-100 focus:outline-none focus:border-zinc-700 transition-colors"
+                      placeholder="alex@company.com"
+                      className="h-9 w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-zinc-700 transition-colors"
                     />
                   </div>
 
@@ -165,8 +165,8 @@ export function ContactPage() {
                       type="text"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      placeholder=""
-                      className="h-9 w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 text-xs text-zinc-100 focus:outline-none focus:border-zinc-700 transition-colors"
+                      placeholder="+1 (555) 000-0000 (optional)"
+                      className="h-9 w-full rounded-lg border border-zinc-800 bg-zinc-950 px-3 text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-zinc-700 transition-colors"
                     />
                   </div>
 
@@ -180,8 +180,8 @@ export function ContactPage() {
                       rows={3}
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
-                      placeholder=""
-                      className="w-full rounded-lg border border-zinc-800 bg-zinc-950 p-3 text-xs text-zinc-100 focus:outline-none focus:border-zinc-700 transition-colors resize-none"
+                      placeholder="How can we help your enterprise team?"
+                      className="w-full rounded-lg border border-zinc-800 bg-zinc-950 p-3 text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-zinc-700 transition-colors resize-none"
                     />
                   </div>
 

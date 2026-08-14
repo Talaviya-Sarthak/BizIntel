@@ -1,7 +1,5 @@
 import React, { useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
-import Button from "@/components/ui/Button";
 
 interface AuthBackgroundProps {
   children: React.ReactNode;
@@ -132,15 +130,6 @@ export default function AuthBackground({ children }: AuthBackgroundProps) {
           <span className="text-xs tracking-[0.14em] uppercase text-zinc-400 font-bold hover:text-zinc-100 transition-colors">
             BizIntel
           </span>
-        </Link>
-        <Link to="/contact">
-          <Button
-            variant="outline"
-            className="h-8.5 rounded-lg border-zinc-800 bg-zinc-900 text-zinc-50 hover:bg-zinc-800 text-xs"
-          >
-            <span className="mr-1.5">Contact</span>
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Button>
         </Link>
       </header>
 

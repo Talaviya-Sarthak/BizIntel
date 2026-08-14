@@ -49,7 +49,7 @@ export function FAQ() {
   };
 
   return (
-    <section id="faq" className="relative py-16 sm:py-24 border-t border-zinc-800/80">
+    <section id="faq" className="relative py-10 sm:py-14 border-t border-zinc-800/80">
       <div className="container-shell max-w-4xl mx-auto">
         {/* Title */}
         <div className="text-center mb-10">
