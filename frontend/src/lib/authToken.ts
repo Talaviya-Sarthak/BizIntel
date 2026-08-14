@@ -1,14 +1,29 @@
-/** In-memory JWT token. Not persisted to localStorage for XSS safety. */
-let accessToken: string | null = null;
+const TOKEN_KEY = 'bizintel_auth_token';
 
 export function getAccessToken(): string | null {
-  return accessToken;
+  try {
+    return localStorage.getItem(TOKEN_KEY);
+  } catch {
+    return null;
+  }
 }
 
 export function setAccessToken(token: string | undefined | null): void {
-  accessToken = token ?? null;
+  try {
+    if (token) {
+      localStorage.setItem(TOKEN_KEY, token);
+    } else {
+      localStorage.removeItem(TOKEN_KEY);
+    }
+  } catch {
+    // localStorage unavailable (SSR, private browsing edge cases)
+  }
 }
 
 export function clearAccessToken(): void {
-  accessToken = null;
+  try {
+    localStorage.removeItem(TOKEN_KEY);
+  } catch {
+    // ignore
+  }
 }
