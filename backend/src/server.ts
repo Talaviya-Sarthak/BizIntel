@@ -10,6 +10,11 @@ const server = app.listen(env.PORT, () => {
   );
 });
 
+// Configure 15-minute HTTP server timeouts for enterprise document indexing & analytics
+server.timeout = 900_000;
+server.keepAliveTimeout = 300_000;
+server.headersTimeout = 300_000;
+
 /** Graceful shutdown: stop accepting connections, close the DB pool. */
 function shutdown(signal: string): void {
   logger.info({ signal }, 'Shutting down PS-05 API');

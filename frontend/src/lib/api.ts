@@ -17,7 +17,7 @@ export const api = axios.create({
   baseURL: normalizeBaseUrl(import.meta.env.VITE_API_URL as string | undefined),
   withCredentials: true,
   headers: { 'Content-Type': 'application/json' },
-  timeout: 15_000,
+  timeout: 300_000,
 });
 
 // Attach the in-memory JWT as a Bearer header on every request.

@@ -31,6 +31,7 @@ export async function ingestDocument(
   const { data } = await api.post<IngestResponse>(
     `${API_BASE}/uploads/ingest`,
     { filename, content, fileType },
+    { timeout: 900_000 },
   );
   return data;
 }

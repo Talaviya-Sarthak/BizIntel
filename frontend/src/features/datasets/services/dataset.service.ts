@@ -46,7 +46,7 @@ export const datasetService = {
       formData,
       {
         headers: { 'Content-Type': 'multipart/form-data' },
-        timeout: 120_000,
+        timeout: 900_000,
         onUploadProgress: (event) => {
           if (event.total && input.onProgress) {
             input.onProgress(Math.round((event.loaded / event.total) * 100));

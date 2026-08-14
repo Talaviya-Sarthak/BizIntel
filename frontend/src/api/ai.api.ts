@@ -15,7 +15,7 @@ export async function sendChatMessage(message: string, sessionId?: string): Prom
   const { data } = await api.post<ChatResponse>(
     `${API_BASE}/ai/chat`,
     { message, sessionId },
-    { headers },
+    { headers, timeout: 600_000 },
   );
   return data;
 }
