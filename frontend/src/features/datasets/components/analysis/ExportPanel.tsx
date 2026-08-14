@@ -85,8 +85,12 @@ export function ExportPanel({
 
   async function exportCSV() {
     const apiBase = (import.meta.env.VITE_API_URL as string | undefined) || '/api/v1';
+    const token = localStorage.getItem('bizintel_auth_token');
+    const headers: Record<string, string> = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
     const response = await fetch(`${apiBase}/datasets/${datasetId}/download`, {
       credentials: 'include',
+      headers,
     });
     const blob = await response.blob();
     const url = URL.createObjectURL(blob);

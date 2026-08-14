@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { api } from '../lib/api';
 
 const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) || '/api/v1';
 
@@ -28,26 +28,23 @@ export async function ingestDocument(
   content: string,
   fileType?: string,
 ): Promise<IngestResponse> {
-  const response = await axios.post<IngestResponse>(
+  const { data } = await api.post<IngestResponse>(
     `${API_BASE}/uploads/ingest`,
     { filename, content, fileType },
-    { withCredentials: true },
   );
-  return response.data;
+  return data;
 }
 
 export async function fetchUploads(): Promise<UploadRecord[]> {
-  const response = await axios.get<{ success: boolean; uploads: UploadRecord[] }>(
+  const { data } = await api.get<{ success: boolean; uploads: UploadRecord[] }>(
     `${API_BASE}/uploads`,
-    { withCredentials: true },
   );
-  return response.data.uploads;
+  return data.uploads;
 }
 
 export async function deleteDocument(fileId: string): Promise<boolean> {
-  const response = await axios.delete<{ success: boolean }>(
+  const { data } = await api.delete<{ success: boolean }>(
     `${API_BASE}/uploads/${encodeURIComponent(fileId)}`,
-    { withCredentials: true },
   );
-  return response.data.success;
+  return data.success;
 }
