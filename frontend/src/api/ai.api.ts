@@ -4,10 +4,16 @@ import { getAccessToken } from '../lib/authToken';
 
 const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) || '/api/v1';
 
+function authHeaders(): Record<string, string> {
+  const token = getAccessToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 export async function sendChatMessage(message: string, sessionId?: string): Promise<ChatResponse> {
   const { data } = await api.post<ChatResponse>(
     `${API_BASE}/ai/chat`,
     { message, sessionId },
+    { headers: authHeaders() },
   );
   return data;
 }
@@ -21,15 +27,12 @@ export function subscribeToAIStream(
   const url = `${API_BASE}/ai/stream?message=${encodeURIComponent(message)}${sessionId ? `&sessionId=${sessionId}` : ''}`;
   const controller = new AbortController();
 
-  const headers: Record<string, string> = {};
-  const token = getAccessToken();
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
-
   fetch(url, {
     credentials: 'include',
-    headers,
+    headers: {
+      Accept: 'text/event-stream',
+      ...authHeaders(),
+    },
     signal: controller.signal,
   })
     .then(async (response) => {

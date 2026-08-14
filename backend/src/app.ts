@@ -23,6 +23,8 @@ app.use(
   cors({
     origin: corsOrigins,
     credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['Set-Cookie'],
   }),
 );
 

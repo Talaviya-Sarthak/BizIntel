@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import type { ApiSuccess } from '../types/auth';
-import { getAccessToken } from './authToken';
+import { clearAccessToken, getAccessToken } from './authToken';
 
 export type { ApiSuccess };
 export type { ApiErrorBody, ValidationDetail } from '../types/auth';
@@ -29,6 +29,21 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+// On 401 responses (except /auth/me which handles its own logic),
+// clear the stale token so the user is prompted to re-login.
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      const url = error.config?.url ?? '';
+      if (!url.includes('/auth/me')) {
+        clearAccessToken();
+      }
+    }
+    return Promise.reject(error);
+  },
+);
 
 /** Maps an Axios error to a typed API error body. */
 export function toApiError(error: unknown): {
