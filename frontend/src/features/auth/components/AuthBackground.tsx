@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { Logo } from "../../../components/ui/Logo";
 
 interface AuthBackgroundProps {
   children: React.ReactNode;
@@ -126,10 +127,8 @@ export default function AuthBackground({ children }: AuthBackgroundProps) {
 
       {/* Header */}
       <header className="absolute left-0 right-0 top-0 flex items-center justify-between px-6 py-4 border-b border-zinc-800/80 z-10">
-        <Link to="/" className="flex items-center gap-6">
-          <span className="text-xs tracking-[0.14em] uppercase text-zinc-400 font-bold hover:text-zinc-100 transition-colors">
-            BizIntel
-          </span>
+        <Link to="/" className="flex items-center transition-opacity hover:opacity-90">
+          <Logo size="sm" />
         </Link>
       </header>
 

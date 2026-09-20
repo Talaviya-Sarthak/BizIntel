@@ -4,6 +4,7 @@ import AuthBackground from "./AuthBackground";
 import LoginPage from "../pages/LoginPage";
 import SignUpPage from "../pages/SignUpPage";
 import ForgotPasswordPage from "../pages/ForgotPasswordPage";
+import { AnimatedState } from "../../../components/motion";
 
 export type AuthMode = "login" | "signup" | "forgot-password";
 
@@ -41,18 +42,20 @@ export default function AuthContainer({ initialMode = "login" }: AuthContainerPr
 
   return (
     <AuthBackground activeTab={mode} onTabChange={handleModeChange}>
-      {mode === "login" && (
-        <LoginPage
-          onNavigateSignUp={() => handleModeChange("signup")}
-          onNavigateForgotPassword={() => handleModeChange("forgot-password")}
-        />
-      )}
-      {mode === "signup" && (
-        <SignUpPage onNavigateSignIn={() => handleModeChange("login")} />
-      )}
-      {mode === "forgot-password" && (
-        <ForgotPasswordPage onNavigateSignIn={() => handleModeChange("login")} />
-      )}
+      <AnimatedState stateKey={mode} transitionType="fade-slide" duration={0.25} className="w-full max-w-md mx-auto">
+        {mode === "login" && (
+          <LoginPage
+            onNavigateSignUp={() => handleModeChange("signup")}
+            onNavigateForgotPassword={() => handleModeChange("forgot-password")}
+          />
+        )}
+        {mode === "signup" && (
+          <SignUpPage onNavigateSignIn={() => handleModeChange("login")} />
+        )}
+        {mode === "forgot-password" && (
+          <ForgotPasswordPage onNavigateSignIn={() => handleModeChange("login")} />
+        )}
+      </AnimatedState>
     </AuthBackground>
   );
 }

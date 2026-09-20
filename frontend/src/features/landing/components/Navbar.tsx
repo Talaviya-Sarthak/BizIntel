@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../../../components/ui/Button';
 import { Logo } from '../../../components/ui/Logo';
+import { ScrubProgress, MagneticButton } from '../../../components/motion';
 import { useAuth } from '../../../hooks/useAuth';
 import { CloseIcon, MenuIcon } from './icons';
 
@@ -197,11 +198,13 @@ export function Navbar() {
                     Sign In
                   </Button>
                 </Link>
-                <Link to="/signup">
-                  <Button variant="default" size="sm" className="h-9 text-xs px-4 bg-white text-zinc-950 font-medium hover:bg-zinc-200 rounded-xl transition-all shadow-[0_0_20px_rgba(255,255,255,0.12)]">
-                    Get Started
-                  </Button>
-                </Link>
+                <MagneticButton strength={0.22}>
+                  <Link to="/signup">
+                    <Button variant="default" size="sm" className="h-9 text-xs px-4 bg-white text-zinc-950 font-medium hover:bg-zinc-200 rounded-xl transition-all shadow-[0_0_20px_rgba(255,255,255,0.12)]">
+                      Get Started
+                    </Button>
+                  </Link>
+                </MagneticButton>
               </>
             )}
           </div>
@@ -285,6 +288,7 @@ export function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
+      <ScrubProgress className="absolute bottom-0 left-0 right-0" />
     </motion.header>
   );
 }

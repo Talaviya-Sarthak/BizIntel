@@ -1,0 +1,51 @@
+<svg viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="facet-shine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4ade80" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#22c55e" stop-opacity="0.05" />
+    </linearGradient>
+  </defs>
+
+  <!-- Facet Triangles -->
+  <!-- 1. Top Wing / Flag -->
+  <polygon points="33,10 64,28 33,46" fill="#2d5215" stroke="rgba(255,255,255,0.25)" stroke-width="0.75" stroke-linejoin="round" />
+  
+  <!-- 2. Top Mid Left -->
+  <polygon points="33,46 64,28 64,46" fill="#24440f" stroke="rgba(255,255,255,0.25)" stroke-width="0.75" stroke-linejoin="round" />
+  
+  <!-- 3. Top Mid Right -->
+  <polygon points="64,28 95,46 64,46" fill="#325a19" stroke="rgba(255,255,255,0.25)" stroke-width="0.75" stroke-linejoin="round" />
+  
+  <!-- 4. Top Outer Left -->
+  <polygon points="33,46 2,64 33,64" fill="#38641c" stroke="rgba(255,255,255,0.25)" stroke-width="0.75" stroke-linejoin="round" />
+  
+  <!-- 5. Top Inner Left -->
+  <polygon points="33,46 64,46 33,64" fill="#437722" stroke="rgba(255,255,255,0.25)" stroke-width="0.75" stroke-linejoin="round" />
+  
+  <!-- 6. Top Inner Right -->
+  <polygon points="64,46 95,46 95,64" fill="#39661d" stroke="rgba(255,255,255,0.25)" stroke-width="0.75" stroke-linejoin="round" />
+  
+  <!-- 7. Top Outer Right -->
+  <polygon points="95,46 126,64 95,64" fill="#22400d" stroke="rgba(255,255,255,0.25)" stroke-width="0.75" stroke-linejoin="round" />
+  
+  <!-- 8. Bottom Outer Left -->
+  <polygon points="33,82 2,64 33,64" fill="#284912" stroke="rgba(255,255,255,0.25)" stroke-width="0.75" stroke-linejoin="round" />
+  
+  <!-- 9. Bottom Inner Left -->
+  <polygon points="33,82 64,82 33,64" fill="#437722" stroke="rgba(255,255,255,0.25)" stroke-width="0.75" stroke-linejoin="round" />
+  
+  <!-- 10. Bottom Inner Right -->
+  <polygon points="64,82 95,82 95,64" fill="#39661d" stroke="rgba(255,255,255,0.25)" stroke-width="0.75" stroke-linejoin="round" />
+  
+  <!-- 11. Bottom Outer Right -->
+  <polygon points="95,82 126,64 95,64" fill="#1e370a" stroke="rgba(255,255,255,0.25)" stroke-width="0.75" stroke-linejoin="round" />
+  
+  <!-- 12. Bottom Mid Left -->
+  <polygon points="33,82 64,100 64,82" fill="#2a4d13" stroke="rgba(255,255,255,0.25)" stroke-width="0.75" stroke-linejoin="round" />
+  
+  <!-- 13. Bottom Mid Right -->
+  <polygon points="64,100 95,82 64,82" fill="#335c1a" stroke="rgba(255,255,255,0.25)" stroke-width="0.75" stroke-linejoin="round" />
+  
+  <!-- 14. Bottom Wing / Flag -->
+  <polygon points="95,118 64,100 95,82" fill="#22400d" stroke="rgba(255,255,255,0.25)" stroke-width="0.75" stroke-linejoin="round" />
+</svg>

@@ -7,6 +7,7 @@ import { MarkdownRenderer } from '../components/chat/MarkdownRenderer';
 import { DynamicChartRenderer } from '../components/charts/DynamicChartRenderer';
 import { CitationList } from '../components/citations/CitationList';
 import { useChatStore } from '../store/useChatStore';
+import { StaggerGroup, StaggerItem, SpringPress } from '../components/motion';
 import type { ChatMessage, VisualizationResult } from '../types/ai.types';
 
 export const AiAssistantPage: React.FC = () => {
@@ -168,28 +169,31 @@ export const AiAssistantPage: React.FC = () => {
               </p>
 
               {/* Contextual Prompt Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-10 max-w-2xl w-full">
+              <StaggerGroup staggerDelay={0.06} initialDelay={0.15} className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-10 max-w-2xl w-full">
                 {[
                   { title: 'Analyze Dataset', prompt: 'Analyze this sales dataset' },
                   { title: 'Top Products', prompt: 'Top products by revenue' },
                   { title: 'Inspect Schema', prompt: 'What columns exist?' },
                   { title: 'Knowledge RAG', prompt: 'What is the refund policy?' },
                 ].map((item, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      handleSend(item.prompt);
-                    }}
-                    className="group p-4 text-left rounded-2xl bg-[#1c1c1c] hover:bg-zinc-800/80 border border-white/[0.06] transition-all text-xs shadow-sm"
-                  >
-                    <div className="font-semibold text-zinc-200 flex items-center justify-between text-sm">
-                      <span>{item.title}</span>
-                      <span className="text-zinc-500 group-hover:translate-x-0.5 transition-transform">→</span>
-                    </div>
-                    <div className="text-zinc-400 mt-1.5 text-xs truncate">"{item.prompt}"</div>
-                  </button>
+                  <StaggerItem key={idx}>
+                    <SpringPress pressScale={0.97} className="w-full">
+                      <button
+                        onClick={() => {
+                          handleSend(item.prompt);
+                        }}
+                        className="w-full group p-4 text-left rounded-2xl bg-[#1c1c1c] hover:bg-zinc-800/80 border border-white/[0.06] hover:border-emerald-500/30 transition-all text-xs shadow-sm cursor-pointer"
+                      >
+                        <div className="font-semibold text-zinc-200 flex items-center justify-between text-sm group-hover:text-emerald-400 transition-colors">
+                          <span>{item.title}</span>
+                          <span className="text-zinc-500 group-hover:translate-x-0.5 group-hover:text-emerald-400 transition-transform">→</span>
+                        </div>
+                        <div className="text-zinc-400 mt-1.5 text-xs truncate">"{item.prompt}"</div>
+                      </button>
+                    </SpringPress>
+                  </StaggerItem>
                 ))}
-              </div>
+              </StaggerGroup>
             </div>
           ) : (
             messages.map((msg: ChatMessage) => (

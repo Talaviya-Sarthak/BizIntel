@@ -1,6 +1,12 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus } from 'lucide-react';
+import {
+  TextShift,
+  FadeLift,
+  StaggerGroup,
+  StaggerItem,
+} from '../../../components/motion';
 
 interface FAQItem {
   id: string;
@@ -49,66 +55,76 @@ export function FAQ() {
   };
 
   return (
-    <section id="faq" className="relative py-10 sm:py-14 border-t border-zinc-800/80">
+    <section id="faq" className="relative py-12 sm:py-16 border-t border-zinc-800/80 overflow-hidden">
       <div className="container-shell max-w-4xl mx-auto">
         {/* Title */}
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-extrabold tracking-tight text-zinc-50 sm:text-5xl font-display uppercase">
+          <TextShift
+            direction="up"
+            distance={18}
+            duration={0.65}
+            as="h2"
+            className="text-3xl font-extrabold tracking-tight text-zinc-50 sm:text-5xl font-display uppercase"
+          >
             Frequently Asked Questions
-          </h2>
-          <p className="mt-3 text-xs sm:text-sm text-zinc-400 max-w-xl mx-auto">
-            Everything you need to know about our enterprise intelligence platform, backtesting engine, and AI assistant.
-          </p>
+          </TextShift>
+
+          <FadeLift delay={0.15} distance={16} duration={0.55}>
+            <p className="mt-3 text-xs sm:text-sm text-zinc-400 max-w-xl mx-auto">
+              Everything you need to know about our enterprise intelligence platform, backtesting engine, and AI assistant.
+            </p>
+          </FadeLift>
         </div>
 
-        {/* 5 Accordion Questions List */}
-        <div className="flex flex-col gap-3">
+        {/* 5 Accordion Questions List with StaggerGroup */}
+        <StaggerGroup staggerDelay={0.07} initialDelay={0.1} className="flex flex-col gap-3">
           {FAQS.map((item) => {
             const isOpen = openId === item.id;
             return (
-              <div
-                key={item.id}
-                className="rounded-xl border border-zinc-800/80 bg-zinc-900/50 p-5 transition-colors duration-200 hover:border-zinc-700/80"
-              >
-                <button
-                  type="button"
-                  onClick={() => toggle(item.id)}
-                  className="w-full flex items-center justify-between text-left focus-visible:outline-none"
-                  aria-expanded={isOpen}
-                >
-                  <span className="text-sm sm:text-base font-bold text-zinc-100 pr-4">
-                    {item.question}
-                  </span>
-                  <motion.div
-                    animate={{ rotate: isOpen ? 45 : 0 }}
-                    transition={{ duration: 0.2, ease: 'easeInOut' }}
-                    className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-zinc-400 hover:text-zinc-100 transition-colors"
+              <StaggerItem key={item.id}>
+                <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/50 p-5 transition-colors duration-200 hover:border-zinc-700/80">
+                  <button
+                    type="button"
+                    onClick={() => toggle(item.id)}
+                    className="w-full flex items-center justify-between text-left focus-visible:outline-none cursor-pointer"
+                    aria-expanded={isOpen}
                   >
-                    <Plus className="h-4 w-4" />
-                  </motion.div>
-                </button>
-
-                <AnimatePresence initial={false}>
-                  {isOpen && (
+                    <span className="text-sm sm:text-base font-bold text-zinc-100 pr-4">
+                      {item.question}
+                    </span>
                     <motion.div
-                      key="answer"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                      className="overflow-hidden"
+                      animate={{ rotate: isOpen ? 45 : 0 }}
+                      transition={{ type: 'spring', stiffness: 350, damping: 22 }}
+                      className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-zinc-400 hover:text-zinc-100 transition-colors"
                     >
-                      <div className="mt-3 pt-3 border-t border-zinc-800/50 text-xs sm:text-sm text-zinc-400 leading-relaxed">
-                        {item.answer}
-                      </div>
+                      <Plus className="h-4 w-4" />
                     </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        key="answer"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.28, ease: [0.21, 0.47, 0.32, 0.98] }}
+                        className="overflow-hidden"
+                      >
+                        <div className="mt-3 pt-3 border-t border-zinc-800/50 text-xs sm:text-sm text-zinc-400 leading-relaxed">
+                          {item.answer}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </StaggerItem>
             );
           })}
-        </div>
+        </StaggerGroup>
       </div>
     </section>
   );
 }
+
+export default FAQ;

@@ -17,8 +17,9 @@ import {
   BarChart2,
   LayoutGrid,
   Gauge,
-  PlusCircle
+  PlusCircle,
 } from 'lucide-react';
+import { LogoMark } from './Logo';
 
 export type NavItemData = {
   id: string;
@@ -105,13 +106,13 @@ function WorkspaceSwitcher({
         className={`flex items-center ${collapsed ? 'justify-center px-1' : 'justify-between px-2.5'} py-1.5 mb-2.5 rounded-lg hover:bg-white/[0.06] cursor-pointer transition-colors select-none group border border-white/[0.08] bg-[#0d0d0d]`}
       >
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-md bg-zinc-900 text-zinc-100 flex items-center justify-center font-semibold text-[11px] shrink-0 border border-zinc-700/80 shadow-xs">
-            {current.charAt(0)}
+          <div className="w-7 h-7 rounded-lg bg-zinc-900/90 flex items-center justify-center shrink-0 border border-emerald-500/20 shadow-xs p-1">
+            <LogoMark size="xs" theme="emerald" />
           </div>
           {!collapsed && (
             <div className="flex flex-col overflow-hidden">
               <span className="text-[12px] font-medium leading-tight text-zinc-100 truncate max-w-[130px]">{current}</span>
-              <span className="text-[10px] text-zinc-400 leading-tight">Pro Plan</span>
+              <span className="text-[10px] text-emerald-400 font-medium leading-tight">BizIntel Pro</span>
             </div>
           )}
         </div>
