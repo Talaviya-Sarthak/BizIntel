@@ -71,69 +71,24 @@ export default function AuthBackground({ children }: AuthBackgroundProps) {
 
   return (
     <section className="fixed inset-0 bg-zinc-950 text-zinc-50 overflow-hidden h-screen w-screen flex flex-col">
-      <style>{`
-        .accent-lines{position:absolute;inset:0;pointer-events:none;opacity:.7}
-        .hline,.vline{position:absolute;background:#27272a;will-change:transform,opacity}
-        .hline{left:0;right:0;height:1px;transform:scaleX(0);transform-origin:50% 50%;animation:drawX .8s cubic-bezier(.22,.61,.36,1) forwards}
-        .vline{top:0;bottom:0;width:1px;transform:scaleY(0);transform-origin:50% 0%;animation:drawY .9s cubic-bezier(.22,.61,.36,1) forwards}
-        .hline:nth-child(1){top:18%;animation-delay:.12s}
-        .hline:nth-child(2){top:50%;animation-delay:.22s}
-        .hline:nth-child(3){top:82%;animation-delay:.32s}
-        .vline:nth-child(4){left:22%;animation-delay:.42s}
-        .vline:nth-child(5){left:50%;animation-delay:.54s}
-        .vline:nth-child(6){left:78%;animation-delay:.66s}
-        .hline::after,.vline::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(250,250,250,.24),transparent);opacity:0;animation:shimmer .9s ease-out forwards}
-        .hline:nth-child(1)::after{animation-delay:.12s}
-        .hline:nth-child(2)::after{animation-delay:.22s}
-        .hline:nth-child(3)::after{animation-delay:.32s}
-        .vline:nth-child(4)::after{animation-delay:.42s}
-        .vline:nth-child(5)::after{animation-delay:.54s}
-        .vline:nth-child(6)::after{animation-delay:.66s}
-        @keyframes drawX{0%{transform:scaleX(0);opacity:0}60%{opacity:.95}100%{transform:scaleX(1);opacity:.7}}
-        @keyframes drawY{0%{transform:scaleY(0);opacity:0}60%{opacity:.95}100%{transform:scaleY(1);opacity:.7}}
-        @keyframes shimmer{0%{opacity:0}35%{opacity:.25}100%{opacity:0}}
-
-        .card-animate {
-          opacity: 0;
-          transform: translateY(20px);
-          animation: fadeUp 0.8s cubic-bezier(.22,.61,.36,1) 0.3s forwards;
-        }
-        @keyframes fadeUp {
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
-
       {/* Vignette */}
-      <div className="absolute inset-0 pointer-events-none [background:radial-gradient(80%_60%_at_50%_30%,rgba(255,255,255,0.06),transparent_60%)]" />
-
-      {/* Accent lines */}
-      <div className="accent-lines">
-        <div className="hline" />
-        <div className="hline" />
-        <div className="hline" />
-        <div className="vline" />
-        <div className="vline" />
-        <div className="vline" />
-      </div>
+      <div className="absolute inset-0 pointer-events-none [background:radial-gradient(80%_60%_at_50%_30%,rgba(255,255,255,0.04),transparent_60%)]" />
 
       {/* Particles Canvas */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full opacity-50 mix-blend-screen pointer-events-none"
+        className="absolute inset-0 w-full h-full opacity-40 mix-blend-screen pointer-events-none"
       />
 
       {/* Header */}
-      <header className="absolute left-0 right-0 top-0 flex items-center justify-between px-6 py-4 border-b border-zinc-800/80 z-10">
+      <header className="absolute left-0 right-0 top-0 flex items-center justify-between px-6 py-4 z-20">
         <Link to="/" className="flex items-center transition-opacity hover:opacity-90">
           <Logo size="sm" />
         </Link>
       </header>
 
-      {/* Main Content Centered Without Scrollbar */}
-      <div className="flex-1 w-full grid place-items-center px-4 pt-14 pb-4 relative z-10">
+      {/* Main Content Centered */}
+      <div className="flex-1 w-full flex items-center justify-center px-4 pt-14 pb-4 relative z-10 overflow-y-auto">
         {children}
       </div>
     </section>

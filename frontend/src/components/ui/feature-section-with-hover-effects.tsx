@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import {
   TrendingUp,
@@ -96,7 +97,15 @@ const Feature = ({
   index: number;
 }) => {
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 60 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{
+        duration: 0.6,
+        delay: (index % 4) * 0.15 + Math.floor(index / 4) * 0.2,
+        ease: [0.21, 0.47, 0.32, 0.98],
+      }}
       className={cn(
         "flex flex-col lg:border-r py-8 px-2 relative group/feature border-zinc-800/80 transition-colors duration-200",
         (index === 0 || index === 4) && "lg:border-l border-zinc-800/80",
@@ -121,6 +130,6 @@ const Feature = ({
       <p className="text-xs text-zinc-400 leading-relaxed max-w-xs relative z-10 px-8">
         {description}
       </p>
-    </div>
+    </motion.div>
   );
 };

@@ -98,8 +98,8 @@ export default function LoginPage({
   };
 
   return (
-    <Card className="card-animate w-full max-w-sm border-zinc-800 bg-zinc-900/70 backdrop-blur supports-[backdrop-filter]:bg-zinc-900/60 shadow-2xl">
-      <CardHeader className="px-6 pt-6 pb-2 space-y-1">
+    <Card className="w-full max-w-sm border-0 bg-transparent shadow-none">
+      <CardHeader className="px-2 sm:px-4 pt-2 pb-2 space-y-1">
         <CardTitle className="text-2xl font-semibold text-white">Welcome back</CardTitle>
         <CardDescription className="text-xs text-zinc-400">
           Sign in to your account
@@ -107,7 +107,7 @@ export default function LoginPage({
       </CardHeader>
 
       <form onSubmit={handleSubmit}>
-        <CardContent className="px-6 py-2 flex flex-col gap-4">
+        <CardContent className="px-2 sm:px-4 py-2 flex flex-col gap-4">
           {errorMessage && (
             <div className="flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-2.5 text-xs text-red-400">
               <AlertCircle className="h-4 w-4 shrink-0" />
@@ -216,7 +216,7 @@ export default function LoginPage({
         </CardContent>
       </form>
 
-      <CardFooter className="px-6 pt-4 pb-6 flex items-center justify-center text-xs text-zinc-400">
+      <CardFooter className="px-2 sm:px-4 pt-4 pb-2 flex items-center justify-center text-xs text-zinc-400">
         Don’t have an account?
         <button
           type="button"

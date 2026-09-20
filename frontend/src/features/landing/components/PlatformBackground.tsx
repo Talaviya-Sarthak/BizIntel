@@ -63,20 +63,6 @@ export function PlatformBackground({ children }: { children: React.ReactNode }) 
 
   return (
     <div className="relative min-h-screen bg-zinc-950 text-zinc-50 overflow-x-hidden">
-      {/* Single Clean Enterprise Background Grid Overlay */}
-      <div
-        className="fixed inset-0 pointer-events-none z-0 opacity-70"
-        style={{
-          backgroundImage: `
-            linear-gradient(to right, rgba(255, 255, 255, 0.12) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255, 255, 255, 0.12) 1px, transparent 1px)
-          `,
-          backgroundSize: '56px 56px',
-          maskImage: 'radial-gradient(ellipse at 50% 40%, rgba(0,0,0,1) 0%, rgba(0,0,0,0.65) 75%, rgba(0,0,0,0.3) 100%)',
-          WebkitMaskImage: 'radial-gradient(ellipse at 50% 40%, rgba(0,0,0,1) 0%, rgba(0,0,0,0.65) 75%, rgba(0,0,0,0.3) 100%)',
-        }}
-      />
-
       {/* Vignette Lighting */}
       <div className="fixed inset-0 pointer-events-none [background:radial-gradient(85%_65%_at_50%_40%,rgba(255,255,255,0.03),transparent_70%)] z-0" />
 

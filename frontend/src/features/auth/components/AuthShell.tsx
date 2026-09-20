@@ -28,14 +28,6 @@ export function AuthShell({ title, subtitle, children, footer }: AuthShellProps)
         <div className="absolute inset-0" aria-hidden="true">
           <div className="absolute -left-24 top-0 h-96 w-96 rounded-full bg-cyan-500/10 blur-3xl" />
           <div className="absolute bottom-0 right-0 h-80 w-80 rounded-full bg-indigo-500/10 blur-3xl" />
-          <div
-            className="absolute inset-0 opacity-30"
-            style={{
-              backgroundImage:
-                'linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)',
-              backgroundSize: '48px 48px',
-            }}
-          />
         </div>
 
         <div className="relative flex h-full flex-col justify-between p-10 xl:p-16">

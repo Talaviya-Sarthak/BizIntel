@@ -28,8 +28,8 @@ export default function ForgotPasswordPage({ onNavigateSignIn }: ForgotPasswordP
   };
 
   return (
-    <Card className="card-animate w-full max-w-sm border-zinc-800 bg-zinc-900/70 backdrop-blur supports-[backdrop-filter]:bg-zinc-900/60 shadow-2xl">
-      <CardHeader className="space-y-1">
+    <Card className="w-full max-w-sm border-0 bg-transparent shadow-none">
+      <CardHeader className="px-2 sm:px-4 pt-2 pb-2 space-y-1">
         <CardTitle className="text-2xl font-semibold text-white">Reset password</CardTitle>
         <CardDescription className="text-zinc-400">
           {submitted

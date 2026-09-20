@@ -9,3 +9,4 @@ export * from './ImageZoomCard';
 export * from './TextShift';
 export * from './SpringPress';
 export * from './AnimatedState';
+export * from './CinematicLoader';
