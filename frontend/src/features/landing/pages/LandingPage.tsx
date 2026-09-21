@@ -8,7 +8,6 @@ import { Navbar } from '../components/Navbar';
 import { PlatformBackground } from '../components/PlatformBackground';
 import { PlatformOverview } from '../components/PlatformOverview';
 import { CinematicLoader } from '../../../components/motion/CinematicLoader';
-import { FloatingCopilotBadge } from '../../../components/ui/FloatingCopilotBadge';
 import LogoCloud from '../../../components/ui/logo-cloud-14';
 
 export function LandingPage() {
@@ -27,7 +26,6 @@ export function LandingPage() {
           <CTA />
         </main>
         <Footer />
-        <FloatingCopilotBadge />
       </PlatformBackground>
     </>
   );

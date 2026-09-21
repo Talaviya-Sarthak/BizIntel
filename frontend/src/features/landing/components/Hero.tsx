@@ -21,18 +21,15 @@ export function Hero() {
     offset: ['start start', 'end end'],
   });
 
-  // Zoom into the main cinematic image as the user scrolls
-  const imageScale = useTransform(scrollYProgress, [0, 0.85], [1, 1.45]);
-  const imageY = useTransform(scrollYProgress, [0, 0.85], ['0%', '-4%']);
-  const vignetteOpacity = useTransform(scrollYProgress, [0, 0.6, 0.9], [0.3, 0.65, 0.9]);
-  const bottomFadeOpacity = useTransform(scrollYProgress, [0, 0.5, 0.85], [0.4, 0.75, 1]);
+  // Deep immersive zoom-in directly toward the center of the image on scroll
+  const imageScale = useTransform(scrollYProgress, [0, 0.85], [1, 1.75]);
 
-  // Fade out and lift hero text as the zoom begins
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.32], [1, 0]);
-  const contentY = useTransform(scrollYProgress, [0, 0.32], [0, -65]);
-  const contentScale = useTransform(scrollYProgress, [0, 0.32], [1, 0.94]);
+  // Foreground text expands outward and dissolves as camera moves forward into the scene
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.28], [1, 0]);
+  const contentY = useTransform(scrollYProgress, [0, 0.28], [0, -50]);
+  const contentScale = useTransform(scrollYProgress, [0, 0.28], [1, 1.08]);
 
-  // Fade out scroll indicator immediately on scroll
+  // Fade out scroll indicator on initial scroll
   const indicatorOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
 
   const handleScrollDown = () => {
@@ -50,9 +47,9 @@ export function Hero() {
     >
       {/* Sticky Fullscreen Hero Viewport */}
       <div className="sticky top-0 h-screen w-full flex flex-col justify-between overflow-hidden">
-        {/* 1. Cinematic Background Image Layer with Zoom on Scroll */}
+        {/* 1. Cinematic Background Image Layer with Zoom in toward Image on Scroll */}
         <motion.div
-          style={{ scale: imageScale, y: imageY }}
+          style={{ scale: imageScale, transformOrigin: '50% 50%' }}
           className="absolute inset-0 z-0 origin-center will-change-transform"
         >
           <img
@@ -61,15 +58,8 @@ export function Hero() {
             className="size-full object-cover object-center"
           />
           {/* Subtle cinematic gradient overlays for contrast and readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#090a0f] via-black/35 to-black/65 pointer-events-none" />
-          <motion.div
-            style={{ opacity: vignetteOpacity }}
-            className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_35%,rgba(0,0,0,0.1)_0%,rgba(0,0,0,0.85)_100%)] pointer-events-none"
-          />
-          <motion.div
-            style={{ opacity: bottomFadeOpacity }}
-            className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#090a0f] to-transparent pointer-events-none"
-          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#090a0f]/90 via-black/25 to-black/60 pointer-events-none" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,rgba(0,0,0,0.05)_0%,rgba(0,0,0,0.65)_100%)] pointer-events-none" />
         </motion.div>
 
         {/* 2. Top Spacer for Navbar */}
@@ -162,7 +152,7 @@ export function Hero() {
               <StaggerItem>
                 <div className="flex items-center gap-2 drop-shadow-sm">
                   <Sparkles className="size-4 text-[#d2f831]" />
-                  <span>Autonomous AI Copilot</span>
+                  <span>Retail AI Assistant</span>
                 </div>
               </StaggerItem>
             </StaggerGroup>

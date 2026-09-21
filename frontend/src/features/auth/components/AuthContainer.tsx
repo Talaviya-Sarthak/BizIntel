@@ -91,7 +91,7 @@ export default function AuthContainer({ initialMode = "login" }: AuthContainerPr
                 <div className="p-1 rounded-md bg-[#d2f831]/10 text-[#d2f831] border border-[#d2f831]/20">
                   <Sparkles className="size-3.5" />
                 </div>
-                <span className="font-medium text-[11px]">Autonomous Retail AI Copilot</span>
+                <span className="font-medium text-[11px]">Retail AI Decision Support</span>
               </div>
             </div>
           </div>

@@ -3,6 +3,7 @@ import * as userRepository from '../repositories/user.repository';
 import { ApiError } from '../utils/httpError';
 import type { LoginInput, RegisterInput } from '../validators/auth.validator';
 import type { PublicUser, User } from '../models/user.model';
+import { sendWelcomeEmail } from './email.service';
 
 const BCRYPT_ROUNDS = 10;
 
@@ -34,6 +35,9 @@ export async function register(input: RegisterInput): Promise<AuthResult> {
     email: input.email,
     passwordHash,
   });
+
+  // Asynchronously dispatch welcome email in the background without blocking response
+  void sendWelcomeEmail(user.email, user.name);
 
   return { user };
 }

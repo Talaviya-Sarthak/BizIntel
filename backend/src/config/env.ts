@@ -53,6 +53,15 @@ const envSchema = z.object({
   SUPABASE_URL: z.string().optional().default(''),
   SUPABASE_SERVICE_ROLE_KEY: z.string().optional().default(''),
   SUPABASE_DATAMART_BUCKET: z.string().optional().default('datamart-datasets'),
+
+  // --- Email configuration ---
+  EMAIL_USER: z.string().optional().default(''),
+  EMAIL_PASSWORD: z.string().optional().default(''),
+  CLIENT_ID: z.string().optional().default(''),
+  CLIENT_SECRET: z.string().optional().default(''),
+  REFRESH_TOKEN: z.string().optional().default(''),
+  EMAIL_FROM: z.string().optional().default('BizIntel Enterprise <no-reply@bizintel.io>'),
+  FRONTEND_URL: z.string().optional().default('http://localhost:5173'),
 });
 
 const parsed = envSchema.safeParse(process.env);
